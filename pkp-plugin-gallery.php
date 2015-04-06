@@ -77,17 +77,10 @@ class pkppgInit {
 	public function init() {
 
 		// Initialize the plugin
-		add_action( 'init', array( $this, 'load_config' ) );
 		add_action( 'init', array( $this, 'load_textdomain' ) );
+		add_action( 'init', array( $this, 'load_config' ) );
 
 	}
-
-	/**
-	 * Load the plugin's configuration settings and default content
-	 *
-	 * @since 0.1
-	 */
-	public function load_config() {	}
 
 	/**
 	 * Load the plugin textdomain for localistion
@@ -96,6 +89,20 @@ class pkppgInit {
 	 */
 	public function load_textdomain() {
 		load_plugin_textdomain( 'pkp-plugin-gallery', false, plugin_basename( dirname( __FILE__ ) ) . '/languages/' );
+	}
+
+	/**
+	 * Set up the plugin's core components and configuration
+	 *
+	 * @since 0.1
+	 */
+	public function load_config() {
+
+		// Load files
+		require_once( self::$plugin_dir . '/includes/CustomPostTypes.class.php' );
+
+		// Load custom post types
+		$this->cpts = new pkppgCustomPostTypes();
 	}
 
 }
@@ -113,3 +120,16 @@ function pkppgInit() {
 }
 add_action( 'plugins_loaded', 'pkppgInit' );
 } // endif;
+
+/**
+ * Flush the rewrite rules when the plugin is activated or deactivated
+ *
+ * This must be called before `plugins_loaded`, so it can't be added into
+ * the normal plugin loading routines.
+ *
+ * @since 0.1
+ */
+if ( !function_exists( 'flush_rewrite_rules' ) ) {
+	register_activation_hook( __FILE__, 'flush_rewrite_rules' );
+	register_deactivation_hook( __FILE__, 'flush_rewrite_rules' );
+} // endif
