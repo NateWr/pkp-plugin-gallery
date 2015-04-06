@@ -31,6 +31,9 @@ class pkppgCustomPostTypes {
 
 		// Register custom post types
 		add_action( 'init', array( $this, 'load_cpts' ) );
+
+		// Add meta boxes
+		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
 	}
 
 	/**
@@ -90,7 +93,7 @@ class pkppgCustomPostTypes {
 					'choose_from_most_used'      => __( 'Choose from most used categories',                   'pkp-plugin-gallery' ),
 					'not_found'                  => __( 'No categories found',                   'pkp-plugin-gallery' ),
 				),
-				'meta_box_cb' => array( $this, 'print_category_selection' ),
+				'meta_box_cb' => array( $this, 'print_category_metabox' ),
 			)
 		);
 
@@ -117,7 +120,7 @@ class pkppgCustomPostTypes {
 					'choose_from_most_used'      => __( 'Choose from most used certifications',                   'pkp-plugin-gallery' ),
 					'not_found'                  => __( 'No certifications found',                   'pkp-plugin-gallery' ),
 				),
-				'meta_box_cb' => array( $this, 'print_certification_selection' ),
+				'meta_box_cb' => array( $this, 'print_certification_metabox' ),
 			)
 		);
 
@@ -188,11 +191,39 @@ class pkppgCustomPostTypes {
 	}
 
 	/**
+	 * Add metaboxes to the post editing screens
+	 *
+	 * @since 0.1
+	 */
+	public function add_meta_boxes() {
+
+		// Add a homepage metabox
+		add_meta_box(
+			'pkppg_homepage',
+			'Plugin Homepage',
+			array( $this, 'print_homepage_metabox' ),
+			$this->plugin_post_type,
+			'side',
+			'core'
+		);
+
+		// Add an installation instructions metabox
+		add_meta_box(
+			'pkppg_installation',
+			'Installation Instructions',
+			array( $this, 'print_installation_metabox' ),
+			$this->plugin_post_type,
+			'side',
+			'core'
+		);
+	}
+
+	/**
 	 * Print a metabox to select a category
 	 *
 	 * @since 0.1
 	 */
-	public function print_category_selection() {
+	public function print_category_metabox() {
 		pkppg_print_taxonomy_select( 'pkp_category' );
 	}
 
@@ -201,8 +232,50 @@ class pkppgCustomPostTypes {
 	 *
 	 * @since 0.1
 	 */
-	public function print_certification_selection() {
+	public function print_certification_metabox() {
 		pkppg_print_taxonomy_select( 'pkp_certification' );
+	}
+
+	/**
+	 * Print a metabox to enter a plugin's homepage
+	 *
+	 * @since 0.1
+	 */
+	public function print_homepage_metabox( $post ) {
+
+		$homepage = get_post_meta( $post->ID, '_homepage', true );
+
+		?>
+
+		<?php wp_nonce_field( 'pkppg_edit_plugin', 'pkpg_edit_plugin' ); ?>
+
+		<input type="text" name="_homepage" value="<?php echo esc_attr( $homepage ); ?>" placeholder="http://">
+
+		<p class="description">
+			<?php _e( 'Enter the URL where we can find more information about this plugin.' ); ?>
+		</p>
+
+		<?php
+	}
+
+	/**
+	 * Print a metabox to enter a plugin's installation instructions
+	 *
+	 * @since 0.1
+	 */
+	public function print_installation_metabox( $post ) {
+
+		$installation = get_post_meta( $post->ID, '_installation', true );
+
+		?>
+
+		<textarea name="_installation"><?php echo $installation; ?></textarea>
+
+		<p class="description">
+			<?php _e( 'Enter a brief description of any installation instructions or requirements.' ); ?>
+		</p>
+
+		<?php
 	}
 
 }
