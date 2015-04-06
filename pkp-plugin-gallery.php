@@ -129,7 +129,7 @@ add_action( 'plugins_loaded', 'pkppgInit' );
  *
  * @since 0.1
  */
-if ( !function_exists( 'flush_rewrite_rules' ) ) {
+if ( function_exists( 'flush_rewrite_rules' ) ) {
 	register_activation_hook( __FILE__, 'flush_rewrite_rules' );
 	register_deactivation_hook( __FILE__, 'flush_rewrite_rules' );
 } // endif
