@@ -76,9 +76,11 @@ class pkppgInit {
 	 */
 	public function init() {
 
+		// Set up the plugin's core components and configuration
+		$this->load_config();
+
 		// Initialize the plugin
 		add_action( 'init', array( $this, 'load_textdomain' ) );
-		add_action( 'init', array( $this, 'load_config' ) );
 
 	}
 
