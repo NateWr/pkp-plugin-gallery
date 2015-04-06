@@ -149,6 +149,13 @@ class pkppgCustomPostTypes {
 					'pkp_certification',
 					'pkp_category',
 				),
+				'supports'     => array(
+					'title',
+					'editor',
+					'author',
+					'excerpt',
+					'revisions',
+				)
 			)
 		);
 
