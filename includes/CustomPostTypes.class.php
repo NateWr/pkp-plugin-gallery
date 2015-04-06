@@ -34,6 +34,7 @@ class pkppgCustomPostTypes {
 
 		// Add meta boxes
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
+		add_action( 'save_post', array( $this, 'save_post' ) );
 	}
 
 	/**
@@ -247,7 +248,7 @@ class pkppgCustomPostTypes {
 
 		?>
 
-		<?php wp_nonce_field( 'pkppg_edit_plugin', 'pkpg_edit_plugin' ); ?>
+		<?php wp_nonce_field( 'pkppg_edit_plugin', 'pkppg_edit_plugin' ); ?>
 
 		<input type="text" name="_homepage" value="<?php echo esc_attr( $homepage ); ?>" placeholder="http://">
 
@@ -276,6 +277,43 @@ class pkppgCustomPostTypes {
 		</p>
 
 		<?php
+	}
+
+	/**
+	 * Save post metabox data from the PKP Plugin editing screen
+	 *
+	 * @since 0.1
+	 */
+	public function save_post( $post_id ) {
+
+		// Verify the nonce
+		if( empty( $_POST['pkppg_edit_plugin'] ) || !wp_verify_nonce( $_POST['pkppg_edit_plugin'], 'pkppg_edit_plugin' ) ) {
+			error_log( 'nonce verification failed' );
+			return $post_id;
+		}
+
+		// Check permissions
+		// @todo use custom permissions
+		if ( !current_user_can( 'edit_post' , $post_id ) ) {
+			return $post_id;
+		}
+
+		// Define sanitization callbacks for each meta field
+		$meta = array(
+			'_homepage' => 'sanitize_text_field',
+			'_installation' => 'wp_kses_post',
+		);
+
+		// Sanitize and save meta data
+		foreach( $meta as $meta_id => $sanitize_callback ) {
+			$cur = get_post_meta( $post_id, $meta_id, true );
+			$new = call_user_func( $sanitize_callback, $_POST[ $meta_id ] );
+			if ( !empty( $new ) && $new != $cur ) {
+				update_post_meta( $post_id, $meta_id, $new );
+			} elseif ( isset( $new ) && $new == '' ) {
+				delete_post_meta( $post_id, $meta_id, $cur );
+			}
+		}
 	}
 
 }
