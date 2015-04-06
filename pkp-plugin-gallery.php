@@ -102,10 +102,14 @@ class pkppgInit {
 
 		// Load files
 		require_once( self::$plugin_dir . '/includes/CustomPostTypes.class.php' );
+		require_once( self::$plugin_dir . '/includes/Compatibility.class.php' );
 		require_once( self::$plugin_dir . '/includes/template-helpers.php' );
 
 		// Load custom post types
 		$this->cpts = new pkppgCustomPostTypes();
+
+		// Load compatibility routines
+		new pkppgCompatibility();
 	}
 
 }
