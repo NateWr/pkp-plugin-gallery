@@ -217,6 +217,16 @@ class pkppgCustomPostTypes {
 			'side',
 			'core'
 		);
+
+		// Add a releases metabox
+		add_meta_box(
+			'pkppg_releases',
+			'Releases',
+			array( $this, 'print_releases_metabox' ),
+			$this->plugin_post_type,
+			'normal',
+			'core'
+		);
 	}
 
 	/**
@@ -277,6 +287,16 @@ class pkppgCustomPostTypes {
 		</p>
 
 		<?php
+	}
+
+	/**
+	 * Print a metabox to add version releases of a plugin
+	 *
+	 * @since 0.1
+	 */
+	public function print_releases_metabox( $post ) {
+
+		pkppg_print_releases_editor( $post->id );
 	}
 
 	/**
