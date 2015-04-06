@@ -78,21 +78,17 @@ An attempt will be made to use the built-in `revision` post status to manage use
 
 **pkp_plugin**
 
-`pkp_application` - Compatible application (terms: ojs|omp|etc)
-
-`pkp_version` - Compatible software version (terms: ojs2.4.6|ocs1.1.1-1|etc)
+`pkp_application` - Compatible application (terms: ojs|omp|etc). This is a hierarchical taxonomy and child terms will reference specific versions (terms: ojs2.4.6|ocs1.1.1-1|etc)
 
 `pkp_category` - Type of plugin (terms: themes|gateways|auth|etc)
 
 **pkp_plugin_release**
 
-`pkp_application` - Compatible application (terms: ojs|omp|etc)
-
-`pkp_version` - Compatible software version (terms: ojs2.4.6|ocs1.1.1-1|etc)
+`pkp_application` - Compatible application (terms: ojs|omp|etc). This is a hierarchical taxonomy and child terms will reference specific versions (terms: ojs2.4.6|ocs1.1.1-1|etc)
 
 `pkp_certification` - Level of trust afforded plugin (terms: partner|reviewed|official)
 
-When a `pkp_software` or `pkp_version` term is assigned to a `pkp_plugin_release` it will be automatically assigned to its parent `pkp_plugin` post.
+When a `pkp_application` or `pkp_version` term is assigned to a `pkp_plugin_release` it will be automatically assigned to its parent `pkp_plugin` post.
 
 ### Post Meta
 
