@@ -35,6 +35,7 @@ Each `post` is assigned a `post_status`, which ushers posts from `draft` to `pub
 ### Post Types
 
 `pkp_plugin`
+
 `pkp_plugin_release`
 
 Each plugin will generate a `pkp_plugin` post. Each release of the plugin will generate a `pkp_plugin_release` post, which is associated with it's `pkp_plugin` post through the `post_parent` column.
@@ -42,22 +43,33 @@ Each plugin will generate a `pkp_plugin` post. Each release of the plugin will g
 The following data will be stored in the `wp_posts` table alongside each post.
 
 **pkp_plugin**
+
 `name` stored as `post_title`
+
 `product` stored as `post_name`
+
 `summary` stored as `post_excerpt`
+
 `description` stored as `post_content`
+
 `maintainer` user id stored in `post_author`
 
 **pkp_plugin_release**
+
 `version` stored as `post_title`
+
 `release_date` stored as `post_date`
+
 `description` stored as `post_content`
 
 ### Post Statuses
 
 **pkp_plugin** and **pkp_plugin_release**
+
 `submission` - Initial submission
+
 `publish` - Approved
+
 `revision` - User-submitted update
 
 An attempt will be made to use the built-in `revision` post status to manage user updates. If it doesn't cause any conflicts, it will allow us to take advantage of WordPress's built-in revision `diff` generator.
@@ -65,13 +77,19 @@ An attempt will be made to use the built-in `revision` post status to manage use
 ### Taxonomies
 
 **pkp_plugin**
+
 `pkp_application` - Compatible application (terms: ojs|omp|etc)
+
 `pkp_version` - Compatible software version (terms: ojs2.4.6|ocs1.1.1-1|etc)
+
 `pkp_category` - Type of plugin (terms: themes|gateways|auth|etc)
 
 **pkp_plugin_release**
+
 `pkp_application` - Compatible application (terms: ojs|omp|etc)
+
 `pkp_version` - Compatible software version (terms: ojs2.4.6|ocs1.1.1-1|etc)
+
 `pkp_certification` - Level of trust afforded plugin (terms: partner|reviewed|official)
 
 When a `pkp_software` or `pkp_version` term is assigned to a `pkp_plugin_release` it will be automatically assigned to its parent `pkp_plugin` post.
@@ -79,11 +97,15 @@ When a `pkp_software` or `pkp_version` term is assigned to a `pkp_plugin_release
 ### Post Meta
 
 **pkp_plugin**
+
 `_homepage` - (string) Link to homepage for the plugin
+
 `_installation` - (string) Installation requirements and/or instructions
 
 **pkp_plugin_release**
+
 `_md5` - (string) MD5 hash of the verified file
+
 `_package` - (string) URL to the download package
 
 ### User Meta
