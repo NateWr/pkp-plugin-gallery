@@ -82,6 +82,7 @@ function pkppg_print_releases_editor( $plugin_id ) {
 
 	?>
 
+		<div id="pkppg-new-release"></div>
 		<fieldset class="pkp-release-form-buttons">
 			<a href="#" class="button add">
 				<?php _e( 'Add Release', 'pkppg-plugin-gallery' ); ?>
@@ -95,6 +96,23 @@ function pkppg_print_releases_editor( $plugin_id ) {
 
 	<?php
 
+}
+} // endif;
+
+/**
+ * Return a set of form fields for a single version release
+ * of a plugin
+ *
+ * @uses pkppg_print_elease_field_template();
+ * @since 0.1
+ */
+if ( !function_exists( 'pkppg_get_release_field_template' ) ) {
+function pkppg_get_release_field_template( $i, $release = null ) {
+
+	ob_start();
+	pkppg_print_release_field_template( $i, $release );
+
+	return ob_get_clean();
 }
 } // endif;
 

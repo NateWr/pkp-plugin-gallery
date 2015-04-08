@@ -82,6 +82,9 @@ class pkppgInit {
 		// Load textdomain
 		add_action( 'init', array( $this, 'load_textdomain' ) );
 
+		// Load admin assets
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
+
 	}
 
 	/**
@@ -111,6 +114,34 @@ class pkppgInit {
 
 		// Load compatibility routines
 		new pkppgCompatibility();
+	}
+
+	/**
+	 * Load the assets (JavaScript and CSS) to be used in the
+	 * admin panel
+	 *
+	 * @since 0.1
+	 */
+	public function enqueue_admin_assets() {
+
+		$screen = get_current_screen();
+		if ( empty( $screen ) || !is_a( $screen, 'WP_Screen' ) || $screen->post_type !== pkppgInit()->cpts->plugin_post_type ) {
+			return;
+		}
+
+		// Load minified assets unless WP_DEBUG is on
+		$min = WP_DEBUG ? '' : '.min';
+
+		wp_enqueue_style( 'pkppg-admin', self::$plugin_url . '/assets/css/admin' . $min . '.css' );
+		wp_enqueue_script( 'pkppg-admin', self::$plugin_url . '/assets/js/admin' . $min . '.js', array( 'jquery' ), '', true );
+		wp_localize_script(
+			'pkppg-admin',
+			'pkppg_data',
+			array(
+				'nonce'        => wp_create_nonce( 'pkppg' ),
+				'release_form' => pkppg_get_release_field_template( 0 )
+			)
+		);
 	}
 
 }
