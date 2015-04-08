@@ -10,13 +10,21 @@ module.exports = function(grunt) {
 
 		// LESS CSS compiler
 		less: {
+			develop: {
+				options: {
+					ieCompat: true
+				},
+				files: {
+					'assets/css/admin.css': 'assets/src/less/admin.less'
+				}
+			},
 			build: {
 				options: {
 					cleancss: true,
 					ieCompat: true
 				},
 				files: {
-					'assets/css/admin.css': 'assets/src/less/admin.less'
+					'assets/css/admin.min.css': 'assets/src/less/admin.less'
 				}
 			}
 		},
@@ -32,7 +40,7 @@ module.exports = function(grunt) {
 		concat: {
 			build: {
 				files: {
-					'assets/js/submission-form.js': [
+					'assets/js/admin.js': [
 						'assets/src/js/submission-form.js',
 						'assets/src/js/submission-form-*.js'
 					]
@@ -47,7 +55,7 @@ module.exports = function(grunt) {
 			},
 			build: {
 				files: {
-					'assets/js/submission-form.min.js' : 'assets/js/submission-form.js'
+					'assets/js/admin.min.js' : 'assets/js/admin.js'
 				}
 			}
 		},
