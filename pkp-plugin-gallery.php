@@ -84,6 +84,7 @@ class pkppgInit {
 
 		// Load admin assets
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
+		add_action( 'admin_footer', array( $this, 'print_modals' ) );
 
 	}
 
@@ -124,8 +125,7 @@ class pkppgInit {
 	 */
 	public function enqueue_admin_assets() {
 
-		$screen = get_current_screen();
-		if ( empty( $screen ) || !is_a( $screen, 'WP_Screen' ) || $screen->post_type !== pkppgInit()->cpts->plugin_post_type ) {
+		if ( !$this->is_owned_page() ) {
 			return;
 		}
 
@@ -138,10 +138,66 @@ class pkppgInit {
 			'pkppg-admin',
 			'pkppg_data',
 			array(
-				'nonce'        => wp_create_nonce( 'pkppg' ),
-				'release_form' => pkppg_get_release_field_template( 0 )
+				'nonce'        => wp_create_nonce( 'pkppg' )
 			)
 		);
+	}
+
+	/**
+	 * Check if we're on an admin page owned by this
+	 * plugin
+	 *
+	 * @since 0.1
+	 */
+	public function is_owned_page() {
+
+		if ( !function_exists( 'get_current_screen' ) ) {
+			return false;
+		}
+
+		$screen = get_current_screen();
+		if ( empty( $screen ) || !is_a( $screen, 'WP_Screen' ) || $screen->post_type !== pkppgInit()->cpts->plugin_post_type ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Print modal content that should be delivered to the page
+	 *
+	 * @since 0.1
+	 */
+	public function print_modals() {
+
+		if ( !$this->is_owned_page() ) {
+			return;
+		}
+
+		$this->print_modal( 'pkp-release-modal', pkppg_get_release_form(), __( 'Add Release' ) );
+	}
+
+	/**
+	 * Print a modal instance
+	 *
+	 * @since 0.1
+	 */
+	public function print_modal( $id, $content, $title = '' ) {
+
+		?>
+
+		<div id="<?php echo esc_attr( $id ); ?>" class="pkppg-modal">
+			<div class="pkppg-modal-container">
+
+				<?php if ( $title ) : ?>
+				<h3><?php echo $title; ?></h3>
+				<?php endif; ?>
+
+				<?php echo $content; ?>
+			</div>
+		</div>
+
+		<?php
 	}
 
 }

@@ -52,10 +52,7 @@ function pkppg_print_releases_editor( $plugin_id ) {
 
 	?>
 
-	<div class="pkppg-releases-form">
-		<h3>
-			<?php _e( 'Release Versions', 'pkppg-plugin-gallery' ); ?>
-		</h3>
+	<div class="pkp-releases-form">
 
 	<?php
 
@@ -68,27 +65,30 @@ function pkppg_print_releases_editor( $plugin_id ) {
 	);
 
 	if ( !empty( $plugin_id ) && $query->have_posts() ) {
-		$i = 0;
 		while( $query->have_posts() ) {
 			$query->the_post() ;
 
 			$release = new pkppgPluginRelease();
 			$release->load_post( $post );
 
-			pkppg_print_release_field_template( $i, $release );
-			$i++;
+			// @todo print a view of the release
 		}
+	} else {
+
+		?>
+
+		<p class="description">
+			<?php _e( 'You have not added any releases for this plugin.', 'pkp-plugin-gallery' ); ?>
+		</p>
+
+		<?php
 	}
 
 	?>
 
-		<div id="pkppg-new-release"></div>
 		<fieldset class="pkp-release-form-buttons">
 			<a href="#" class="button add">
 				<?php _e( 'Add Release', 'pkppg-plugin-gallery' ); ?>
-			</a>
-			<a href="#" class="cancel">
-				<?php _e( 'Cancel', 'pkppg-plugin-gallery' ); ?>
 			</a>
 		</fieldset>
 
@@ -100,19 +100,34 @@ function pkppg_print_releases_editor( $plugin_id ) {
 } // endif;
 
 /**
- * Return a set of form fields for a single version release
- * of a plugin
+ * Return the add/edit form for the release modal
  *
- * @uses pkppg_print_elease_field_template();
  * @since 0.1
  */
-if ( !function_exists( 'pkppg_get_release_field_template' ) ) {
-function pkppg_get_release_field_template( $i, $release = null ) {
+if ( !function_exists( 'pkppg_get_release_form' ) ) {
+function pkppg_get_release_form() {
 
 	ob_start();
-	pkppg_print_release_field_template( $i, $release );
+
+	?>
+
+	<form class="pkppg-release-form">
+		<?php pkppg_print_release_fields(); ?>
+
+		<fieldset class="pkp-release-form-buttons">
+			<a href="#" class="button button-primary save">
+				<?php _e( 'Save Release', 'pkppg-plugin-gallery' ); ?>
+			</a>
+			<a href="#" class="button cancel">
+				<?php _e( 'Cancel', 'pkppg-plugin-gallery' ); ?>
+			</a>
+		</fieldset>
+	</form>
+
+	<?php
 
 	return ob_get_clean();
+
 }
 } // endif;
 
@@ -123,55 +138,53 @@ function pkppg_get_release_field_template( $i, $release = null ) {
  * @todo use date picker for release date
  * @since 0.1
  */
-if ( !function_exists( 'pkppg_print_release_field_template' ) ) {
-function pkppg_print_release_field_template( $i, $release = null ) {
-
-	$i = (int) $i;
+if ( !function_exists( 'pkppg_print_release_fields' ) ) {
+function pkppg_print_release_fields() {
 
 	?>
 
-	<fieldset class="pkppg-release-form">
+	<fieldset class="pkp-release-fields">
 		<div class="version">
-			<label for="pkp-release-version-<?php echo $i; ?>">
+			<label for="pkp-release-version">
 				<?php _e( 'Version', 'pkp-plugin-gallery' ); ?>
 			</label>
-			<input type="text" name="pkp-release[<?php echo $i; ?>][version]" id="pkp-release-version-<?php echo $i; ?>">
+			<input type="text" name="version" id="pkp-release-version">
 		</div>
 		<div class="date">
-			<label for="pkp-release-date-<?php echo $i; ?>">
+			<label for="pkp-release-date">
 				<?php _e( 'Release Date', 'pkp-plugin-gallery' ); ?>
 			</label>
-			<input type="text" name="pkp-release[<?php echo $i; ?>][date]" id="pkp-release-date-<?php echo $i; ?>">
+			<input type="text" name="date" id="pkp-release-date">
 			<p class="description">
 				<?php _e( 'Please enter the date this version was released.' ); ?>
 			</p>
 		</div>
 		<div class="_package">
-			<label for="pkp-release-_package-<?php echo $i; ?>">
+			<label for="pkp-release-package">
 				<?php _e( 'Download URL', 'pkp-plugin-gallery' ); ?>
 			</label>
-			<input type="text" name="pkp-release[<?php echo $i; ?>][_package]" id="pkp-release-_package-<?php echo $i; ?>">
+			<input type="url" name="package" id="pkp-release-package" placeholder="http://">
 			<p class="description">
 				<?php _e( 'Please enter the URL to the download package.' ); ?>
 			</p>
 		</div>
 		<div class="description">
-			<label for="pkp-release-description-<?php echo $i; ?>">
+			<label for="pkp-release-description">
 				<?php _e( 'Description', 'pkp-plugin-gallery' ); ?>
 			</label>
-			<textarea name="pkp-release[<?php echo $i; ?>][description]" id="pkp-release-description-<?php echo $i; ?>">
-			</textarea>
+			<textarea name="description" id="pkp-release-description"></textarea>
 			<p class="description">
 				<?php _e( 'Please enter a brief description of changes in this version.' ); ?>
 			</p>
 		</div>
+		<!-- @todo only show this to users with appropriate permissions -->
 		<div class="_md5">
-			<label for="pkp-release-_md5-<?php echo $i; ?>">
+			<label for="pkp-release-md5">
 				<?php _e( 'MD5 Hash', 'pkp-plugin-gallery' ); ?>
 			</label>
-			<input type="text" name="pkp-release[<?php echo $i; ?>][_md5]" id="pkp-release-_md5-<?php echo $i; ?>">
+			<input type="text" name="md5" id="pkp-release-md5">
 			<p class="description">
-				<?php _e( 'Enter the MD5 hash for the download package that has been vetted.' ); ?>
+				<?php _e( 'Please enter the MD5 hash for the download package that has been vetted.' ); ?>
 			</p>
 		</div>
 	</fieldset>
