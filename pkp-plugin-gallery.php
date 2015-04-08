@@ -86,6 +86,10 @@ class pkppgInit {
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
 		add_action( 'admin_footer', array( $this, 'print_modals' ) );
 
+		// Load submission ajax request handlers
+		add_action( 'wp_ajax_pkppg-submit-release', array( $this, 'ajax_release_submission' ) );
+		add_action( 'wp_ajax_nopriv_pkppg-submit-release', array( $this, 'ajax_nopriv' ) );
+
 	}
 
 	/**
@@ -107,6 +111,7 @@ class pkppgInit {
 		// Load files
 		require_once( self::$plugin_dir . '/includes/CustomPostTypes.class.php' );
 		require_once( self::$plugin_dir . '/includes/PluginRelease.class.php' );
+		require_once( self::$plugin_dir . '/includes/AjaxHandler.class.php' );
 		require_once( self::$plugin_dir . '/includes/Compatibility.class.php' );
 		require_once( self::$plugin_dir . '/includes/template-helpers.php' );
 
@@ -115,6 +120,9 @@ class pkppgInit {
 
 		// Load compatibility routines
 		new pkppgCompatibility();
+
+		// Load handler for calls to WP's ajaxurl
+		new pkppgAjaxHandler();
 	}
 
 	/**
@@ -137,8 +145,11 @@ class pkppgInit {
 		wp_localize_script(
 			'pkppg-admin',
 			'pkppg_data',
-			array(
-				'nonce'        => wp_create_nonce( 'pkppg' )
+			apply_filters(
+				'pkppg_admin_script_data',
+				array(
+					'nonce'        => wp_create_nonce( 'pkppg' )
+				)
 			)
 		);
 	}

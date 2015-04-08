@@ -23,6 +23,13 @@ class pkppgCustomPostTypes {
 	public $plugin_release_post_type = 'pkp_plugin_release';
 
 	/**
+     * Valid post statuses
+	 *
+	 * @since 0.1
+	 */
+	public $valid_post_statuses = array( 'submission', 'publish', 'revision' );
+
+	/**
 	 * Register hooks
 	 *
 	 * @since 0.1
@@ -38,7 +45,7 @@ class pkppgCustomPostTypes {
 	}
 
 	/**
-	 * Register custom post types
+	 * Register custom post types, taxonomies and post statuses
 	 *
 	 * @since 0.1
 	 */
@@ -189,6 +196,15 @@ class pkppgCustomPostTypes {
 				),
 			)
 		);
+
+		// Submission post status
+		register_post_status(
+			'submission',
+			array(
+				'label' => __( 'Submission', 'pkp-plugin-gallery' ),
+				'label_count' => _n_noop( 'Submission <span class="count">(%s)</span>', 'Submissions <span class="count">(%s)</span>' ),
+			)
+		);
 	}
 
 	/**
@@ -296,7 +312,7 @@ class pkppgCustomPostTypes {
 	 */
 	public function print_releases_metabox( $post ) {
 
-		pkppg_print_releases_editor( $post->id );
+		pkppg_print_releases_editor( $post->ID );
 	}
 
 	/**
@@ -308,7 +324,6 @@ class pkppgCustomPostTypes {
 
 		// Verify the nonce
 		if( empty( $_POST['pkppg_edit_plugin'] ) || !wp_verify_nonce( $_POST['pkppg_edit_plugin'], 'pkppg_edit_plugin' ) ) {
-			error_log( 'nonce verification failed' );
 			return $post_id;
 		}
 
@@ -334,6 +349,15 @@ class pkppgCustomPostTypes {
 				delete_post_meta( $post_id, $meta_id, $cur );
 			}
 		}
+	}
+
+	/**
+	 * Check if a post status is valid
+	 *
+	 * @since 0.1
+	 */
+	public function is_valid_status( $status ) {
+		return in_array( $status, $this->valid_post_statuses );
 	}
 
 }
