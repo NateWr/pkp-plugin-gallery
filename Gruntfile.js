@@ -20,6 +20,7 @@ module.exports = function(grunt) {
 			},
 			build: {
 				options: {
+					compress: true,
 					cleancss: true,
 					ieCompat: true
 				},
