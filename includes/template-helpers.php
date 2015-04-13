@@ -23,7 +23,7 @@ function pkppg_print_taxonomy_select( $taxonomy, $selected = '', $args = array()
 
 	global $post;
 	$post_terms = wp_get_post_terms( $post->ID, $taxonomy );
-	$post_term_id = is_a( $post_terms[0], 'stdClass' ) ? $post_terms[0]->term_id : '';
+	$post_term_id = !empty( $post_terms[0] ) && is_a( $post_terms[0], 'stdClass' ) ? $post_terms[0]->term_id : '';
 
 	?>
 
