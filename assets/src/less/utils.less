@@ -1,0 +1,85 @@
+//
+// Mix-ins, animations and utilities
+//
+
+// Dashicon (built-in WP font icon set)
+.dashicon {
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	font-size: 20px;
+	line-height: 1;
+	font-family: dashicons;
+	text-decoration: inherit;
+	font-weight: 400;
+	font-style: normal;
+	vertical-align: top;
+	text-align: center;
+	-webkit-transition: color .1s ease-in 0;
+	transition: color .1s ease-in 0;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+// Cross-browser transition
+.transition(@transition) {
+	-webkit-transition: @transition;
+	-moz-transition: @transition;
+	-ms-transition: @transition;
+	-o-transition: @transition;
+	transition: @transition;
+}
+
+// Cross-browser transform
+.transform (@transform) {
+	transform: @transform;
+	-webkit-transform: @transform;
+	-moz-transform: @transform;
+	-o-transform: @transform;
+}
+
+// Cross-browser animation
+.animation(@animation) {
+	-webkit-animation: @animation;
+	-moz-animation: @animation;
+	-ms-animation: @animation;
+	-o-animation: @animation;
+	animation: @animation;
+}
+
+// Spin animation
+@keyframes pkpspin {
+  0% {
+    .transform(rotateZ(-360deg));
+  }
+  100% {
+    .transform(rotateZ(0deg));
+  }
+}
+
+@-webkit-keyframes pkpspin {
+  0% {
+    .transform(rotateZ(-360deg));
+  }
+  100% {
+    .transform(rotateZ(0deg));
+  }
+}
+
+@-moz-keyframes pkpspin {
+  0% {
+    .transform(rotateZ(-360deg));
+  }
+  100% {
+    .transform(rotateZ(0deg));
+  }
+}
+
+@-o-keyframes pkpspin {
+  0% {
+    .transform(rotateZ(-360deg));
+  }
+  100% {
+    .transform(rotateZ(0deg));
+  }
+}

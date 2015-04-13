@@ -94,7 +94,6 @@ function pkppg_print_releases_editor( $plugin_id ) {
 				<?php _e( 'Add Release', 'pkppg-plugin-gallery' ); ?>
 			</a>
 		</fieldset>
-
 	</div>
 
 	<?php
@@ -115,6 +114,7 @@ function pkppg_get_release_form() {
 	?>
 
 	<form class="pkppg-release-form">
+
 		<?php pkppg_print_release_fields(); ?>
 
 		<fieldset class="pkp-release-form-buttons">
@@ -124,7 +124,14 @@ function pkppg_get_release_form() {
 			<a href="#" class="button cancel">
 				<?php _e( 'Cancel', 'pkppg-plugin-gallery' ); ?>
 			</a>
+
+			<span class="status">
+				<span class="pkp-spinner"></span>
+				<span class="pkp-success"></span>
+				<span class="pkp-error"></span>
+			</span>
 		</fieldset>
+
 	</form>
 
 	<?php

@@ -36,6 +36,7 @@ jQuery( document ).ready( function( $ ) {
 			this.cache.add = $( '.pkp-release-form-buttons .add' );
 			this.cache.save = this.cache.modal.find( '.pkp-release-form-buttons .save' );
 			this.cache.cancel = this.cache.modal.find( '.pkp-release-form-buttons .cancel' );
+			this.cache.status = this.cache.modal.find( '.pkp-release-form-buttons .status' );
 
 			// Open/close new release form
 			this.cache.add.click( this.showReleaseForm );
@@ -83,6 +84,11 @@ jQuery( document ).ready( function( $ ) {
 				e.preventDefault();
 			}
 
+			// Do nothing if the cancel button is disabled
+			if ( pkppg.form.cache.cancel.attr( 'disabled' ) ) {
+				return;
+			}
+
 			pkppg.form.cache.body.removeClass( 'pkppg-modal-is-visible' );
 			pkppg.form.cache.modal.removeClass( 'is-visible' );
 
@@ -104,6 +110,13 @@ jQuery( document ).ready( function( $ ) {
 				e.preventDefault();
 			}
 
+			// Do nothing if the save button is disabled
+			if ( pkppg.form.cache.save.attr( 'disabled' ) ) {
+				return;
+			}
+
+			pkppg.form.setStatus( 'working' );
+
 			var params = {};
 
 			params.action = 'pkppg-submit-release';
@@ -113,14 +126,18 @@ jQuery( document ).ready( function( $ ) {
 			var data = $.param( params );
 
 			$.post( pkppg.data.ajaxurl, data, function( r ) {
-				console.log( r );
+				console.log( r ); // @todo removeme
 
 				if ( r.success ) {
-					console.log( 'success' );
+					pkppg.form.setStatus( 'success' );
+					setTimeout( pkppg.form.hideReleaseForm, 1000 );
 
 				} else {
-					console.log( '@todo handle error' );
+					pkppg.form.setStatus( 'error' );
 				}
+
+				// Clear status after 4 seconds
+				setTimeout( pkppg.form.resetStatus, 4000 );
 			});
 		},
 
@@ -144,8 +161,33 @@ jQuery( document ).ready( function( $ ) {
 			}
 
 			return release;
-		}
+		},
 
+		/**
+		 * Set the status of the form and disable/enable the
+		 * appropriate buttons
+		 *
+		 * @since 0.1
+		 */
+		setStatus: function( status ) {
+
+			pkppg.form.cache.status.removeClass( 'working success error' ).addClass( status );
+
+			var disabled = status === 'working' ? true : false;
+			pkppg.form.cache.save.attr( 'disabled', disabled );
+			pkppg.form.cache.cancel.attr( 'disabled', disabled );
+		},
+
+		/**
+		 * Reset the status of the form and enable any disabled fibuttonselds
+		 *
+		 * @since 0.1
+		 */
+		resetStatus: function() {
+			pkppg.form.cache.status.removeClass( 'working success error' );
+			pkppg.form.cache.save.attr( 'disabled', false );
+			pkppg.form.cache.cancel.attr( 'disabled', false );
+		}
 	};
 
 	pkppg.form.init();

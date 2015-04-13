@@ -2,7 +2,6 @@
 // Common components
 //
 
-
 // Modal container
 .pkppg-modal {
 	position: fixed;
@@ -92,4 +91,74 @@
 	textarea {
 		height: 6em;
 	}
+
+	.status {
+		float: right;
+		position: relative;
+
+		> span {
+			position: absolute;
+			top: 0;
+			right: 0;
+		}
+
+		> span:after {
+			opacity: 0;
+		}
+
+		&.working .pkp-spinner:after {
+			opacity: 0.5;
+		}
+
+		&.success .pkp-success:after {
+			opacity: 1;
+		}
+
+		&.error .pkp-error:after {
+			opacity: 1;
+		}
+	}
+}
+
+
+
+// Spinner (loading, waiting)
+.pkp-spinner {
+
+	&:after {
+		display: block;
+		position: relative;
+		width: 20px;
+		height: 20px;
+		.animation( pkpspin .6s linear infinite );
+		border-radius: 100%;
+		border-top: 1px solid @dark;
+		border-bottom: 1px solid @shade;
+		border-left: 1px solid @dark;
+		border-right: 1px solid @shade;
+		content: '';
+		opacity: 0.5;
+	}
+}
+
+// Success
+.pkp-success {
+
+	&:after {
+		content: "\f147";
+		color: @success;
+		&:extend( .dashicon );
+	}
+
+}
+
+// Error
+.pkp-error {
+
+	&:after {
+		content: "\f335";
+		color: @error;
+		&:extend( .dashicon );
+	}
+
 }
