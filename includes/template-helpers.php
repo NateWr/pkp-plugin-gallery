@@ -155,6 +155,7 @@ function pkppg_print_release_fields() {
 	?>
 
 	<fieldset class="pkp-release-fields">
+		<input type="hidden" name="ID" id="pkp-release-id" value="">
 		<div class="version">
 			<label for="pkp-release-version">
 				<?php _e( 'Version', 'pkp-plugin-gallery' ); ?>

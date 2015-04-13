@@ -9,18 +9,7 @@ pkppg.cache = pkppg.cache || {};
 
 jQuery( document ).ready( function( $ ) {
 
-	console.log( 'pkppg.form loaded' );
-
 	pkppg.form = {
-
-		/**
-		 * Parent plugin that the current form's release
-		 * is for. This should get reset every time the
-		 * form is opened/closed.
-		 *
-		 * @since 0.1
-		 */
-		plugin: 0,
 
 		/**
 		 * Initialize the form events
@@ -31,21 +20,40 @@ jQuery( document ).ready( function( $ ) {
 
 			this.cache = {};
 			this.cache.body = pkppg.cache.body || $( 'body' );
-			this.cache.modal = $( '#pkp-release-modal' );
-			this.cache.fields = this.cache.modal.find( '.pkp-release-fields' );
-			this.cache.add = $( '.pkp-release-form-buttons .add' );
-			this.cache.save = this.cache.modal.find( '.pkp-release-form-buttons .save' );
-			this.cache.cancel = this.cache.modal.find( '.pkp-release-form-buttons .cancel' );
-			this.cache.status = this.cache.modal.find( '.pkp-release-form-buttons .status' );
+			this.cache.releases = $( '.pkp-releases-form' );
+			this.cache.release_modal = $( '#pkp-release-modal' );
+			this.cache.release_fields = this.cache.release_modal.find( '.pkp-release-fields' );
+			this.cache.release_add = this.cache.releases.find( '.pkp-release-form-buttons .add' );
+			this.cache.release_save = this.cache.release_modal.find( '.pkp-release-form-buttons .save' );
+			this.cache.release_cancel = this.cache.release_modal.find( '.pkp-release-form-buttons .cancel' );
+			this.cache.release_status = this.cache.release_modal.find( '.pkp-release-form-buttons .status' );
+
+			// Details on current items being managed
+			this.current = {};
+			this.current.plugin = 0;
 
 			// Open/close new release form
-			this.cache.add.click( this.showReleaseForm );
-			this.cache.cancel.click( this.hideReleaseForm );
-			this.cache.modal.click( function(e) { if ( $( e.target ).is( pkppg.form.cache.modal ) ) { pkppg.form.hideReleaseForm(); } } );
+			this.cache.release_add.click( this.showReleaseForm );
+			this.cache.release_cancel.click( this.hideReleaseForm );
+			this.cache.release_modal.click( function(e) { if ( $( e.target ).is( pkppg.form.cache.release_modal ) ) { pkppg.form.hideReleaseForm(); } } );
 			$( document ).keyup( function(e) { if ( e.which == '27' ) { pkppg.form.hideReleaseForm(); } } );
 
 			// Add a release
-			this.cache.save.click( this.save );
+			this.cache.release_save.click( this.saveRelease );
+
+			// Register click handlers on the releases list
+			this.cache.releases.click( function(e) {
+				e.stopPropagation();
+				e.preventDefault();
+
+				var target = $( e.target );
+
+				if ( target.hasClass( 'edit' ) ) {
+					pkppg.form.loadRelease( target.parents( '.release' ).data( 'id' ) );
+				} else if ( target.hasClass( 'delete' ) ) {
+					pkppg.form.deleteRelease( target.parents( '.release' ).data( 'id' ) );
+				}
+			});
 		},
 
 		/**
@@ -65,10 +73,23 @@ jQuery( document ).ready( function( $ ) {
 			}
 
 			pkppg.form.cache.body.addClass( 'pkppg-modal-is-visible' );
-			pkppg.form.cache.modal.addClass( 'is-visible' );
+			pkppg.form.cache.release_modal.addClass( 'is-visible' );
 
 			if ( typeof plugin !== 'undefined' ) {
-				pkppg.form.plugin = plugin;
+				pkppg.form.current.plugin = plugin;
+			}
+
+			// Load data from current release
+			if ( typeof pkppg.form.current.release !== 'undefined' ) {
+				var release = pkppg.form.current.release;
+				var fields = pkppg.form.cache.release_fields;
+				fields.find( '#pkp-release-id' ).val( release.ID );
+				fields.find( '#pkp-release-version' ).val( release.version );
+				fields.find( '#pkp-release-date' ).val( release.release_date );
+				fields.find( '#pkp-release-package' ).val( release.package );
+				fields.find( '#pkp-release-description' ).val( release.description );
+				fields.find( '#pkp-release-md5' ).val( release.md5 );
+				pkppg.form.current.plugin = release.plugin;
 			}
 		},
 
@@ -85,17 +106,61 @@ jQuery( document ).ready( function( $ ) {
 			}
 
 			// Do nothing if the cancel button is disabled
-			if ( pkppg.form.cache.cancel.attr( 'disabled' ) ) {
+			if ( pkppg.form.cache.release_cancel.attr( 'disabled' ) ) {
 				return;
 			}
 
 			pkppg.form.cache.body.removeClass( 'pkppg-modal-is-visible' );
-			pkppg.form.cache.modal.removeClass( 'is-visible' );
+			pkppg.form.cache.release_modal.removeClass( 'is-visible' );
 
 			// Clear fields
-			pkppg.form.cache.fields.find( 'input, textarea' ).val( '' );
+			pkppg.form.cache.release_fields.find( 'input, textarea' ).val( '' );
 
-			pkppg.form.plugin = 0;
+			// Clear current release from
+			delete pkppg.form.current.release;
+
+			pkppg.form.current.plugin = 0;
+		},
+
+		/**
+		 * Load a release for editing
+		 *
+		 * @since 0.1
+		 */
+		loadRelease: function( id ) {
+
+			var params = {};
+
+			params.action = 'pkppg-get-release';
+			params.nonce = pkppg.data.nonce;
+			params.release = id;
+
+			var data = $.param( params );
+
+			$.get( pkppg.data.ajaxurl, data )
+				.done( function(r) {
+					console.log( r );
+
+					if ( r.success ) {
+
+						pkppg.form.current.release = r.data.release;
+						pkppg.form.showReleaseForm();
+
+					} else {
+						// @todo handle failure
+					}
+				});
+		},
+
+		/**
+		 * Delete a release
+		 *
+		 * @since 0.1
+		 */
+		deleteRelease: function( id ) {
+
+			console.log( 'deleteRelease:' + id );
+
 		},
 
 		/**
@@ -103,7 +168,7 @@ jQuery( document ).ready( function( $ ) {
 		 *
 		 * @since 0.1
 		 */
-		save: function(e) {
+		saveRelease: function(e) {
 
 			if ( typeof e !== 'undefined' ) {
 				e.stopPropagation();
@@ -111,7 +176,7 @@ jQuery( document ).ready( function( $ ) {
 			}
 
 			// Do nothing if the save button is disabled
-			if ( pkppg.form.cache.save.attr( 'disabled' ) ) {
+			if ( pkppg.form.cache.release_save.attr( 'disabled' ) ) {
 				return;
 			}
 
@@ -119,7 +184,7 @@ jQuery( document ).ready( function( $ ) {
 
 			var params = {};
 
-			params.action = 'pkppg-submit-release';
+			params.action = 'pkppg-insert-release';
 			params.nonce = pkppg.data.nonce;
 			params.release = pkppg.form.objectFromForm();
 
@@ -150,14 +215,14 @@ jQuery( document ).ready( function( $ ) {
 		objectFromForm: function() {
 
 			var release = {};
-			var params = pkppg.form.cache.modal.find( 'form' ).serializeArray();
+			var params = pkppg.form.cache.release_modal.find( 'form' ).serializeArray();
 
 			for( var i = 0; i < params.length; i++ ) {
 				release[ params[i].name ] = params[i].value;
 			}
 
-			if ( this.plugin ) {
-				release.plugin = this.plugin;
+			if ( this.current.plugin ) {
+				release.plugin = this.current.plugin;
 			}
 
 			return release;
@@ -171,11 +236,11 @@ jQuery( document ).ready( function( $ ) {
 		 */
 		setStatus: function( status ) {
 
-			pkppg.form.cache.status.removeClass( 'working success error' ).addClass( status );
+			pkppg.form.cache.release_status.removeClass( 'working success error' ).addClass( status );
 
 			var disabled = status === 'working' ? true : false;
-			pkppg.form.cache.save.attr( 'disabled', disabled );
-			pkppg.form.cache.cancel.attr( 'disabled', disabled );
+			pkppg.form.cache.release_save.attr( 'disabled', disabled );
+			pkppg.form.cache.release_cancel.attr( 'disabled', disabled );
 		},
 
 		/**
@@ -184,9 +249,9 @@ jQuery( document ).ready( function( $ ) {
 		 * @since 0.1
 		 */
 		resetStatus: function() {
-			pkppg.form.cache.status.removeClass( 'working success error' );
-			pkppg.form.cache.save.attr( 'disabled', false );
-			pkppg.form.cache.cancel.attr( 'disabled', false );
+			pkppg.form.cache.release_status.removeClass( 'working success error' );
+			pkppg.form.cache.release_save.attr( 'disabled', false );
+			pkppg.form.cache.release_cancel.attr( 'disabled', false );
 		}
 	};
 

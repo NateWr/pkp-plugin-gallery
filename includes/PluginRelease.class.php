@@ -54,6 +54,15 @@ class pkppgPluginRelease {
 	public $md5;
 
 	/**
+	 * Plugin this release is attached to
+	 *
+	 * Corresponds to `post_parent` in the database
+	 *
+	 * @since 0.1
+	 */
+	public $plugin;
+
+	/**
 	 * Author of the plugin
 	 *
 	 * @todo update docs when we decide what this value should contain.

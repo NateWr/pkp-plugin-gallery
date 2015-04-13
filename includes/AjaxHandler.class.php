@@ -19,8 +19,12 @@ class pkppgAjaxHandler {
 		add_filter( 'pkppg_admin_script_data', array( $this, 'add_ajaxurl' ) );
 
 		// Release submission
-		add_action( 'wp_ajax_pkppg-submit-release', array( $this, 'ajax_release_submission' ) );
-		add_action( 'wp_ajax_nopriv_pkppg-submit-release', array( $this, 'nopriv' ) );
+		add_action( 'wp_ajax_pkppg-insert-release', array( $this, 'ajax_insert_release' ) );
+		add_action( 'wp_ajax_nopriv_pkppg-insert-release', array( $this, 'nopriv' ) );
+
+		// Fetch release
+		add_action( 'wp_ajax_pkppg-get-release', array( $this, 'ajax_get_release' ) );
+		add_action( 'wp_ajax_nopriv_pkppg-get-release', array( $this, 'nopriv' ) );
 
 	}
 
@@ -76,7 +80,7 @@ class pkppgAjaxHandler {
 	 *
 	 * @since 0.1
 	 */
-	public function ajax_release_submission() {
+	public function ajax_insert_release() {
 
 		$this->authenticate();
 
@@ -104,6 +108,42 @@ class pkppgAjaxHandler {
 					'error'             => 'save_failed',
 					'msg'               => __( 'Your attempt to save this release failed.', 'pkp-plugin-gallery' ),
 					'validation_errors' => $release->validation_errors,
+				)
+			);
+		}
+	}
+
+	/**
+	 * Get a release
+	 *
+	 * @since 0.1
+	 */
+	public function ajax_get_release() {
+
+		$this->authenticate();
+
+		if ( empty( $_GET['release'] ) ) {
+			wp_send_json_error(
+				array(
+					'error' => 'norelease',
+					'msg' => __( 'No release data was received with this request.', 'pkp-plugin-gallery' ),
+				)
+			);
+		}
+
+		$release = new pkppgPluginRelease();
+
+		if ( $release->load_post( (int) $_GET['release'] ) ) {
+			wp_send_json_success(
+				array(
+					'release' => $release,
+				)
+			);
+		} else {
+			wp_send_json_error(
+				array(
+					'error'             => 'get_failed',
+					'msg'               => __( 'The requested release could not be found', 'pkp-plugin-gallery' ),
 				)
 			);
 		}

@@ -185,7 +185,7 @@ class pkppgInit {
 			return;
 		}
 
-		$this->print_modal( 'pkp-release-modal', pkppg_get_release_form(), __( 'Add Release' ) );
+		$this->print_modal( 'pkp-release-modal', pkppg_get_release_form(), __( 'Release', 'pkp-plugin-gallery' ) );
 	}
 
 	/**
