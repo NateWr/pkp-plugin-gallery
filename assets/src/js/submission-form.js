@@ -86,6 +86,9 @@ jQuery( document ).ready( function( $ ) {
 			pkppg.form.cache.body.removeClass( 'pkppg-modal-is-visible' );
 			pkppg.form.cache.modal.removeClass( 'is-visible' );
 
+			// Clear fields
+			pkppg.form.cache.fields.find( 'input, textarea' ).val( '' );
+
 			pkppg.form.plugin = 0;
 		},
 
