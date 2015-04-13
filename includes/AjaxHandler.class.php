@@ -100,6 +100,7 @@ class pkppgAjaxHandler {
 			wp_send_json_success(
 				array(
 					'release' => $release,
+					'overview' => $release->get_control_overview(),
 				)
 			);
 		} else {

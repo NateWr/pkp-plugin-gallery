@@ -207,10 +207,14 @@ class pkppgPluginRelease {
 	/**
 	 * Format the release date when it's pulled from the database
 	 *
+	 * @todo Format the date properly once we have set up a datepicker
+	 * and plugged the pieces together properly.
 	 * @since 0.1
 	 */
 	public function format_date( $date ) {
-		return mysql2date( get_option( 'date_format' ), $date );
+		$dt = DateTime::createFromFormat( 'Y-m-d H:i:s', $date );
+		return $dt->format( 'Y-m-d' );
+//		return mysql2date( get_option( 'date_format' ), $date );
 	}
 
 	/**
@@ -431,16 +435,18 @@ class pkppgPluginRelease {
 	}
 
 	/**
-	 * Print an overview of this release for the plugin submission
+	 * Get HTML for an overview of this release for the plugin submission
 	 * and editing controls
 	 *
 	 * @since 0.1
 	 */
-	public function print_control_overview() {
+	public function get_control_overview() {
+
+		ob_start();
 
 		?>
 
-		<li class="release" data-id="<?php echo (int) $this->ID; ?>">
+		<div class="release" data-id="<?php echo (int) $this->ID; ?>">
 			<div class="title">
 				<span class="version">
 					<?php echo $this->version; ?>
@@ -461,9 +467,21 @@ class pkppgPluginRelease {
 					<?php _e( 'Delete', 'pkp-plugin-gallery' ); ?>
 				</a>
 			</div>
-		</li>
+		</div>
 
 		<?php
+
+		return ob_get_clean();
+	}
+
+	/**
+	 * Print an overview of this release for the plugin submission
+	 * and editing controls
+	 *
+	 * @since 0.1
+	 */
+	public function print_control_overview() {
+		echo $this->get_control_overview();
 	}
 
 }

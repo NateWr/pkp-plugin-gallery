@@ -191,10 +191,10 @@ jQuery( document ).ready( function( $ ) {
 			var data = $.param( params );
 
 			$.post( pkppg.data.ajaxurl, data, function( r ) {
-				console.log( r ); // @todo removeme
 
 				if ( r.success ) {
 					pkppg.form.setStatus( 'success' );
+					pkppg.form.updateReleaseList( r.data.release.ID, r.data.overview );
 					setTimeout( pkppg.form.hideReleaseForm, 1000 );
 
 				} else {
@@ -252,10 +252,33 @@ jQuery( document ).ready( function( $ ) {
 			pkppg.form.cache.release_status.removeClass( 'working success error' );
 			pkppg.form.cache.release_save.attr( 'disabled', false );
 			pkppg.form.cache.release_cancel.attr( 'disabled', false );
+		},
+
+		/**
+		 * Update the release list by modifying an existing review or
+		 * adding a new one
+		 *
+		 * @since 0.1
+		 */
+		updateReleaseList: function( id, overview ) {
+
+			var replaced = false;
+
+			// Replace an existing release
+			pkppg.form.cache.releases.find( '.release' ).each( function() {
+				if ( $(this).data( 'id' ) == id ) {
+					$(this).parent().html( overview );
+					replaced = true;
+					return;
+				}
+			});
+
+			if ( !replaced ) {
+				pkppg.form.cache.releases.find( '.releases' ).append( '<li>' + overview + '</li>' );
+			}
 		}
 	};
 
 	pkppg.form.init();
-	console.log( pkppg );
 
 });

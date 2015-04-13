@@ -74,7 +74,11 @@ function pkppg_print_releases_editor( $plugin_id ) {
 			$release = new pkppgPluginRelease();
 			$release->load_post( $post );
 
-			$release->print_control_overview();
+			?>
+
+			<li><?php $release->print_control_overview(); ?></li>
+
+			<?php
 		}
 	} else {
 
