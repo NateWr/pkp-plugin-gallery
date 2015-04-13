@@ -165,11 +165,11 @@ class pkppgPluginRelease {
 			return $this->applications;
 		}
 
-		if ( empty( $this->plugin ) ) {
+		if ( empty( $this->ID ) ) {
 			return;
 		}
 
-		$applications = wp_get_post_terms( $this->plugin, 'pkp_application' );
+		$applications = wp_get_post_terms( $this->ID, 'pkp_application' );
 		if ( !is_wp_error( $applications ) ) {
 			foreach( $applications as $application) {
 				$this->applications[] = $application->term_id;
@@ -190,11 +190,11 @@ class pkppgPluginRelease {
 			return $this->certification;
 		}
 
-		if ( empty( $this->plugin ) ) {
+		if ( empty( $this->ID ) ) {
 			return;
 		}
 
-		$certifications = wp_get_post_terms( $this->plugin, 'pkp_application' );
+		$certifications = wp_get_post_terms( $this->ID, 'pkp_certification' );
 		if ( !is_wp_error( $certifications ) ) {
 			foreach( $certifications as $certification ) {
 				$this->certification[] = $certification->term_id;
@@ -256,6 +256,10 @@ class pkppgPluginRelease {
 			if( $md5 ) {
 				$this->version = sanitize_text_field( $params['version'] );
 			}
+		}
+
+		if ( isset( $params['certification'] ) ) {
+			$this->certification = absint( $params['certification'] );
 		}
 
 		if ( !empty( $params['author'] ) ) {
@@ -391,18 +395,6 @@ class pkppgPluginRelease {
 			$args['ID'] = $this->ID;
 		}
 
-		if ( !empty( $this->applications ) || !empty( $this->certification ) ) {
-			$args['tax_input'] = array();
-
-			if ( !empty( $this->applications ) ) {
-				$args['tax_input']['pkp_application'] = $this->applications;
-			}
-
-			if ( !empty( $this->certification ) ) {
-				$args['tax_input']['pkp_certification'] = $this->certification;
-			}
-		}
-
 		$id = wp_insert_post( $args );
 
 		if ( is_wp_error( $id ) || $id === false ) {
@@ -410,6 +402,14 @@ class pkppgPluginRelease {
 			return false;
 		} else {
 			$this->ID = $id;
+		}
+
+		if ( !empty( $this->applications ) ) {
+			wp_set_object_terms( $this->ID, $this->applications, 'pkp_application' );
+		}
+
+		if ( !empty( $this->certification ) ) {
+			wp_set_object_terms( $this->ID, $this->certification, 'pkp_certification' );
 		}
 
 		if ( !empty( $this->package ) ) {

@@ -95,6 +95,9 @@ jQuery( document ).ready( function( $ ) {
 				fields.find( '#pkp-release-package' ).val( release.package );
 				fields.find( '#pkp-release-description' ).val( release.description );
 				fields.find( '#pkp-release-md5' ).val( release.md5 );
+				if ( release.certification ) {
+					fields.find( '.certification option[value="' + release.certification + '"]' ).attr( 'selected', 'selected' );
+				}
 				pkppg.form.current.plugin = release.plugin;
 			}
 		},
@@ -121,6 +124,7 @@ jQuery( document ).ready( function( $ ) {
 
 			// Clear fields
 			pkppg.form.cache.release_fields.find( 'input, textarea' ).val( '' );
+			pkppg.form.cache.release_fields.find( 'option:selected' ).removeAttr( 'selected' );
 
 			// Clear current release from
 			delete pkppg.form.current.release;
@@ -250,7 +254,14 @@ jQuery( document ).ready( function( $ ) {
 			var params = pkppg.form.cache.release_modal.find( 'form' ).serializeArray();
 
 			for( var i = 0; i < params.length; i++ ) {
-				release[ params[i].name ] = params[i].value;
+
+				// Certification taxonomy
+				if ( params[i].name == 'tax_input[pkp_certification]' ) {
+					release.certification = params[i].value;
+
+				} else {
+					release[ params[i].name ] = params[i].value;
+				}
 			}
 
 			if ( this.current.plugin ) {

@@ -128,7 +128,7 @@ class pkppgCustomPostTypes {
 					'choose_from_most_used'      => __( 'Choose from most used certifications',                   'pkp-plugin-gallery' ),
 					'not_found'                  => __( 'No certifications found',                   'pkp-plugin-gallery' ),
 				),
-				'meta_box_cb' => array( $this, 'print_certification_metabox' ),
+				'meta_box_cb' => false,
 			)
 		);
 
@@ -252,15 +252,6 @@ class pkppgCustomPostTypes {
 	 */
 	public function print_category_metabox() {
 		pkppg_print_taxonomy_select( 'pkp_category' );
-	}
-
-	/**
-	 * Print a metabox to select a certification
-	 *
-	 * @since 0.1
-	 */
-	public function print_certification_metabox() {
-		pkppg_print_taxonomy_select( 'pkp_certification' );
 	}
 
 	/**

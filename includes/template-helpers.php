@@ -29,7 +29,7 @@ function pkppg_print_taxonomy_select( $taxonomy, $selected = '', $args = array()
 
 	<select name="tax_input[<?php echo esc_attr( $taxonomy ); ?>]">
 	<?php foreach ( $terms as $term ) : ?>
-		<option name="<?php echo esc_attr( $term->term_id ); ?>" <?php selected( $post_term_id, $term->term_id ); ?>>
+		<option value="<?php echo esc_attr( $term->term_id ); ?>" <?php selected( $post_term_id, $term->term_id ); ?>>
 			<?php echo $term->name; ?>
 		</option>
 	<?php endforeach; ?>
@@ -203,6 +203,14 @@ function pkppg_print_release_fields() {
 				<?php _e( 'Please enter the MD5 hash for the download package that has been vetted.' ); ?>
 			</p>
 		</div>
+		<!-- @todo only show this to users with appropriate permissions -->
+		<div class="certification">
+			<label for="pkp-release-certification">
+				<?php _e( 'Certification', 'pkp-plugin-gallery' ); ?>
+			</label>
+			<?php pkppg_print_taxonomy_select( 'pkp_certification' ); ?>
+		</div>
+
 	</fieldset>
 
 	<?php
