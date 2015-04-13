@@ -180,7 +180,7 @@ jQuery( document ).ready( function( $ ) {
 				return;
 			}
 
-			pkppg.form.setStatus( 'working' );
+			pkppg.form.setModalStatus( 'working' );
 
 			var params = {};
 
@@ -193,12 +193,12 @@ jQuery( document ).ready( function( $ ) {
 			$.post( pkppg.data.ajaxurl, data, function( r ) {
 
 				if ( r.success ) {
-					pkppg.form.setStatus( 'success' );
+					pkppg.form.setModalStatus( 'success' );
 					pkppg.form.updateReleaseList( r.data.release.ID, r.data.overview );
 					setTimeout( pkppg.form.hideReleaseForm, 1000 );
 
 				} else {
-					pkppg.form.setStatus( 'error' );
+					pkppg.form.setModalStatus( 'error' );
 				}
 
 				// Clear status after 4 seconds
@@ -234,7 +234,7 @@ jQuery( document ).ready( function( $ ) {
 		 *
 		 * @since 0.1
 		 */
-		setStatus: function( status ) {
+		setModalStatus: function( status ) {
 
 			pkppg.form.cache.release_status.removeClass( 'working success error' ).addClass( status );
 
