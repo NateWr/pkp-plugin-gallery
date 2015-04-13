@@ -222,8 +222,8 @@
   line-height: 2em;
 }
 .pkp-releases-form .actions > a {
-  margin-left: 1em;
   display: inline-block;
+  padding: 0 0.5em;
 }
 .pkp-releases-form .actions > a:first-child {
   margin-left: 0;
