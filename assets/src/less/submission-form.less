@@ -46,10 +46,24 @@
 			&:first-child {
 				margin-left: 0;
 			}
+
+			&[disabled] {
+				opacity: 0.5;
+			}
 		}
 
 		.delete {
 			color: @off;
+		}
+
+		.pkp-spinner {
+			display: inline-block;
+			vertical-align: middle;
+			opacity: 0;
+		}
+
+		&.loading .pkp-spinner {
+			opacity: 1;
 		}
 	}
 }

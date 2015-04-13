@@ -48,10 +48,16 @@ jQuery( document ).ready( function( $ ) {
 
 				var target = $( e.target );
 
-				if ( target.hasClass( 'edit' ) ) {
-					pkppg.form.loadRelease( target.parents( '.release' ).data( 'id' ) );
-				} else if ( target.hasClass( 'delete' ) ) {
-					pkppg.form.deleteRelease( target.parents( '.release' ).data( 'id' ) );
+				if ( target.attr( 'disabled' ) ) {
+					return;
+				}
+
+				var release = target.parents( '.release' );
+
+				if ( release && target.hasClass( 'edit' ) ) {
+					pkppg.form.loadRelease( release.data( 'id' ) );
+				} else if ( release && target.hasClass( 'delete' ) ) {
+					pkppg.form.deleteRelease( release.data( 'id' ) );
 				}
 			});
 		},
@@ -129,6 +135,8 @@ jQuery( document ).ready( function( $ ) {
 		 */
 		loadRelease: function( id ) {
 
+			pkppg.form.setReleaseStatus( id, 'loading' );
+
 			var params = {};
 
 			params.action = 'pkppg-get-release';
@@ -140,6 +148,9 @@ jQuery( document ).ready( function( $ ) {
 			$.get( pkppg.data.ajaxurl, data )
 				.done( function(r) {
 					console.log( r );
+
+					// Status indication
+					pkppg.form.resetReleaseStatus( id );
 
 					if ( r.success ) {
 
@@ -202,7 +213,7 @@ jQuery( document ).ready( function( $ ) {
 				}
 
 				// Clear status after 4 seconds
-				setTimeout( pkppg.form.resetStatus, 4000 );
+				setTimeout( pkppg.form.resetModalStatus, 4000 );
 			});
 		},
 
@@ -229,6 +240,43 @@ jQuery( document ).ready( function( $ ) {
 		},
 
 		/**
+		 * Set the status of the list of releases
+		 *
+		 * @since 0.1
+		 */
+		setReleaseStatus: function( id, status ) {
+
+			var release_el = pkppg.form.getReleaseEl( id );
+			if ( !release_el ) {
+				return;
+			}
+
+			release_el.find( '.actions' ).addClass( status );
+
+			if ( status == 'loading' ) {
+				release_el.find( '.delete' ).attr( 'disabled', true );
+				pkppg.form.cache.releases.find( '.release .actions .edit' ).attr( 'disabled', true );
+			}
+		},
+
+		/**
+		 * Reset the status of the list of releases
+		 *
+		 * @since 0.1
+		 */
+		resetReleaseStatus: function( id ) {
+
+			pkppg.form.cache.releases.find( '.release .actions .edit' ).attr( 'disabled', false );
+
+			var release_el = pkppg.form.getReleaseEl( id );
+			if ( !release_el ) {
+				return;
+			}
+
+			release_el.find( '.actions' ).removeClass( 'working' ).find( 'a' ).attr( 'disabled', false );
+		},
+
+		/**
 		 * Set the status of the form and disable/enable the
 		 * appropriate buttons
 		 *
@@ -248,7 +296,7 @@ jQuery( document ).ready( function( $ ) {
 		 *
 		 * @since 0.1
 		 */
-		resetStatus: function() {
+		resetModalStatus: function() {
 			pkppg.form.cache.release_status.removeClass( 'working success error' );
 			pkppg.form.cache.release_save.attr( 'disabled', false );
 			pkppg.form.cache.release_cancel.attr( 'disabled', false );
@@ -265,17 +313,34 @@ jQuery( document ).ready( function( $ ) {
 			var replaced = false;
 
 			// Replace an existing release
-			pkppg.form.cache.releases.find( '.release' ).each( function() {
-				if ( $(this).data( 'id' ) == id ) {
-					$(this).parent().html( overview );
-					replaced = true;
-					return;
-				}
-			});
+			var release_el = pkppg.form.getReleaseEl( id );
+			if ( release_el ) {
+				release_el.parent().html( overview );
+				replaced = true;
+				return;
+			}
 
 			if ( !replaced ) {
 				pkppg.form.cache.releases.find( '.releases' ).append( '<li>' + overview + '</li>' );
 			}
+		},
+
+		/**
+		 * Get a release el by id
+		 *
+		 * @since 0.1
+		 */
+		getReleaseEl: function( id ) {
+
+			var el;
+
+			pkppg.form.cache.releases.find( '.release' ).each( function() {
+				if ( $(this).data( 'id' ) == id ) {
+					el = $(this);
+				}
+			});
+
+			return el;
 		}
 	};
 

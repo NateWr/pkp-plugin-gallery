@@ -228,6 +228,17 @@
 .pkp-releases-form .actions > a:first-child {
   margin-left: 0;
 }
+.pkp-releases-form .actions > a[disabled] {
+  opacity: 0.5;
+}
 .pkp-releases-form .actions .delete {
   color: #dd3d36;
+}
+.pkp-releases-form .actions .pkp-spinner {
+  display: inline-block;
+  vertical-align: middle;
+  opacity: 0;
+}
+.pkp-releases-form .actions.loading .pkp-spinner {
+  opacity: 1;
 }

@@ -460,6 +460,7 @@ class pkppgPluginRelease {
 				<?php echo $this->description; ?>
 			</div>
 			<div class="actions">
+				<span class="pkp-spinner"></span>
 				<a href="#" class="edit">
 					<?php _e( 'Edit', 'pkp-plugin-gallery' ); ?>
 				</a>
