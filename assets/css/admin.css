@@ -239,6 +239,7 @@
   vertical-align: middle;
   opacity: 0;
 }
-.pkp-releases-form .actions.loading .pkp-spinner {
+.pkp-releases-form .actions.loading .pkp-spinner,
+.pkp-releases-form .actions.deleting .pkp-spinner {
   opacity: 1;
 }

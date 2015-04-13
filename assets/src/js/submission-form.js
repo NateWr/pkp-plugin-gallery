@@ -147,9 +147,7 @@ jQuery( document ).ready( function( $ ) {
 
 			$.get( pkppg.data.ajaxurl, data )
 				.done( function(r) {
-					console.log( r );
 
-					// Status indication
 					pkppg.form.resetReleaseStatus( id );
 
 					if ( r.success ) {
@@ -170,7 +168,30 @@ jQuery( document ).ready( function( $ ) {
 		 */
 		deleteRelease: function( id ) {
 
-			console.log( 'deleteRelease:' + id );
+			pkppg.form.setReleaseStatus( id, 'deleting' );
+
+			var params = {};
+
+			params.action = 'pkppg-delete-release';
+			params.nonce = pkppg.data.nonce;
+			params.release = id;
+
+			var data = $.param( params );
+
+			$.post( pkppg.data.ajaxurl, data )
+				.done( function(r) {
+
+					pkppg.form.resetReleaseStatus( id );
+
+					if ( r.success ) {
+
+						pkppg.form.removeReleaseFromList( id );
+
+					} else {
+						// @todo handle failure
+					}
+
+				});
 
 		},
 
@@ -205,7 +226,7 @@ jQuery( document ).ready( function( $ ) {
 
 				if ( r.success ) {
 					pkppg.form.setModalStatus( 'success' );
-					pkppg.form.updateReleaseList( r.data.release.ID, r.data.overview );
+					pkppg.form.updateReleaseInList( r.data.release.ID, r.data.overview );
 					setTimeout( pkppg.form.hideReleaseForm, 1000 );
 
 				} else {
@@ -256,6 +277,8 @@ jQuery( document ).ready( function( $ ) {
 			if ( status == 'loading' ) {
 				release_el.find( '.delete' ).attr( 'disabled', true );
 				pkppg.form.cache.releases.find( '.release .actions .edit' ).attr( 'disabled', true );
+			} else if ( status == 'deleting' ) {
+				release_el.find( '.delete, .edit' ).attr( 'disabled', true );
 			}
 		},
 
@@ -308,7 +331,7 @@ jQuery( document ).ready( function( $ ) {
 		 *
 		 * @since 0.1
 		 */
-		updateReleaseList: function( id, overview ) {
+		updateReleaseInList: function( id, overview ) {
 
 			var replaced = false;
 
@@ -323,6 +346,20 @@ jQuery( document ).ready( function( $ ) {
 			if ( !replaced ) {
 				pkppg.form.cache.releases.find( '.releases' ).append( '<li>' + overview + '</li>' );
 			}
+		},
+
+		/**
+		 * Remove a release from the list
+		 *
+		 * @since 0.1
+		 */
+		removeReleaseFromList: function( id ) {
+			var release_el = pkppg.form.getReleaseEl( id );
+			if ( !release_el ) {
+				return;
+			}
+
+			release_el.parent().fadeOut( 500, function() { $(this).remove(); } );
 		},
 
 		/**

@@ -422,6 +422,20 @@ class pkppgPluginRelease {
 	}
 
 	/**
+	 * Delete release post from the database
+	 *
+	 * @since 0.1
+	 */
+	public function delete() {
+
+		if ( empty( $this->ID ) ) {
+			return false;
+		}
+
+		return wp_delete_post( $this->ID );
+	}
+
+	/**
 	 * Add an error to the validation errors array
 	 *
 	 * @since 0.1
