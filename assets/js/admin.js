@@ -273,7 +273,7 @@ jQuery( document ).ready( function( $ ) {
 				return;
 			}
 
-			release_el.find( '.actions' ).removeClass( 'working' ).find( 'a' ).attr( 'disabled', false );
+			release_el.find( '.actions' ).removeClass( 'loading' ).find( 'a' ).attr( 'disabled', false );
 		},
 
 		/**
