@@ -195,3 +195,36 @@
   content: "\f335";
   color: #dd3d36;
 }
+.pkp-releases-form .release {
+  position: relative;
+  margin-bottom: 1em;
+  padding-bottom: 1em;
+  border-bottom: 1px solid #dddddd;
+}
+.pkp-releases-form .title {
+  line-height: 2em;
+  color: rgba(0, 0, 0, 0.54);
+}
+.pkp-releases-form .version {
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.87);
+}
+.pkp-releases-form .details {
+  line-height: 2em;
+}
+.pkp-releases-form .actions {
+  position: absolute;
+  top: 0;
+  right: 0;
+  line-height: 2em;
+}
+.pkp-releases-form .actions > a {
+  margin-left: 1em;
+  display: inline-block;
+}
+.pkp-releases-form .actions > a:first-child {
+  margin-left: 0;
+}
+.pkp-releases-form .actions .delete {
+  color: #dd3d36;
+}

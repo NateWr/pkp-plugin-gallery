@@ -421,5 +421,41 @@ class pkppgPluginRelease {
 		);
 	}
 
+	/**
+	 * Print an overview of this release for the plugin submission
+	 * and editing controls
+	 *
+	 * @since 0.1
+	 */
+	public function print_control_overview() {
+
+		?>
+
+		<div class="release" data-id="<?php echo (int) $this->ID; ?>">
+			<div class="title">
+				<span class="version">
+					<?php echo $this->version; ?>
+				</span>
+				&mdash;
+				<span class="date">
+					<?php echo $this->release_date; ?>
+				</span>
+			</div>
+			<div class="details">
+				<?php echo $this->description; ?>
+			</div>
+			<div class="actions">
+				<a href="#" class="edit">
+					<?php _e( 'Edit', 'pkp-plugin-gallery' ); ?>
+				</a>
+				<a href="#" class="delete">
+					<?php _e( 'Delete', 'pkp-plugin-gallery' ); ?>
+				</a>
+			</div>
+		</div>
+
+		<?php
+	}
+
 }
 } // endif

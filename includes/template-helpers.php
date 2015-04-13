@@ -53,15 +53,16 @@ function pkppg_print_releases_editor( $plugin_id ) {
 	?>
 
 	<div class="pkp-releases-form">
+		<ul class="releases">
 
 	<?php
 
 	$query = new WP_Query(
 		array(
-			'post_parent' => $plugin_id,
-			'post_type'   => pkppgInit()->cpts->plugin_release_post_type,
-			'limit'       => 1000,
-			'post_status' => pkppgInit()->cpts->valid_post_statuses,
+			'post_parent'    => $plugin_id,
+			'post_type'      => pkppgInit()->cpts->plugin_release_post_type,
+			'posts_per_page' => 1000,
+			'post_status'    => pkppgInit()->cpts->valid_post_statuses,
 		)
 	);
 
@@ -73,8 +74,11 @@ function pkppg_print_releases_editor( $plugin_id ) {
 			$release = new pkppgPluginRelease();
 			$release->load_post( $post );
 
-			// @todo print a view of the release
-			echo '<p>' . $release->version . "&mdash;" . $release->release_date . '</p>';
+			?>
+
+			<li><?php $release->print_control_overview(); ?></li>
+
+			<?php
 		}
 	} else {
 
@@ -89,6 +93,7 @@ function pkppg_print_releases_editor( $plugin_id ) {
 
 	?>
 
+		</ul>
 		<fieldset class="pkp-release-form-buttons">
 			<a href="#" class="button add" data-plugin="<?php echo $plugin_id; ?>">
 				<?php _e( 'Add Release', 'pkppg-plugin-gallery' ); ?>

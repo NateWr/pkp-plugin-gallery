@@ -5,3 +5,47 @@
 // admin management area.
 //
 // @todo
+
+.pkp-releases-form {
+
+	.release {
+		position: relative;
+		margin-bottom: 1em;
+		padding-bottom: 1em;
+		border-bottom: 1px solid @border;
+	}
+
+	.title {
+		line-height: 2em;
+		color: @text-light;
+	}
+
+	.version {
+		font-weight: @strong;
+		color: @text;
+	}
+
+	.details {
+		line-height: 2em;
+	}
+
+	.actions {
+		position: absolute;
+		top: 0;
+		right: 0;
+		line-height: 2em;
+
+		> a {
+			margin-left: 1em;
+			display: inline-block;
+
+			&:first-child {
+				margin-left: 0;
+			}
+		}
+
+		.delete {
+			color: @off;
+		}
+	}
+}
