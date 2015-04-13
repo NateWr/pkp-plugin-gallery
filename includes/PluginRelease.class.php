@@ -431,7 +431,7 @@ class pkppgPluginRelease {
 
 		?>
 
-		<div class="release" data-id="<?php echo (int) $this->ID; ?>">
+		<li class="release" data-id="<?php echo (int) $this->ID; ?>">
 			<div class="title">
 				<span class="version">
 					<?php echo $this->version; ?>
@@ -452,7 +452,7 @@ class pkppgPluginRelease {
 					<?php _e( 'Delete', 'pkp-plugin-gallery' ); ?>
 				</a>
 			</div>
-		</div>
+		</li>
 
 		<?php
 	}

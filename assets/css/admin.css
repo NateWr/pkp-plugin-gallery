@@ -201,6 +201,9 @@
   padding-bottom: 1em;
   border-bottom: 1px solid #dddddd;
 }
+.pkp-releases-form .release:last-child {
+  border-bottom: none;
+}
 .pkp-releases-form .title {
   line-height: 2em;
   color: rgba(0, 0, 0, 0.54);
