@@ -75,6 +75,7 @@ class pkppgCustomPostTypes {
 					'not_found'                  => __( 'No applications found',                   'pkp-plugin-gallery' ),
 				),
 				'hierarchical' => true,
+				'meta_box_cb' => false,
 			)
 		);
 
@@ -349,6 +350,47 @@ class pkppgCustomPostTypes {
 	 */
 	public function is_valid_status( $status ) {
 		return in_array( $status, $this->valid_post_statuses );
+	}
+
+	/**
+	 * Get a hierarchical array of `pkp_application` terms
+	 *
+	 * @since 0.1
+	 */
+	public function get_application_terms( $args = array() ) {
+
+		$args = array_merge(
+			array(
+				'hide_empty' => false,
+				'order' => 'DESC'
+			),
+			$args
+		);
+
+		$terms = get_terms( 'pkp_application', $args );
+
+		$ordered = array();
+		foreach( $terms as $term ) {
+
+			$parent = $term->parent ? $term->parent : $term->term_id;
+
+			if ( empty( $ordered[ $parent ] ) ) {
+				$ordered[ $parent ] = array();
+			}
+
+			if ( $parent == $term->term_id ) {
+				$ordered[ $parent ] = $term;
+			} else {
+
+				if ( empty( $ordered[ $parent ]->children ) ) {
+					$ordered[ $parent ]->children = array();
+				}
+
+				$ordered[ $parent ]->children[ $term->term_id ] = $term;
+			}
+		}
+
+		return $ordered;
 	}
 
 }

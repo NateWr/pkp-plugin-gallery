@@ -1,3 +1,11 @@
+.clearfix:before,
+.clearfix:after {
+  content: " ";
+  display: table;
+}
+.clearfix:after {
+  clear: both;
+}
 .dashicon,
 .pkp-success:after,
 .pkp-error:after {
@@ -242,4 +250,17 @@
 .pkp-releases-form .actions.loading .pkp-spinner,
 .pkp-releases-form .actions.deleting .pkp-spinner {
   opacity: 1;
+}
+.pkp-release-fields .applications ul,
+.pkp-release-fields .applications li {
+  margin: 0;
+}
+.pkp-release-fields .applications label {
+  line-height: 2em;
+}
+.pkp-release-fields .applications > ul > li {
+  margin-bottom: 1em;
+}
+.pkp-release-fields .applications > ul > li > label {
+  font-weight: 700;
 }

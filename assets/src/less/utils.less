@@ -2,6 +2,20 @@
 // Mix-ins, animations and utilities
 //
 
+// Clear floats
+.clearfix {
+
+	&:before,
+	&:after {
+		content: " ";
+		display: table;
+	}
+
+	&:after {
+		clear: both;
+	}
+}
+
 // Dashicon (built-in WP font icon set)
 .dashicon {
 	display: inline-block;

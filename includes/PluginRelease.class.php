@@ -460,7 +460,7 @@ class pkppgPluginRelease {
 
 		?>
 
-		<div class="release" data-id="<?php echo (int) $this->ID; ?>">
+		<div class="release" data-id="<?php echo (int) $this->ID; ?>"> 
 			<div class="title">
 				<span class="version">
 					<?php echo $this->version; ?>

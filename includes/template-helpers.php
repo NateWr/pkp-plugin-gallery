@@ -40,6 +40,47 @@ function pkppg_print_taxonomy_select( $taxonomy, $selected = '', $args = array()
 } // endif
 
 /**
+ * Print the compatible applications select component
+ *
+ * @since 0.1
+ */
+if ( !function_exists( 'pkppg_print_application_select' ) ) {
+function pkppg_print_application_select( $selected = array() ) {
+
+	$terms = pkppgInit()->cpts->get_application_terms();
+
+	?>
+
+	<ul>
+
+		<?php foreach( $terms as $term ) : ?>
+		<li>
+			<label>
+				<input type="checkbox" name="tax_input[pkp_application][]" value="<?php echo $term->term_id; ?>" <?php in_array( $term->term_id, $selected ) ? ' checked="checked"' : '' ?>>
+				<?php echo $term->name; ?>
+			</label>
+			<?php if ( !empty( $term->children ) ) : ?>
+				<?php foreach( $term->children as $child ) : ?>
+				<ul>
+					<li>
+						<label>
+							<input type="checkbox" name="tax_input[pkp_application][]" value="<?php echo $child->term_id; ?>" <?php in_array( $child->term_id, $selected ) ? ' checked="checked"' : '' ?>>
+							<?php echo $child->name; ?>
+						</label>
+					</li>
+				</ul>
+				<?php endforeach; ?>
+			<?php endif; ?>
+		</li>
+		<?php endforeach; ?>
+
+	</ul>
+
+	<?php
+}
+} // endif;
+
+/**
  * Print the form fields for adding and editing release
  * versions
  *
@@ -209,6 +250,12 @@ function pkppg_print_release_fields() {
 				<?php _e( 'Certification', 'pkp-plugin-gallery' ); ?>
 			</label>
 			<?php pkppg_print_taxonomy_select( 'pkp_certification' ); ?>
+		</div>
+		<div class="applications">
+			<h3>
+				<?php _e( 'Compatible Applications', 'pkp-plugin-gallery' ); ?>
+			</h3>
+			<?php pkppg_print_application_select(); ?>
 		</div>
 
 	</fieldset>

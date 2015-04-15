@@ -4,8 +4,8 @@
 // Styles in this sheet will be used for the frontend as well as the
 // admin management area.
 //
-// @todo
 
+// Releases list
 .pkp-releases-form {
 
 	.release {
@@ -65,6 +65,30 @@
 		&.loading .pkp-spinner,
 		&.deleting .pkp-spinner {
 			opacity: 1;
+		}
+	}
+}
+
+// Release form
+.pkp-release-fields {
+
+	.applications {
+
+		ul,
+		li {
+			margin: 0;
+		}
+
+		label {
+			line-height: 2em;
+		}
+
+		> ul > li {
+			margin-bottom: 1em;
+
+			> label {
+				font-weight: @strong;
+			}
 		}
 	}
 }
