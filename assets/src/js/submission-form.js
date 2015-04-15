@@ -98,6 +98,14 @@ jQuery( document ).ready( function( $ ) {
 				if ( release.certification ) {
 					fields.find( '.certification option[value="' + release.certification + '"]' ).attr( 'selected', 'selected' );
 				}
+				if ( release.applications.length ) {
+					fields.find( '.applications input' ).each( function() {
+						var value = parseInt( $(this).val() );
+						if ( $.inArray( value, release.applications ) !== -1 ) {
+							$(this).attr( 'checked', 'checked' );
+						}
+					});
+				}
 				pkppg.form.current.plugin = release.plugin;
 			}
 		},
@@ -123,8 +131,9 @@ jQuery( document ).ready( function( $ ) {
 			pkppg.form.cache.release_modal.removeClass( 'is-visible' );
 
 			// Clear fields
-			pkppg.form.cache.release_fields.find( 'input, textarea' ).val( '' );
+			pkppg.form.cache.release_fields.find( 'input[type="text"], input[type="url"], textarea' ).val( '' );
 			pkppg.form.cache.release_fields.find( 'option:selected' ).removeAttr( 'selected' );
+			pkppg.form.cache.release_fields.find( 'input[type="checkbox"]' ).removeAttr( 'checked' );
 
 			// Clear current release from
 			delete pkppg.form.current.release;
@@ -258,6 +267,13 @@ jQuery( document ).ready( function( $ ) {
 				// Certification taxonomy
 				if ( params[i].name == 'tax_input[pkp_certification]' ) {
 					release.certification = params[i].value;
+
+				// Application taxonomy
+				} else if ( params[i].name == 'tax_input[pkp_application][]' ) {
+					if ( typeof release.applications == 'undefined' ) {
+						release.applications = [];
+					}
+					release.applications.push( params[i].value );
 
 				} else {
 					release[ params[i].name ] = params[i].value;

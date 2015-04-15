@@ -262,6 +262,10 @@ class pkppgPluginRelease {
 			$this->certification = absint( $params['certification'] );
 		}
 
+		if ( isset( $params['applications'] ) ) {
+			$this->applications = array_map( 'absint', $params['applications'] );
+		}
+
 		if ( !empty( $params['author'] ) ) {
 			$this->author = absint( $params['author'] );
 		}
@@ -460,7 +464,7 @@ class pkppgPluginRelease {
 
 		?>
 
-		<div class="release" data-id="<?php echo (int) $this->ID; ?>"> 
+		<div class="release" data-id="<?php echo (int) $this->ID; ?>">
 			<div class="title">
 				<span class="version">
 					<?php echo $this->version; ?>
