@@ -264,6 +264,7 @@ class pkppgPluginRelease {
 
 		if ( isset( $params['applications'] ) ) {
 			$this->applications = array_map( 'absint', $params['applications'] );
+			$this->add_parent_applications();
 		}
 
 		if ( !empty( $params['author'] ) ) {
@@ -408,11 +409,11 @@ class pkppgPluginRelease {
 			$this->ID = $id;
 		}
 
-		if ( !empty( $this->applications ) ) {
+		if ( isset( $this->applications ) ) {
 			wp_set_object_terms( $this->ID, $this->applications, 'pkp_application' );
 		}
 
-		if ( !empty( $this->certification ) ) {
+		if ( isset( $this->certification ) ) {
 			wp_set_object_terms( $this->ID, $this->certification, 'pkp_certification' );
 		}
 
@@ -501,6 +502,37 @@ class pkppgPluginRelease {
 	 */
 	public function print_control_overview() {
 		echo $this->get_control_overview();
+	}
+
+	/**
+	 * Add missing parent `pkp_application` term ids to the array
+	 * of assigned term ids
+	 *
+	 * If a child term is assigned, the parent term should always be
+	 * assigned as well. This will search a list of terms and ensure
+	 * that any missing parent ids are added.
+	 *
+	 * @since 0.1
+	 */
+	public function add_parent_applications() {
+
+		if ( empty( $this->applications ) ) {
+			return;
+		}
+
+		$args = array(
+			'include' => $this->applications,
+			'hide_empty' => false
+		);
+		$terms = get_terms( 'pkp_application', $args );
+
+		foreach( $terms as $term ) {
+			if ( $term->parent ) {
+				$this->applications[] = (int) $term->parent;
+			}
+		}
+
+		$this->applications = array_unique( $this->applications );
 	}
 
 }

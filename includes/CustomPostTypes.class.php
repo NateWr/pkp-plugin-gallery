@@ -362,13 +362,15 @@ class pkppgCustomPostTypes {
 		$args = array_merge(
 			array(
 				'hide_empty' => false,
-				'order' => 'DESC'
+				'order' => 'DESC',
 			),
 			$args
 		);
 
 		$terms = get_terms( 'pkp_application', $args );
 
+		// Put terms into a hierarchical array so that child terms
+		// are attached to their parents
 		$ordered = array();
 		foreach( $terms as $term ) {
 

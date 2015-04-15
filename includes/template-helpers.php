@@ -56,20 +56,19 @@ function pkppg_print_application_select( $selected = array() ) {
 		<?php foreach( $terms as $term ) : ?>
 		<li>
 			<label>
-				<input type="checkbox" name="tax_input[pkp_application][]" value="<?php echo $term->term_id; ?>" <?php in_array( $term->term_id, $selected ) ? ' checked="checked"' : '' ?>>
 				<?php echo $term->name; ?>
 			</label>
 			<?php if ( !empty( $term->children ) ) : ?>
+			<ul>
 				<?php foreach( $term->children as $child ) : ?>
-				<ul>
-					<li>
-						<label>
-							<input type="checkbox" name="tax_input[pkp_application][]" value="<?php echo $child->term_id; ?>" <?php in_array( $child->term_id, $selected ) ? ' checked="checked"' : '' ?>>
-							<?php echo $child->name; ?>
-						</label>
-					</li>
-				</ul>
+				<li>
+					<label>
+						<input type="checkbox" name="tax_input[pkp_application][]" value="<?php echo $child->term_id; ?>" <?php in_array( $child->term_id, $selected ) ? ' checked="checked"' : '' ?>>
+						<?php echo $child->name; ?>
+					</label>
+				</li>
 				<?php endforeach; ?>
+			</ul>
 			<?php endif; ?>
 		</li>
 		<?php endforeach; ?>
