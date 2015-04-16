@@ -50,7 +50,7 @@ class pkppgPluginGallery {
 		// Load minified assets unless WP_DEBUG is on
 		$min = WP_DEBUG ? '' : '.min';
 
-		wp_enqueue_style( 'pkppg', self::$plugin_url . '/assets/css/frontend' . $min . '.css' );
+		wp_enqueue_style( 'pkppg', pkppgInit::$plugin_url . '/assets/css/frontend' . $min . '.css' );
 	}
 
 	/**
@@ -59,8 +59,30 @@ class pkppgPluginGallery {
 	 * @since 0.1
 	 */
 	public function replace_content( $content ) {
-		
-		return '@todo add plugin gallery content';
+
+		$content = '';
+
+		$content = $this->get_plugin_list();
+
+		return $content;
+	}
+
+	/**
+	 * Generate a list of plugins
+	 *
+	 * @since 0.1
+	 */
+	public function get_plugin_list() {
+
+		$query = new pkppgQuery();
+		$query->sanitize_incoming_request();
+		$plugins = $query->get_results();
+
+		$output = '';
+		foreach( $plugins as $plugin ) {
+			$output .= '<p>' . $plugin->post_title. '</p>';
+		}
+		return $output;
 	}
 
 }

@@ -107,6 +107,7 @@ class pkppgInit {
 		// Load files
 		require_once( self::$plugin_dir . '/includes/CustomPostTypes.class.php' );
 		require_once( self::$plugin_dir . '/includes/Settings.class.php' );
+		require_once( self::$plugin_dir . '/includes/Query.class.php' );
 		require_once( self::$plugin_dir . '/includes/PluginRelease.class.php' );
 		require_once( self::$plugin_dir . '/includes/PluginGallery.class.php' );
 		require_once( self::$plugin_dir . '/includes/AjaxHandler.class.php' );
