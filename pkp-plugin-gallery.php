@@ -86,10 +86,6 @@ class pkppgInit {
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
 		add_action( 'admin_footer', array( $this, 'print_modals' ) );
 
-		// Load submission ajax request handlers
-		add_action( 'wp_ajax_pkppg-submit-release', array( $this, 'ajax_release_submission' ) );
-		add_action( 'wp_ajax_nopriv_pkppg-submit-release', array( $this, 'ajax_nopriv' ) );
-
 	}
 
 	/**
@@ -110,6 +106,7 @@ class pkppgInit {
 
 		// Load files
 		require_once( self::$plugin_dir . '/includes/CustomPostTypes.class.php' );
+		require_once( self::$plugin_dir . '/includes/Settings.class.php' );
 		require_once( self::$plugin_dir . '/includes/PluginRelease.class.php' );
 		require_once( self::$plugin_dir . '/includes/AjaxHandler.class.php' );
 		require_once( self::$plugin_dir . '/includes/Compatibility.class.php' );
@@ -117,6 +114,9 @@ class pkppgInit {
 
 		// Load custom post types
 		$this->cpts = new pkppgCustomPostTypes();
+
+		// Load settings
+		$this->settings = new pkppgSettings();
 
 		// Load compatibility routines
 		new pkppgCompatibility();
