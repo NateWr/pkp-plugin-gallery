@@ -162,8 +162,10 @@ class pkppgQuery {
 		while( $query->have_posts() ) {
 			$query->the_post();
 
-			// @todo create plugin model to return
-			$results[] = $query->post;
+			$plugin = new pkppgPlugin();
+			$plugin->load_post( $query->post );
+
+			$results[] = $plugin;
 		}
 
 		wp_reset_query();

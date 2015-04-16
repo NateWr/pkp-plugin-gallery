@@ -78,11 +78,32 @@ class pkppgPluginGallery {
 		$query->sanitize_incoming_request();
 		$plugins = $query->get_results();
 
-		$output = '';
-		foreach( $plugins as $plugin ) {
-			$output .= '<p>' . $plugin->post_title. '</p>';
-		}
-		return $output;
+		$base_url = get_permalink( pkppgInit()->settings->get_setting( 'page' ) );
+
+		ob_start();
+
+		?>
+
+		<ul class="plugins">
+
+			<?php foreach( $plugins as $plugin ) : ?>
+			<li>
+				<div class"plugin">
+					<?php echo $plugin->name; ?>
+				</div>
+				<div class="actions">
+					<a href="<?php echo add_query_arg( 'edit', $plugin->ID, $base_url ); ?>">
+						<?php _e( 'Edit', 'pkp-plugin-gallery' ); ?>
+					</a>
+				</div>
+			</li>
+			<?php endforeach; ?>
+
+		</ul>
+
+		<?php
+
+		return ob_get_clean();
 	}
 
 }

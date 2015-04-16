@@ -9,7 +9,7 @@ if ( !class_exists( 'pkppgPluginRelease' ) ) {
  *
  * @since 0.1
  */
-class pkppgPluginRelease {
+class pkppgPluginRelease extends pkppgPostModel {
 
 	/**
 	 * Plugin that this release is attached to
@@ -91,46 +91,12 @@ class pkppgPluginRelease {
 	public $certification;
 
 	/**
-	 * Post status
+	 * Initialize
 	 *
 	 * @since 0.1
 	 */
-	public $post_status;
-
-	/**
-	 * Validation errors
-	 *
-	 * @since 0.1
-	 */
-	public $validation_errors = array();
-
-	/**
-	 * Initialize an empty object
-	 *
-	 * This way we can choose a number of methods to populate data.
-	 *
-	 * @since 0.1
-	 */
-	public function __construct() {}
-
-	/**
-	 * Load release information from a WP_Post object or an ID
-	 *
-	 * @uses self::load_wp_post()
-	 * @since 0.1
-	 */
-	public function load_post( $post ) {
-
-		if ( is_int( $post ) || is_string( $post ) ) {
-			$post = get_post( $post );
-		}
-
-		if ( is_a( $post, 'WP_Post' ) && $post->post_type === pkppgInit()->cpts->plugin_release_post_type ) {
-			$this->load_wp_post( $post );
-			return true;
-		}
-
-		return false;
+	public function __construct() {
+		$this->post_type = pkppgInit()->cpts->plugin_release_post_type;
 	}
 
 	/**
@@ -152,69 +118,6 @@ class pkppgPluginRelease {
 		$this->applications = $this->get_applications();
 		$this->certification = $this->get_certification();
 		$this->post_status = $post->post_status;
-	}
-
-	/**
-	 * Get the applications this release is compatible with
-	 *
-	 * @since 0.1
-	 */
-	public function get_applications() {
-
-		if ( !empty( $this->applications ) ) {
-			return $this->applications;
-		}
-
-		if ( empty( $this->ID ) ) {
-			return;
-		}
-
-		$applications = wp_get_post_terms( $this->ID, 'pkp_application' );
-		if ( !is_wp_error( $applications ) ) {
-			foreach( $applications as $application) {
-				$this->applications[] = $application->term_id;
-			}
-		}
-
-		return $this->applications;
-	}
-
-	/**
-	 * Get the certification assigned to this release
-	 *
-	 * @since 0.1
-	 */
-	public function get_certification() {
-
-		if ( !empty( $this->certification ) ) {
-			return $this->certification;
-		}
-
-		if ( empty( $this->ID ) ) {
-			return;
-		}
-
-		$certifications = wp_get_post_terms( $this->ID, 'pkp_certification' );
-		if ( !is_wp_error( $certifications ) ) {
-			foreach( $certifications as $certification ) {
-				$this->certification[] = $certification->term_id;
-			}
-		}
-
-		return $this->certification;
-	}
-
-	/**
-	 * Format the release date when it's pulled from the database
-	 *
-	 * @todo Format the date properly once we have set up a datepicker
-	 * and plugged the pieces together properly.
-	 * @since 0.1
-	 */
-	public function format_date( $date ) {
-		$dt = DateTime::createFromFormat( 'Y-m-d H:i:s', $date );
-		return $dt->format( 'Y-m-d' );
-//		return mysql2date( get_option( 'date_format' ), $date );
 	}
 
 	/**
@@ -338,44 +241,6 @@ class pkppgPluginRelease {
 	}
 
 	/**
-	 * Check if release is valid
-	 *
-	 * This does not actually run the validation checks. It only looks
-	 * to see if any validation errors have been set.
-	 *
-	 * @since 0.1
-	 */
-	public function is_valid() {
-		return empty( $this->validation_errors );
-	}
-
-	/**
-	 * Insert a release into the database
-	 *
-	 * Validates the data, adds it to the database, and fires off an
-	 * action, either `pkppg_insert_release` or `pkppg_update_release`.
-	 *
-	 * @uses self::insert_post_data()
-	 * @since 0.1
-	 */
-	public function save() {
-
-		$action = empty( $this->ID ) ? 'insert' : 'update';
-
-		if ( $this->validate() === false ) {
-			return false;
-		}
-
-		if ( $this->insert_post_data() === false ) {
-			return false;
-		}
-
-		do_action( 'pkppg_' . $action . '_release', $this );
-
-		return true;
-	}
-
-	/**
 	 * Insert post data for a new or updated release entry
 	 *
 	 * You should usually self::save() instead of calling
@@ -424,33 +289,6 @@ class pkppgPluginRelease {
 		if ( !empty( $this->md5 ) ) {
 			update_post_meta( $this->ID, '_md5', $this->md5 );
 		}
-	}
-
-	/**
-	 * Delete release post from the database
-	 *
-	 * @since 0.1
-	 */
-	public function delete() {
-
-		if ( empty( $this->ID ) ) {
-			return false;
-		}
-
-		return wp_delete_post( $this->ID );
-	}
-
-	/**
-	 * Add an error to the validation errors array
-	 *
-	 * @since 0.1
-	 */
-	public function add_error( $field, $value, $message ) {
-		$this->validation_errors[] = array(
-			'field'   => $field,
-			'value'   => $value,
-			'message' => $message,
-		);
 	}
 
 	/**
