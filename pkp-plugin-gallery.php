@@ -108,6 +108,7 @@ class pkppgInit {
 		require_once( self::$plugin_dir . '/includes/CustomPostTypes.class.php' );
 		require_once( self::$plugin_dir . '/includes/Settings.class.php' );
 		require_once( self::$plugin_dir . '/includes/PluginRelease.class.php' );
+		require_once( self::$plugin_dir . '/includes/PluginGallery.class.php' );
 		require_once( self::$plugin_dir . '/includes/AjaxHandler.class.php' );
 		require_once( self::$plugin_dir . '/includes/Compatibility.class.php' );
 		require_once( self::$plugin_dir . '/includes/template-helpers.php' );
@@ -117,6 +118,9 @@ class pkppgInit {
 
 		// Load settings
 		$this->settings = new pkppgSettings();
+
+		// Load plugin gallery handler
+		$this->gallery = new pkppgPluginGallery();
 
 		// Load compatibility routines
 		new pkppgCompatibility();
