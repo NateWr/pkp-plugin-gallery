@@ -27,7 +27,7 @@ class pkppgCustomPostTypes {
 	 *
 	 * @since 0.1
 	 */
-	public $valid_post_statuses = array( 'submission', 'publish', 'revision' );
+	public $valid_post_statuses = array( 'submission', 'publish', 'inherit' );
 
 	/**
 	 * Register hooks
@@ -204,6 +204,9 @@ class pkppgCustomPostTypes {
 			array(
 				'label' => __( 'Submission', 'pkp-plugin-gallery' ),
 				'label_count' => _n_noop( 'Submission <span class="count">(%s)</span>', 'Submissions <span class="count">(%s)</span>' ),
+				'exclude_from_search' => true,
+				'show_in_admin_all_list' => true,
+				'show_in_admin_status_list' => true,
 			)
 		);
 	}

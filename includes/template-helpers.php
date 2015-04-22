@@ -86,7 +86,7 @@ function pkppg_print_application_select( $selected = array() ) {
  * @since 0.1
  */
 if ( !function_exists( 'pkppg_print_releases_editor' ) ) {
-function pkppg_print_releases_editor( $plugin_id ) {
+function pkppg_print_releases_editor( $plugin_id = 0 ) {
 
 	$plugin_id = (int) $plugin_id;
 
@@ -95,43 +95,45 @@ function pkppg_print_releases_editor( $plugin_id ) {
 	<div class="pkp-releases-form">
 		<ul class="releases">
 
-	<?php
+		<?php
 
-	$query = new WP_Query(
-		array(
-			'post_parent'    => $plugin_id,
-			'post_type'      => pkppgInit()->cpts->plugin_release_post_type,
-			'posts_per_page' => 1000,
-			'post_status'    => pkppgInit()->cpts->valid_post_statuses,
-		)
-	);
+		if ( !empty( $plugin_id ) ) {
+			$query = new WP_Query(
+				array(
+					'post_parent'    => $plugin_id,
+					'post_type'      => pkppgInit()->cpts->plugin_release_post_type,
+					'posts_per_page' => 1000,
+					'post_status'    => pkppgInit()->cpts->valid_post_statuses,
+				)
+			);
 
-	if ( !empty( $plugin_id ) && $query->have_posts() ) {
-		while( $query->have_posts() ) {
-			$query->the_post() ;
-			global $post;
+			if ( !empty( $plugin_id ) && $query->have_posts() ) {
+				while( $query->have_posts() ) {
+					$query->the_post() ;
+					global $post;
 
-			$release = new pkppgPluginRelease();
-			$release->load_post( $post );
+					$release = new pkppgPluginRelease();
+					$release->load_post( $post );
 
-			?>
+					?>
 
-			<li><?php $release->print_control_overview(); ?></li>
+					<li><?php $release->print_control_overview(); ?></li>
 
-			<?php
+					<?php
+				}
+			} else {
+
+				?>
+
+				<p class="description">
+					<?php _e( 'You have not added any releases for this plugin.', 'pkp-plugin-gallery' ); ?>
+				</p>
+
+				<?php
+			}
 		}
-	} else {
 
 		?>
-
-		<p class="description">
-			<?php _e( 'You have not added any releases for this plugin.', 'pkp-plugin-gallery' ); ?>
-		</p>
-
-		<?php
-	}
-
-	?>
 
 		</ul>
 		<fieldset class="pkp-release-form-buttons">

@@ -15,7 +15,8 @@ module.exports = function(grunt) {
 					ieCompat: true
 				},
 				files: {
-					'assets/css/admin.css': 'assets/src/less/admin.less'
+					'assets/css/admin.css': 'assets/src/less/admin.less',
+					'assets/css/frontend.css': 'assets/src/less/frontend.less'
 				}
 			},
 			build: {
@@ -25,7 +26,8 @@ module.exports = function(grunt) {
 					ieCompat: true
 				},
 				files: {
-					'assets/css/admin.min.css': 'assets/src/less/admin.less'
+					'assets/css/admin.min.css': 'assets/src/less/admin.less',
+					'assets/css/frontend.min.css': 'assets/src/less/frontend.less'
 				}
 			}
 		},
@@ -42,8 +44,10 @@ module.exports = function(grunt) {
 			build: {
 				files: {
 					'assets/js/admin.js': [
-						'assets/src/js/submission-form.js',
-						'assets/src/js/submission-form-*.js'
+						'assets/src/js/submission-form.js'
+					],
+					'assets/js/gallery.js': [
+						'assets/src/js/submission-form.js'
 					]
 				}
 			}
@@ -56,7 +60,8 @@ module.exports = function(grunt) {
 			},
 			build: {
 				files: {
-					'assets/js/admin.min.js' : 'assets/js/admin.js'
+					'assets/js/admin.min.js' : 'assets/js/admin.js',
+					'assets/js/gallery.min.js' : 'assets/js/gallery.js'
 				}
 			}
 		},

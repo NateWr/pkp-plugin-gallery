@@ -210,12 +210,20 @@ class pkppgPluginRelease extends pkppgPostModel {
 
 		// Post Status
 		if ( empty( $this->post_status ) ) {
-			$this->post_status = 'submission';
+			$this->post_status = empty( $this->ID ) ? 'submission' : 'inherit';
 		} elseif ( !pkppgInit()->cpts->is_valid_status( $this->post_status ) ) {
 			$this->add_error(
 				'post_status',
 				$this->post_status,
 				__( 'Please select a valid post status.', 'pkp-plugin-gallery' )
+			);
+
+		// @todo use a better capabilities check
+		} elseif( $this->post_status == 'publish' && !current_user_can( 'manage_options' ) ) {
+			$this->add_error(
+				'post_status',
+				$this->post_status,
+				__( 'You do not have permission to publish plugins.', 'pkp-plugin-gallery' )
 			);
 		}
 
@@ -262,7 +270,12 @@ class pkppgPluginRelease extends pkppgPostModel {
 		);
 
 		if ( !empty( $this->ID ) ) {
-			$args['ID'] = $this->ID;
+			if ( $this->post_status == 'inherit' ) {
+				$args['post_type'] = 'revision';
+				$args['post_parent'] = $this->ID;
+			} else {
+				$args['ID'] = $this->ID;
+			}
 		}
 
 		$id = wp_insert_post( $args );
