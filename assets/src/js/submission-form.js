@@ -131,7 +131,7 @@ jQuery( document ).ready( function( $ ) {
 			pkppg.form.cache.release_modal.removeClass( 'is-visible' );
 
 			// Clear fields
-			pkppg.form.cache.release_fields.find( 'input[type="text"], input[type="url"], textarea' ).val( '' );
+			pkppg.form.cache.release_fields.find( 'input[type="hidden"], input[type="text"], input[type="url"], textarea' ).val( '' );
 			pkppg.form.cache.release_fields.find( 'option:selected' ).removeAttr( 'selected' );
 			pkppg.form.cache.release_fields.find( 'input[type="checkbox"]' ).removeAttr( 'checked' );
 
