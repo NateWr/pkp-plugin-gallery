@@ -162,28 +162,28 @@
 .pkppg-modal textarea {
   height: 6em;
 }
-.pkpp-modal .pkppg-modal-container > h3:first-child {
+.pkppg-modal .pkppg-modal-container > h3:first-child {
   margin-top: 0;
 }
-.pkpp-modal .status {
+.pkppg-modal .status {
   float: right;
   position: relative;
 }
-.pkpp-modal .status > span {
+.pkppg-modal .status > span {
   position: absolute;
   top: 0;
   right: 0;
 }
-.pkpp-modal .status > span:after {
+.pkppg-modal .status > span:after {
   opacity: 0;
 }
-.pkpp-modal .status.working .pkp-spinner:after {
+.pkppg-modal .status.working .pkp-spinner:after {
   opacity: 0.5;
 }
-.pkpp-modal .status.success .pkp-success:after {
+.pkppg-modal .status.success .pkp-success:after {
   opacity: 1;
 }
-.pkpp-modal .status.error .pkp-error:after {
+.pkppg-modal .status.error .pkp-error:after {
   opacity: 1;
 }
 .pkp-spinner:after {
