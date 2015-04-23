@@ -192,6 +192,9 @@ class pkppgPluginGallery {
 
 		?>
 
+		<a href="<?php echo esc_url( $this->edit_url ); ?>">
+			<?php _e( 'Submit Plugin', 'pkp-plugin-gallery' ); ?>
+		</a>
 		<ul class="plugins">
 
 			<?php foreach( $plugins as $plugin ) : ?>
@@ -318,8 +321,8 @@ class pkppgPluginGallery {
 			}
 		}
 
-		if ( $_GET['id'] ) {
-			$params['ID'] = $_GET['id'];
+		if ( !empty( $_GET['id'] ) ) {
+			$params['ID'] = (int) $_GET['id'];
 		}
 
 		$plugin->parse_params( $params );
