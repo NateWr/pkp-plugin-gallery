@@ -84,6 +84,14 @@ class pkppgPlugin extends pkppgPostModel {
 	public $applications = array();
 
 	/**
+	 * Releases of this plugin
+	 *
+	 * @param releases array `pkp_plugin_release` post ids
+	 * @since 0.1
+	 */
+	public $releases = array();
+
+	/**
 	 * Initialize
 	 *
 	 * @since 0.1
@@ -161,6 +169,10 @@ class pkppgPlugin extends pkppgPostModel {
 
 		if ( !empty( $params['post_status'] ) && pkppgInit()->cpts->is_valid_status( $params['post_status'] ) ) {
 			$this->post_status = $params['post_status'];
+		}
+
+		if ( !empty( $params['releases'] ) ) {
+			$this->releases = array_map( 'absint', $params['releases'] );
 		}
 	}
 
@@ -266,6 +278,15 @@ class pkppgPlugin extends pkppgPostModel {
 
 		if ( !empty( $this->md5 ) ) {
 			update_post_meta( $this->ID, '_installation', $this->installation );
+		}
+
+		// Ensure any atttached releases have the proper post_parent.
+		// This catches cases where a release might be added before
+		// its parent is assigned an id
+		if ( !empty( $this->releases ) ) {
+			foreach ( $this->releases as $release ) {
+				wp_insert_post( array( 'ID' => $release, 'post_parent' => $this->ID ) );
+			}
 		}
 	}
 }

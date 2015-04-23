@@ -316,6 +316,7 @@ class pkppgPluginRelease extends pkppgPostModel {
 		?>
 
 		<div class="release" data-id="<?php echo (int) $this->ID; ?>">
+			<input type="hidden" name="pkp-plugin-releases[]" value="<?php echo (int) $this->ID; ?>">
 			<div class="title">
 				<span class="version">
 					<?php echo $this->version; ?>
