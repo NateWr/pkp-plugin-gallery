@@ -232,6 +232,26 @@ abstract class pkppgPostModel {
 	}
 
 	/**
+	 * Publish post
+	 *
+	 * This only shifts the post status after checking user
+	 * capabilities.
+	 *
+	 * @since 0.1
+	 */
+	public function publish() {
+
+		// @todo better user cap check
+		if ( empty( $this->ID ) || !current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		$this->post_status = 'publish';
+
+		return wp_update_post( array( 'ID' => $this->ID, 'post_status' => $this->post_status ) );
+	}
+
+	/**
 	 * Add an error to the validation errors array
 	 *
 	 * @since 0.1

@@ -30,6 +30,10 @@ class pkppgAjaxHandler {
 		add_action( 'wp_ajax_pkppg-delete-release', array( $this, 'ajax_delete_release' ) );
 		add_action( 'wp_ajax_nopriv_pkppg-delete-release', array( $this, 'nopriv' ) );
 
+		// Publish release
+		add_action( 'wp_ajax_pkppg-publish-release', array( $this, 'ajax_publish_release' ) );
+		add_action( 'wp_ajax_nopriv_pkppg-publish-release', array( $this, 'nopriv' ) );
+
 	}
 
 	/**
@@ -197,6 +201,52 @@ class pkppgAjaxHandler {
 				array(
 					'error' => 'delete_failed',
 					'msg' => __( 'There was an error while attempting to delete this release.', 'pkp-plugin-gallery' ),
+				)
+			);
+		}
+	}
+
+	/**
+	 * Publish a release
+	 *
+	 * @since 0.1
+	 */
+	public function ajax_publish_release() {
+
+		$this->authenticate();
+
+		if ( empty( $_POST['release'] ) ) {
+			wp_send_json_error(
+				array(
+					'error' => 'norelease',
+					'msg'   => __( 'No release data was received with this request.', 'pkp-plugin-gallery' ),
+				)
+			);
+		}
+
+		$release = new pkppgPluginRelease();
+
+		if ( !$release->load_post( (int) $_POST['release'] ) ) {
+			wp_send_json_error(
+				array(
+					'error' => 'noreleasefound',
+					'msg'   => __( 'This release could not be found in order to be deleted.', 'pkp-plugin-gallery' ),
+				)
+			);
+		}
+
+		if ( $release->publish() ) {
+			wp_send_json_success(
+				array(
+					'release'  => $release,
+					'overview' => $release->get_control_overview(),
+				)
+			);
+		} else {
+			wp_send_json_error(
+				array(
+					'error' => 'publish_failed',
+					'msg'   => __( 'There was an error while attempting to publish this release.', 'pkp-plugin-gallery' ),
 				)
 			);
 		}

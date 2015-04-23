@@ -257,7 +257,8 @@
   opacity: 0;
 }
 .pkp-releases-form .actions.loading .pkp-spinner,
-.pkp-releases-form .actions.deleting .pkp-spinner {
+.pkp-releases-form .actions.deleting .pkp-spinner,
+.pkp-releases-form .actions.publishing .pkp-spinner {
   opacity: 1;
 }
 .pkp-release-fields .applications ul,

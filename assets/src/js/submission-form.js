@@ -58,6 +58,8 @@ jQuery( document ).ready( function( $ ) {
 					pkppg.form.loadRelease( release.data( 'id' ) );
 				} else if ( release && target.hasClass( 'delete' ) ) {
 					pkppg.form.deleteRelease( release.data( 'id' ) );
+				} else if ( release && target.hasClass( 'publish' ) ) {
+					pkppg.form.publishRelease( release.data( 'id' ) );
 				}
 			});
 		},
@@ -252,6 +254,38 @@ jQuery( document ).ready( function( $ ) {
 		},
 
 		/**
+		 *  Set a release status to publish
+		 *
+		 *  @since 0.1
+		 */
+		publishRelease: function(id) {
+
+			pkppg.form.setReleaseStatus( id, 'publishing' );
+
+			var params = {};
+
+			params.action = 'pkppg-publish-release';
+			params.nonce = pkppg.data.nonce;
+			params.release = id;
+
+			var data = $.param( params );
+
+			$.post( pkppg.data.ajaxurl, data )
+				.done( function(r) {
+
+					pkppg.form.resetReleaseStatus( id );
+
+					if ( r.success ) {
+
+						pkppg.form.updateReleaseInList( r.data.release.ID, r.data.overview );
+
+					} else {
+						// @todo handle failure
+					}
+				});
+		},
+
+		/**
 		 * Generate an object hash for a release from the form
 		 * data
 		 *
@@ -299,13 +333,10 @@ jQuery( document ).ready( function( $ ) {
 				return;
 			}
 
-			release_el.find( '.actions' ).addClass( status );
+			release_el.find( '.actions' ).addClass( status ).find( 'a' ).attr( 'disabled', true );
 
 			if ( status == 'loading' ) {
-				release_el.find( '.delete' ).attr( 'disabled', true );
-				pkppg.form.cache.releases.find( '.release .actions .edit' ).attr( 'disabled', true );
-			} else if ( status == 'deleting' ) {
-				release_el.find( '.delete, .edit' ).attr( 'disabled', true );
+				pkppg.form.cache.releases.find( '.release .edit' ).attr( 'disabled', true );
 			}
 		},
 
@@ -316,14 +347,14 @@ jQuery( document ).ready( function( $ ) {
 		 */
 		resetReleaseStatus: function( id ) {
 
-			pkppg.form.cache.releases.find( '.release .actions .edit' ).attr( 'disabled', false );
+			pkppg.form.cache.releases.find( '.release .actions a' ).attr( 'disabled', false );
 
 			var release_el = pkppg.form.getReleaseEl( id );
 			if ( !release_el ) {
 				return;
 			}
 
-			release_el.find( '.actions' ).removeClass( 'loading' ).find( 'a' ).attr( 'disabled', false );
+			release_el.find( '.actions' ).removeClass( 'loading deleting publishing' ).find( 'a' ).attr( 'disabled', false );
 		},
 
 		/**

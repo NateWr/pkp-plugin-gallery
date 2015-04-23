@@ -331,6 +331,11 @@ class pkppgPluginRelease extends pkppgPostModel {
 				<a href="#" class="delete">
 					<?php _e( 'Delete', 'pkp-plugin-gallery' ); ?>
 				</a>
+				<?php if ( $this->post_status == 'submission' ) : ?>
+				<a href="#" class="publish">
+					<?php _e( 'Publish', 'pkp-plugin-gallery' ); ?>
+				</a>
+				<?php endif; ?>
 			</div>
 		</div>
 
