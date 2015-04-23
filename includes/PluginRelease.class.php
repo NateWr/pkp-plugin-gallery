@@ -210,7 +210,7 @@ class pkppgPluginRelease extends pkppgPostModel {
 
 		// Post Status
 		if ( empty( $this->post_status ) ) {
-			$this->post_status = empty( $this->ID ) ? 'submission' : 'inherit';
+			$this->post_status = empty( $this->ID ) ? 'submission' : 'update';
 		} elseif ( !pkppgInit()->cpts->is_valid_status( $this->post_status ) ) {
 			$this->add_error(
 				'post_status',
@@ -270,8 +270,7 @@ class pkppgPluginRelease extends pkppgPostModel {
 		);
 
 		if ( !empty( $this->ID ) ) {
-			if ( $this->post_status == 'inherit' ) {
-				$args['post_type'] = 'revision';
+			if ( $this->post_status == 'update' ) {
 				$args['post_parent'] = $this->ID;
 			} else {
 				$args['ID'] = $this->ID;
