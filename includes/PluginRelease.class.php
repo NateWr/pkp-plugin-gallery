@@ -191,13 +191,7 @@ class pkppgPluginRelease extends pkppgPostModel {
 	public function validate() {
 
 		// Plugin
-		if ( empty( $this->plugin ) ) {
-			$this->add_error(
-				'plugin',
-				$this->plugin,
-				__( 'This release is not assigned to any plugin.', 'pkp-plugin-gallery' )
-			);
-		} else {
+		if ( !empty( $this->plugin ) ) {
 			$post = get_post( $this->plugin );
 			if ( !is_a( $post, 'WP_POST' ) || $post->post_type !== pkppgInit()->cpts->plugin_post_type ) {
 				$this->add_error(

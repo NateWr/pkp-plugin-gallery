@@ -285,7 +285,8 @@ class pkppgPlugin extends pkppgPostModel {
 		// its parent is assigned an id
 		if ( !empty( $this->releases ) ) {
 			foreach ( $this->releases as $release ) {
-				wp_insert_post( array( 'ID' => $release, 'post_parent' => $this->ID ) );
+				$args = array( 'ID' => $release, 'post_parent' => $this->ID );
+				wp_update_post( $args );
 			}
 		}
 	}
