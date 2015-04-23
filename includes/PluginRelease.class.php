@@ -211,14 +211,21 @@ class pkppgPluginRelease extends pkppgPostModel {
 				$this->post_status,
 				__( 'Please select a valid post status.', 'pkp-plugin-gallery' )
 			);
+		} elseif( $this->post_status == 'publish' ) {
 
-		// @todo use a better capabilities check
-		} elseif( $this->post_status == 'publish' && !current_user_can( 'manage_options' ) ) {
-			$this->add_error(
-				'post_status',
-				$this->post_status,
-				__( 'You do not have permission to publish plugins.', 'pkp-plugin-gallery' )
-			);
+			if ( get_current_user_id() == $this->author ) {
+				$this->post_status = 'update';
+				$this->plugin = $this->ID;
+				$this->ID = null;
+
+			// @todo better cap check
+			} elseif ( !current_user_can( 'manage_options' ) ) {
+				$this->add_error(
+					'post_status',
+					$this->post_status,
+					__( 'You do not have permission to edit this published release.', 'pkp-plugin-gallery' )
+				);
+			}
 		}
 
 		// Version
