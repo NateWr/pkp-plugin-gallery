@@ -98,6 +98,9 @@ class pkppgAjaxHandler {
 		}
 
 		$release = new pkppgPluginRelease();
+		if ( !empty( $_POST['release']['ID'] ) ) {
+			$release->load_post( $_POST['release']['ID'] );
+		}
 		$release->parse_params( $_POST['release'] );
 
 		if ( $release->save() ) {
