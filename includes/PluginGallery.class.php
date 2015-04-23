@@ -324,8 +324,6 @@ class pkppgPluginGallery {
 
 		$plugin->parse_params( $params );
 
-		print_r( $plugin );
-
 		if ( $plugin->save() ) {
 			return true;
 		}
