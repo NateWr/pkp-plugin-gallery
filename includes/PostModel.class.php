@@ -23,6 +23,16 @@ abstract class pkppgPostModel {
 	public $post_status;
 
 	/**
+	 * Post parent
+	 *
+	 * Used by posts with `update` status to refer to the plugin or release
+	 * which they are an update for.
+	 *
+	 * @since 0.1
+	 */
+	public $post_parent;
+
+	/**
 	 * Validation errors
 	 *
 	 * @since 0.1
@@ -249,6 +259,48 @@ abstract class pkppgPostModel {
 		$this->post_status = 'publish';
 
 		return wp_update_post( array( 'ID' => $this->ID, 'post_status' => $this->post_status ) );
+	}
+
+	/**
+	 * Merge this post with its parent
+	 *
+	 * This simply takes the current post object (with taxonomies and metadata)
+	 * and swaps out its ID for its parent's ID, then saves it to overwrite the
+	 * parent. This should only happen with `update` posts where the parent has
+	 * a `publish` post status. Only admins should be able to do this.
+	 */
+	public function merge_update() {
+
+		// @todo better cap check
+		if ( !current_user_can( 'manage_options' ) || $this->post_status !== 'update' ) {
+			return;
+		}
+
+
+		$class = get_class( $this );
+
+		$parent = new $class();
+		$parent->load_post( $this->post_parent );
+
+		// Sanity check...
+		if ( $parent->post_status !== 'publish' ) {
+			return;
+		}
+
+		// Save copy of old object
+		$old = clone $this;
+
+		// Assume parent's identity
+		$this->ID = $this->post_parent;
+		$this->post_parent = $parent->post_parent;
+		$this->post_status = $parent->post_status;
+
+		if ( !$this->save() ) {
+			return;
+		}
+
+		// Delete the old update post
+		return $old->delete();
 	}
 
 	/**

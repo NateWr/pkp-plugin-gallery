@@ -118,6 +118,7 @@ class pkppgPluginRelease extends pkppgPostModel {
 		$this->applications = $this->get_applications();
 		$this->certification = $this->get_certification();
 		$this->post_status = $post->post_status;
+		$this->post_parent = $post->post_parent;
 	}
 
 	/**

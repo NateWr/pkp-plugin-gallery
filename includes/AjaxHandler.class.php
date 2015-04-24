@@ -34,6 +34,10 @@ class pkppgAjaxHandler {
 		add_action( 'wp_ajax_pkppg-publish-release', array( $this, 'ajax_publish_release' ) );
 		add_action( 'wp_ajax_nopriv_pkppg-publish-release', array( $this, 'nopriv' ) );
 
+		// Merge update
+		add_action( 'wp_ajax_pkppg-merge-update', array( $this, 'ajax_merge_update' ) );
+		add_action( 'wp_ajax_nopriv_pkppg-merge-update', array( $this, 'nopriv' ) );
+
 	}
 
 	/**
@@ -248,6 +252,78 @@ class pkppgAjaxHandler {
 				array(
 					'error' => 'publish_failed',
 					'msg'   => __( 'There was an error while attempting to publish this release.', 'pkp-plugin-gallery' ),
+				)
+			);
+		}
+	}
+
+	/**
+	 * Publish the changes from an update to it's parent post
+	 *
+	 * @since 0.1
+	 */
+	public function ajax_merge_update() {
+
+		$this->authenticate();
+
+		// Only admins!
+		// @todo better cap check
+		if ( !current_user_can( 'manage_options' ) ) {
+			$this->nopriv();
+		}
+
+		if ( empty( $_POST['ID'] ) ) {
+			wp_send_json_error(
+				array(
+					'error' => 'nopost',
+					'msg'   => __( 'No post ID was received with this request.', 'pkp-plugin-gallery' ),
+				)
+			);
+		}
+
+		$post = get_post( (int) $_POST['ID'] );
+
+		if ( !$post || is_wp_error( $post ) || !pkppgInit()->cpts->is_valid_type( $post->post_type ) ) {
+			wp_send_json_error(
+				array(
+					'error' => 'nopostfound',
+					'msg'   => __( 'This item could not be found.', 'pkp-plugin-gallery' ),
+				)
+			);
+		}
+
+		$obj = $post->post_type == pkppgInit()->cpts->plugin_post_type ? new pkppgPlugin() : new pkppgPluginRelease();
+
+		if ( !$obj->load_post( $post ) ) {
+			wp_send_json_error(
+				array(
+					'error' => 'nopostfound',
+					'var' => $_POST['ID'],
+					'post' => $post,
+					'also' => 'this',
+					'msg'   => __( 'This item could not be found.', 'pkp-plugin-gallery' ),
+				)
+			);
+		}
+
+		if ( $obj->merge_update() ) {
+			$url = add_query_arg(
+				array(
+					'post'   => (int) $obj->ID,
+					'action' => 'edit',
+				),
+				admin_url( 'post.php' )
+			);
+			wp_send_json_success(
+				array(
+					'redirect' => esc_url_raw( $url ),
+				)
+			);
+		} else {
+			wp_send_json_error(
+				array(
+					'error' => 'mergeupdatefailed',
+					'msg'   => __( 'There was an error while attempting to merge this update.', 'pkp-plugin-gallery' ),
 				)
 			);
 		}

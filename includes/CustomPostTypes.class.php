@@ -509,6 +509,15 @@ class pkppgCustomPostTypes {
 	}
 
 	/**
+	 * Check if a post type is valid
+	 *
+	 * @since 0.1
+	 */
+	public function is_valid_type( $type ) {
+		return $type == $this->plugin_post_type || $type == $this->plugin_release_post_type;
+	}
+
+	/**
 	 * Get a hierarchical array of `pkp_application` terms
 	 *
 	 * @since 0.1

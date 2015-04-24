@@ -118,6 +118,8 @@ class pkppgPlugin extends pkppgPostModel {
 		$this->maintainer = $post->post_author;
 		$this->category = $this->get_category();
 		$this->applications = $this->get_applications();
+		$this->post_status = $post->post_status;
+		$this->post_parent = $post->post_parent;
 	}
 
 	/**

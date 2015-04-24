@@ -97,7 +97,24 @@ jQuery( document ).ready( function( $ ) {
                 return;
             }
 
-            console.log( 'Publishing!' );
+			var params = {};
+
+			params.action = 'pkppg-merge-update';
+			params.nonce = pkppg.data.nonce;
+			params.ID = pkppg.edit_post.cache.form.find( '#post_ID' ).val();
+
+			var data = $.param( params );
+
+			$.post( pkppg.data.ajaxurl, data )
+				.done( function(r) {
+
+					if ( r.success ) {
+                        window.location.replace( r.data.redirect );
+
+					} else {
+						// @todo handle failure
+					}
+				});
         }
     };
 
