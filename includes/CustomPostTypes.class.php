@@ -317,7 +317,18 @@ class pkppgCustomPostTypes {
 	 */
 	public function print_releases_metabox( $post ) {
 
-		pkppg_print_releases_editor( $post->ID );
+		if ( $post->post_status == 'update' ) {
+			$url = add_query_arg( 'post', $post->post_parent );
+			?>
+
+			<p>
+				<?php printf( __( 'You are viewing an update to a <a href="%s">published plugin</a>. All releases should be managed there.', 'pkp-plugin-gallery' ), esc_url( $url ) ); ?>
+			</p>
+
+			<?php
+		} else {
+			pkppg_print_releases_editor( $post->ID );
+		}
 	}
 
 	/**
