@@ -274,6 +274,6 @@
 .pkp-release-fields .applications > ul > li > label {
   font-weight: 700;
 }
-#compare-action {
-  float: left;
+#save-action #save-post {
+  float: right;
 }

@@ -359,15 +359,8 @@ class pkppgCustomPostTypes {
 			<div class="submitbox">
 				<div id="minor-publishing">
 					<div id="minor-publishing-actions">
-						<div id="compare-action">
-							<span class="spinner"></span>
-							<a href="#" class="compare button">
-								<?php esc_html_e( 'Compare Changes', 'pkp-plugin-gallery' ); ?>
-							</a>
-						</div>
 						<div id="save-action">
 							<input type="submit" name="save" id="save-post" value="<?php echo esc_attr( __( 'Save for Later', 'pkp-plugin-gallery' ) ); ?>" class="button">
-							<span class="spinner"></span>
 						</div>
 						<div class="clear"></div>
 					</div>
@@ -404,9 +397,8 @@ class pkppgCustomPostTypes {
 
 					</div>
 					<div id="publishing-action">
-						<span class="spinner"></span>
-						<a href="#" class="merge button button-primary">
-							<?php esc_html_e( 'Commit Changes', 'pkp-plugin-gallery' ); ?>
+						<a href="#" class="merge button-primary">
+							<?php esc_html_e( 'Compare Changes', 'pkp-plugin-gallery' ); ?>
 						</a>
 					</div>
 					<div class="clear"></div>
