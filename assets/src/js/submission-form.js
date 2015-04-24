@@ -4,8 +4,6 @@
  */
 
 var pkppg = pkppg || {};
-pkppg.data = pkppg.data || pkppg_data;
-pkppg.cache = pkppg.cache || {};
 
 jQuery( document ).ready( function( $ ) {
 

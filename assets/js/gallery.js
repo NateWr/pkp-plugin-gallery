@@ -1,11 +1,26 @@
 /**
+ * JavaScript to initialize the `pkppg` component
+ */
+
+var pkppg = pkppg || {};
+
+jQuery( document ).ready( function( $ ) {
+
+    // Load data
+    pkppg.data = pkppg.data || pkppg_data;
+
+    // Global cache
+    pkppg.cache = pkppg.cache || {};
+    pkppg.cache.body = pkppg.cache.body || $( 'body' );
+
+});
+
+/**
  * JavaScript to handle a plugin submission form for the
  * PKP Plugin Gallery.
  */
 
 var pkppg = pkppg || {};
-pkppg.data = pkppg.data || pkppg_data;
-pkppg.cache = pkppg.cache || {};
 
 jQuery( document ).ready( function( $ ) {
 

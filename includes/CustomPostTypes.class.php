@@ -2,7 +2,8 @@
 
 if ( !class_exists( 'pkppgCustomPostTypes' ) ) {
 /**
- * Class to declare custom post types and post meta
+ * Class to declare custom post types and post meta boxes, and handle WP's
+ * native edit_post screen
  *
  * @since 0.1
  */
@@ -42,6 +43,9 @@ class pkppgCustomPostTypes {
 		// Add meta boxes
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
 		add_action( 'save_post', array( $this, 'save_post' ) );
+
+		// Add the compare changes modal to the `pkp_plugin` edit post screen
+		add_action( 'admin_footer', array( $this, 'print_diff_modal' ) );
 	}
 
 	/**
@@ -397,7 +401,7 @@ class pkppgCustomPostTypes {
 
 					</div>
 					<div id="publishing-action">
-						<a href="#" class="merge button-primary">
+						<a href="#" id="compare-changes" class="merge button-primary" data-id="<?php echo (int) $post->ID; ?>">
 							<?php esc_html_e( 'Compare Changes', 'pkp-plugin-gallery' ); ?>
 						</a>
 					</div>
@@ -423,6 +427,40 @@ class pkppgCustomPostTypes {
 			}
 			post_submit_meta_box( $post, array( 'args' => $publish_callback_args ) );
 		}
+	}
+
+	/**
+	 * Add the compare changes modal to the `pkp_plugin` edit post screen
+	 *
+	 * @since 0.1
+	 */
+	public function print_diff_modal() {
+
+		if ( !function_exists( 'get_current_screen' ) ) {
+			return false;
+		}
+
+		$screen = get_current_screen();
+		if ( empty( $screen ) || !is_a( $screen, 'WP_Screen' ) || $screen->post_type !== pkppgInit()->cpts->plugin_post_type || $screen->parent_base !== 'edit' ) {
+			return false;
+		}
+
+		ob_start();
+		?>
+
+		<div id="pkp-plugin-diff"></div>
+		<div class="controls">
+			<a href="#" class="publish button-primary">
+				<?php _e( 'Publish Changes', 'pkp-plugin-gallery' ); ?>
+			</a>
+			<a href="#" class="close">
+				<?php _e( 'Close', 'pkp-plugin-gallery' ); ?>
+			</a>
+		</div>
+
+		<?php
+
+		pkppgInit()->print_modal( 'pkppg-diff', ob_get_clean(), __( 'Compare Changes', 'pkp-plugin-gallery' ) );
 	}
 
 	/**
