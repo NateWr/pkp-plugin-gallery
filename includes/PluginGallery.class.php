@@ -242,50 +242,7 @@ class pkppgPluginGallery {
 
 			<form method="POST">
 				<?php wp_nonce_field( 'pkp-plugin-submission', 'pkp-plugin-nonce' ); ?>
-
-				<fieldset class="plugin">
-					<legend><?php _e( 'Plugin Details', 'pkp-plugin-gallery' ); ?></legend>
-					<div class="name">
-						<label for="pkp-plugin-name">
-							<?php _e( 'Name', 'pkp-plugin-gallery' ); ?>
-						</label>
-						<input type="text" name="pkp-plugin-name" value="<?php echo esc_attr( $plugin->name ); ?>">
-					</div>
-					<div class="category">
-						<label for="pkp-plugin-category">
-							<?php _e( 'Category', 'pkp-plugin-gallery' ); ?>
-						</label>
-						<?php pkppg_print_taxonomy_select( 'pkp_category', $plugin->category ); ?>
-					</div>
-					<div class="summary">
-						<label for="pkp-plugin-summary">
-							<?php _e( 'Summary', 'pkp-plugin-gallery' ); ?>
-						</label>
-						<textarea name="pkp-plugin-summary"><?php echo $plugin->summary; ?></textarea>
-					</div>
-					<div class="description">
-						<label for="pkp-plugin-description">
-							<?php _e( 'Description', 'pkp-plugin-gallery' ); ?>
-						</label>
-						<textarea name="pkp-plugin-description"><?php echo $plugin->description; ?></textarea>
-					</div>
-					<div class="homepage">
-						<label for="pkp-plugin-homepage">
-							<?php _e( 'Homepage', 'pkp-plugin-gallery' ); ?>
-						</label>
-						<input type="url" name="pkp-plugin-homepage" value="<?php echo esc_attr( $plugin->homepage ); ?>">
-					</div>
-					<div class="installation">
-						<label for="pkp-plugin-installation">
-							<?php _e( 'Installation Instructions', 'pkp-plugin-gallery' ); ?>
-						</label>
-						<textarea name="pkp-plugin-installation"><?php echo $plugin->installation; ?></textarea>
-					</div>
-				</fieldset>
-
-				<fieldset class="releases">
-					<?php pkppg_print_releases_editor( $plugin_id ); ?>
-				</fieldset>
+				<?php $plugin->print_form_fields(); ?>
 
 				<fieldset class="buttons">
 					<button type="submit" class="save">
