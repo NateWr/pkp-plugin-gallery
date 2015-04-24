@@ -258,6 +258,17 @@ function pkppg_print_release_fields() {
 			</h3>
 			<?php pkppg_print_application_select(); ?>
 		</div>
+		<!-- @todo only show this to users with appropriate permissions -->
+		<div class="post_status">
+			<label for="pkp-release-post_status">
+				<?php _e( 'Status', 'pkp-plugin-gallery' ); ?>
+			</label>
+			<select name="post_status" id="pkp-release-post_status">
+				<?php foreach ( pkppgInit()->cpts->valid_post_statuses as $status ) : ?>
+				<option value="<?php echo esc_attr( $status ); ?>"><?php echo esc_attr( $status ); ?></option>
+				<?php endforeach; ?>
+			</select>
+		</div>
 
 	</fieldset>
 

@@ -250,7 +250,7 @@ class pkppgPlugin extends pkppgPostModel {
 		);
 
 		if ( !empty( $this->ID ) ) {
-			if ( $this->post_status == 'update' ) {
+			if ( $this->post_status == 'update' && $this->is_update_new() ) {
 				$args['post_parent'] = $this->ID;
 			} else {
 				$args['ID'] = $this->ID;

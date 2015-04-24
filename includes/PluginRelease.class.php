@@ -213,7 +213,7 @@ class pkppgPluginRelease extends pkppgPostModel {
 			);
 		} elseif( $this->post_status == 'publish' ) {
 
-			if ( get_current_user_id() == $this->author ) {
+			if ( !current_user_can( 'manage_options' ) && get_current_user_id() == $this->author ) {
 				$this->post_status = 'update';
 				$this->plugin = $this->ID;
 				$this->ID = null;
@@ -268,10 +268,11 @@ class pkppgPluginRelease extends pkppgPostModel {
 			'post_date'    => $this->release_date,
 			'post_status'  => $this->post_status,
 			'post_parent'  => $this->plugin,
+			'post_author'  => $this->author,
 		);
 
 		if ( !empty( $this->ID ) ) {
-			if ( $this->post_status == 'update' ) {
+			if ( $this->post_status == 'update' && $this->is_update_new() ) {
 				$args['post_parent'] = $this->ID;
 			} else {
 				$args['ID'] = $this->ID;
@@ -338,11 +339,6 @@ class pkppgPluginRelease extends pkppgPostModel {
 				<a href="#" class="delete">
 					<?php _e( 'Delete', 'pkp-plugin-gallery' ); ?>
 				</a>
-				<?php if ( $this->post_status == 'submission' ) : ?>
-				<a href="#" class="publish">
-					<?php _e( 'Publish', 'pkp-plugin-gallery' ); ?>
-				</a>
-				<?php endif; ?>
 			</div>
 		</div>
 

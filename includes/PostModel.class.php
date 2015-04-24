@@ -252,6 +252,29 @@ abstract class pkppgPostModel {
 	}
 
 	/**
+	 * Check if a post with a status of `update` is a new
+	 * update of a submission/published post or an edit of
+	 * update already assigned.
+	 *
+	 * @since 0.1
+	 */
+	public function is_update_new() {
+
+		if ( empty( $this->ID ) ) {
+			return true;
+		}
+
+		$old = get_post( $this->ID );
+
+		if ( !$old || is_wp_error( $old ) || $old->post_status !== 'update' ) {
+			return true;
+		}
+
+		return false;
+	}
+
+
+	/**
 	 * Add an error to the validation errors array
 	 *
 	 * @since 0.1
