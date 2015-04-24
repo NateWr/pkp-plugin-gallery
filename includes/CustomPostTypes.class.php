@@ -228,6 +228,16 @@ class pkppgCustomPostTypes {
 	 */
 	public function add_meta_boxes() {
 
+		// Override publish metabox
+		add_meta_box(
+			'submitdiv',
+			__( 'Publish' ),
+			array( $this, 'print_submit_metabox' ),
+			$this->plugin_post_type,
+			'side',
+			'high'
+		);
+
 		// Add a homepage metabox
 		add_meta_box(
 			'pkppg_homepage',
@@ -328,6 +338,100 @@ class pkppgCustomPostTypes {
 			<?php
 		} else {
 			pkppg_print_releases_editor( $post->ID );
+		}
+	}
+
+	/**
+	 * Print the publish metabox override or use default if post type is
+	 * not `update`
+	 *
+	 * HTML markup is designed to mimic WordPress publish metabox markup
+	 *
+	 * @since 0.1
+	 */
+	public function print_submit_metabox( $post ) {
+
+		if ( $post->post_status == 'update' ) {#
+			$parent_url = admin_url( 'post.php?post=' . (int) $post->post_parent . '&action=edit' );
+
+			?>
+
+			<div class="submitbox">
+				<div id="minor-publishing">
+					<div id="minor-publishing-actions">
+						<div id="compare-action">
+							<span class="spinner"></span>
+							<a href="#" class="compare button">
+								<?php esc_html_e( 'Compare Changes', 'pkp-plugin-gallery' ); ?>
+							</a>
+						</div>
+						<div id="save-action">
+							<span class="spinner"></span>
+							<a href="#" class="save button">
+								<?php esc_html_e( 'Save for Later', 'pkp-plugin-gallery' ); ?>
+							</a>
+						</div>
+						<div class="clear"></div>
+					</div>
+					<div id="misc-publishing-actions">
+						<div class="misc-pub-section">
+							<p>
+								<?php
+								printf(
+									__( 'This plugin is an <em>update</em> to an <a href="%s">existing plugin</a>.', 'pkp-plugin-gallery' ),
+									esc_url( $parent_url )
+								);
+								?>
+							</p>
+						</div>
+					</div>
+					<div class="clear"></div>
+				</div>
+				<div id="major-publishing-actions">
+					<div id="delete-action">
+
+					<?php if ( current_user_can( "delete_post", $post->ID ) ) :
+						if ( !EMPTY_TRASH_DAYS ) {
+							$delete_text = __('Delete Permanently');
+						} else {
+							$delete_text = __('Move to Trash');
+						}
+						?>
+
+						<a class="submitdelete deletion" href="<?php echo get_delete_post_link($post->ID); ?>">
+							<?php echo $delete_text; ?>
+						</a>
+
+					<?php endif; ?>
+
+					</div>
+					<div id="publishing-action">
+						<span class="spinner"></span>
+						<a href="#" class="merge button button-primary">
+							<?php esc_html_e( 'Commit Changes', 'pkp-plugin-gallery' ); ?>
+						</a>
+					</div>
+					<div class="clear"></div>
+				</div>
+			</div>
+
+			<?php
+
+		} else {
+
+			// copied from core: /wp-admin/edit-form-advanced.php
+			$publish_callback_args = null;
+			if ( post_type_supports( get_post_type( $post->ID ), 'revisions') && 'auto-draft' != $post->post_status ) {
+				$revisions = wp_get_post_revisions( $post->ID );
+
+				// We should aim to show the revisions metabox only when there are revisions.
+				if ( count( $revisions ) > 1 ) {
+					reset( $revisions ); // Reset pointer for key()
+					$publish_callback_args = array( 'revisions_count' => count( $revisions ), 'revision_id' => key( $revisions ) );
+					add_meta_box('revisionsdiv', __('Revisions'), 'post_revisions_meta_box', null, 'normal', 'core');
+				}
+			}
+			post_submit_meta_box( $post, array( 'args' => $publish_callback_args ) );
 		}
 	}
 
