@@ -203,9 +203,12 @@ class pkppgPluginGallery {
 					<?php echo $plugin->name; ?>
 				</div>
 				<div class="actions">
+					<?php // @todo better user cap ?>
+					<?php if ( current_user_can( 'manage_options' ) || $plugin->maintainer == get_current_user_id() ) : ?>
 					<a href="<?php echo esc_url( add_query_arg( 'id', $plugin->ID, $this->edit_url ) ); ?>">
 						<?php _e( 'Edit', 'pkp-plugin-gallery' ); ?>
 					</a>
+					<?php endif; ?>
 				</div>
 			</li>
 			<?php endforeach; ?>
