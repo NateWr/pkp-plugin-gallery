@@ -60,9 +60,10 @@ class pkppgAjaxHandler {
 	 */
 	public function authenticate( ) {
 
-		// @todo update user permissions check so that users can
-		// modify their own items where needed
-		if ( !check_ajax_referer( 'pkppg', 'nonce', false ) || !current_user_can( 'manage_options' ) ) {
+		// @todo we need a user cap check here for submissions. It's loose now for
+		// testing but eventually the only non-admin users to pass should be editing
+		// their own objet
+		if ( !check_ajax_referer( 'pkppg', 'nonce', false ) ) {
 			$this->nopriv();
 		}
 	}
