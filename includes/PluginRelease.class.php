@@ -114,7 +114,7 @@ class pkppgPluginRelease extends pkppgPostModel {
 		$this->description = $post->post_content;
 		$this->package = get_post_meta( $post->ID, '_package', true );
 		$this->md5 = get_post_meta( $post->ID, '_md5', true );
-		$this->author = $post->post_author; // @todo figure out how to handle user data
+		$this->author = $post->post_author;
 		$this->applications = $this->get_applications();
 		$this->certification = $this->get_certification();
 		$this->post_status = $post->post_status;
