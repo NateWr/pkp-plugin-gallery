@@ -44,6 +44,7 @@ module.exports = function(grunt) {
 			build: {
 				files: {
 					'assets/js/admin.js': [
+						'assets/src/js/admin-edit-post.js',
 						'assets/src/js/submission-form.js'
 					],
 					'assets/js/gallery.js': [
