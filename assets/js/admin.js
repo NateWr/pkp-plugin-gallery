@@ -38,15 +38,20 @@ jQuery( document ).ready( function( $ ) {
     	 */
         init: function() {
 
+            // Track when ajax is firing to prevent multiple requests
+            this.loading = false;
+
             this.cache = {};
             this.cache.body = pkppg.cache.body || $( 'body' );
             this.cache.form = $( 'form#post' );
             this.cache.save = this.cache.form.find( '#save-post' );
             this.cache.compare = this.cache.form.find( '#compare-changes' );
             this.cache.diff_modal = $( '#pkppg-diff' );
+            this.cache.diff_modal_controls = this.cache.diff_modal.find( '.controls' );
             this.cache.diff_modal_close = this.cache.diff_modal.find( '.close' );
             this.cache.diff_modal_publish = this.cache.diff_modal.find( '.publish' );
             this.cache.diff_modal_diff = this.cache.diff_modal.find( '#pkp-plugin-diff' );
+            this.cache.publish_title = this.cache.form.find( '#submitdiv h3.hndle' );
 
             // Disable the lost-changes warning when saving for later
             // This turns off a WP core event that is triggered on submit of the
@@ -114,6 +119,15 @@ jQuery( document ).ready( function( $ ) {
                 e.preventDefault();
             }
 
+            if ( pkppg.edit_post.loading ) {
+                return;
+            }
+
+            pkppg.edit_post.loading = true;
+
+            pkppg.edit_post.cache.publish_title.append( '<span class="pkp-spinner"></span>' );
+            pkppg.edit_post.cache.compare.attr( 'disabled', true );
+
             var params = {};
 
             params.action = 'pkppg-get-update-diff';
@@ -124,6 +138,9 @@ jQuery( document ).ready( function( $ ) {
 
             $.get( pkppg.data.ajaxurl, data )
                 .done( function(r) {
+                    pkppg.edit_post.loading = false;
+                    pkppg.edit_post.cache.publish_title.find( '.pkp-spinner' ).remove();
+                    pkppg.edit_post.cache.compare.attr( 'disabled', false );
 
                     if ( r.success ) {
                         pkppg.edit_post.showDiffModal( params.ID, r.data.diff );
@@ -141,9 +158,18 @@ jQuery( document ).ready( function( $ ) {
          */
         publishChanges: function(e) {
 
+            if ( pkppg.edit_post.loading ) {
+                return;
+            }
+
             if ( !window.confirm( 'Are you sure you want to publish these changes to the live version?' ) ) {
                 return;
             }
+
+            pkppg.edit_post.loading = true;
+
+            pkppg.edit_post.cache.diff_modal_controls.removeClass( 'pkpr-loading pkpr-success pkpr-error' ).addClass( 'pkpr-loading' );
+            pkppg.edit_post.cache.diff_modal_publish.attr( 'disabled', true );
 
 			var params = {};
 
@@ -155,12 +181,17 @@ jQuery( document ).ready( function( $ ) {
 
 			$.post( pkppg.data.ajaxurl, data )
 				.done( function(r) {
+                    pkppg.edit_post.loading = false;
+                    pkppg.edit_post.cache.diff_modal_controls.removeClass( 'pkpr-loading pkpr-success pkpr-error' );
+                    setTimeout( function() { pkppg.edit_post.cache.diff_modal_controls.removeClass( 'pkpr-loading pkpr-success pkp-error' ); }, 4000 );
 
 					if ( r.success ) {
+                        pkppg.edit_post.cache.diff_modal_controls.addClass( 'pkpr-success' );
                         window.location.replace( r.data.redirect );
 
 					} else {
-						// @todo handle failure
+                        pkppg.edit_post.cache.diff_modal_controls.addClass( 'pkpr-error' );
+                        pkppg.edit_post.cache.diff_modal_publish.attr( 'disabled', false );
 					}
 				});
         }

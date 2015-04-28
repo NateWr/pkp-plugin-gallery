@@ -292,6 +292,16 @@
   color: #fff;
   display: block;
 }
+#submitdiv .pkp-spinner {
+  display: inline-block;
+  margin-left: 0.5em;
+  vertical-align: bottom;
+}
+#submitdiv .pkp-spinner:after {
+  line-height: 16px;
+  height: 16px;
+  width: 16px;
+}
 #pkppg-diff .pkppg-modal-container {
   max-width: 100em;
 }
@@ -303,4 +313,17 @@
 #pkppg-diff h4 {
   margin-top: 4em;
   margin-bottom: 0.5em;
+}
+#pkppg-diff .pkp-spinner,
+#pkppg-diff .pkp-success,
+#pkppg-diff .pkp-error {
+  position: absolute;
+  top: 4px;
+  left: -32px;
+  visibility: hidden;
+}
+#pkppg-diff .pkpr-loading .pkp-spinner,
+#pkppg-diff .pkpr-success .pkp-success,
+#pkppg-diff .pkpr-error .pkp-error {
+  visibility: visible;
 }

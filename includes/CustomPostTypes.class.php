@@ -509,6 +509,9 @@ class pkppgCustomPostTypes {
 			<a href="#" class="close button">
 				<?php _e( 'Close', 'pkp-plugin-gallery' ); ?>
 			</a>
+			<span class="pkp-spinner"></span>
+			<span class="pkp-success"></span>
+			<span class="pkp-error"></span>
 		</div>
 
 		<?php
