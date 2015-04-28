@@ -388,7 +388,7 @@ class pkppgCustomPostTypes {
 				<div id="major-publishing-actions">
 					<div id="delete-action">
 
-					<?php if ( current_user_can( "delete_post", $post->ID ) ) :
+					<?php if ( current_user_can( 'delete_post', $post->ID ) ) :
 						if ( !EMPTY_TRASH_DAYS ) {
 							$delete_text = __('Delete Permanently');
 						} else {
