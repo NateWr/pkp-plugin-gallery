@@ -152,6 +152,11 @@ class pkppgQuery {
 
 		$this->prepare_args();
 
+		// Store old $post so that we can use this in admin where `$post` isn't
+		// constructed from the usual query args
+		global $post;
+		$old_post = $post;
+
 		$query = new WP_Query( $this->args );
 
 		if ( !$query->have_posts() ) {
@@ -168,6 +173,9 @@ class pkppgQuery {
 			$results[] = $plugin;
 		}
 
+		// Manually reset the `$post` in case we are in the admin area where
+		// it's not set by query args.
+		$post = $old_post;
 		wp_reset_query();
 
 		return $results;
