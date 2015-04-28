@@ -33,6 +33,13 @@ abstract class pkppgPostModel {
 	public $post_parent;
 
 	/**
+	 * Last modified date
+	 *
+	 * @since 0.1
+	 */
+	public $post_modified;
+
+	/**
 	 * Validation errors
 	 *
 	 * @since 0.1

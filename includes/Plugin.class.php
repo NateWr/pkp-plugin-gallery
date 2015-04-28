@@ -92,6 +92,13 @@ class pkppgPlugin extends pkppgPostModel {
 	public $releases = array();
 
 	/**
+	 * Originally posted date
+	 *
+	 * @since 0.1
+	 */
+	public $post_date;
+
+	/**
 	 * Initialize
 	 *
 	 * @since 0.1
@@ -120,6 +127,8 @@ class pkppgPlugin extends pkppgPostModel {
 		$this->applications = $this->get_applications();
 		$this->post_status = $post->post_status;
 		$this->post_parent = $post->post_parent;
+		$this->post_date = $post->post_status;
+		$this->post_modified = $post->post_modified;
 	}
 
 	/**

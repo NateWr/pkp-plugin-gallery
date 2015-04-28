@@ -277,6 +277,21 @@
 #save-action #save-post {
   float: right;
 }
+#submitdiv .misc-pub-pkp-updates {
+  background: #d54e21;
+  color: #ffffff;
+}
+#submitdiv .pkp-updates {
+  margin-top: 1em;
+}
+#submitdiv .pkp-update {
+  padding: 0.5em 0;
+  color: #41180A;
+}
+#submitdiv .pkp-update a {
+  color: #fff;
+  display: block;
+}
 #pkppg-diff .pkppg-modal-container {
   max-width: 100em;
 }

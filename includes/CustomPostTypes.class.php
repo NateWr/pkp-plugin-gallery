@@ -44,6 +44,9 @@ class pkppgCustomPostTypes {
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
 		add_action( 'save_post', array( $this, 'save_post' ) );
 
+		// Modify plugin publish metabox
+		add_action( 'post_submitbox_misc_actions', array( $this, 'add_updates_to_publish_metabox' ) );
+
 		// Add the compare changes modal to the `pkp_plugin` edit post screen
 		add_action( 'admin_footer', array( $this, 'print_diff_modal' ) );
 	}
@@ -427,6 +430,56 @@ class pkppgCustomPostTypes {
 			}
 			post_submit_meta_box( $post, array( 'args' => $publish_callback_args ) );
 		}
+	}
+
+	/**
+	 * Add a list of updates to the publish metabox on the `pkp_plugin` edit
+	 * post screen
+	 *
+	 * @since 0.1
+	 */
+	public function add_updates_to_publish_metabox() {
+
+		global $post;
+
+		if ( $post->post_type !== $this->plugin_post_type ) {
+			return;
+		}
+
+		$args = array(
+			'posts_per_page' => 1000,
+			'post_status' => 'update',
+			'post_parent' => $post->ID,
+			'orderby' => 'modified',
+		);
+
+		$query = new pkppgQuery( $args );
+		$updates = $query->get_results();
+
+		if ( empty( $updates ) ) {
+			return;
+		}
+
+		$url = add_query_arg( 'action', 'edit', admin_url( 'post.php' ) );
+
+		?>
+
+		<div class="misc-pub-section misc-pub-pkp-updates">
+			<span class="dashicons dashicons-update"></span>
+			<?php printf( wp_kses( 'Updates: <strong>%d</strong>', 'pkp-plugin-gallery' ), count( $updates ) ); ?>
+			<div class="pkp-updates">
+				<?php foreach( $updates as $update ) : ?>
+				<div class="pkp-update">
+					<a href="<?php echo esc_url( add_query_arg( 'post', $update->ID, $url ) ); ?>"><?php echo esc_html( $update->name ); ?></a>
+					<span class="date">
+						<?php echo $update->post_modified; ?>
+					</span>
+				</div>
+				<?php endforeach; ?>
+			</div>
+		</div>
+
+		<?php
 	}
 
 	/**
