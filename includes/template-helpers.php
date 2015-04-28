@@ -21,15 +21,22 @@ function pkppg_print_taxonomy_select( $taxonomy, $selected = '', $args = array()
 
 	$terms = get_terms( $taxonomy, $args );
 
-	global $post;
-	$post_terms = wp_get_post_terms( $post->ID, $taxonomy );
-	$post_term_id = !empty( $post_terms[0] ) && is_a( $post_terms[0], 'stdClass' ) ? $post_terms[0]->term_id : '';
+	if ( empty( $selected ) ) {
+		global $post;
+		if ( is_a( $post, 'WP_POST' ) ) {
+			$post_terms = wp_get_post_terms( $post->ID, $taxonomy );
+			$selected = !empty( $post_terms[0] ) && is_a( $post_terms[0], 'stdClass' ) ? $post_terms[0]->slug : '';
+		}
+	} elseif ( is_int( $selected ) ) {
+		$term = get_term( $selected, $taxonomy );
+		$selected = $term->slug;
+	}
 
 	?>
 
 	<select name="tax_input[<?php echo esc_attr( $taxonomy ); ?>]">
 	<?php foreach ( $terms as $term ) : ?>
-		<option value="<?php echo esc_attr( $term->term_id ); ?>" <?php selected( $post_term_id, $term->term_id ); ?>>
+		<option value="<?php echo esc_attr( $term->slug ); ?>" <?php selected( $selected, $term->slug ); ?>>
 			<?php echo $term->name; ?>
 		</option>
 	<?php endforeach; ?>
@@ -63,7 +70,7 @@ function pkppg_print_application_select( $selected = array() ) {
 				<?php foreach( $term->children as $child ) : ?>
 				<li>
 					<label>
-						<input type="checkbox" name="tax_input[pkp_application][]" value="<?php echo $child->term_id; ?>" <?php in_array( $child->term_id, $selected ) ? ' checked="checked"' : '' ?>>
+						<input type="checkbox" name="tax_input[pkp_application][]" value="<?php echo $child->slug; ?>" <?php in_array( $child->slug, $selected ) ? ' checked="checked"' : '' ?>>
 						<?php echo $child->name; ?>
 					</label>
 				</li>

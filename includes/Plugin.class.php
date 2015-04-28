@@ -171,11 +171,11 @@ class pkppgPlugin extends pkppgPostModel {
 		}
 
 		if ( isset( $params['category'] ) ) {
-			$this->category = absint( $params['category'] );
+			$this->category = sanitize_text_field( $params['category'] );
 		}
 
 		if ( isset( $params['applications'] ) ) {
-			$this->applications = array_map( 'absint', $params['applications'] );
+			$this->applications = array_map( 'sanitize_text_field', $params['applications'] );
 		}
 
 		if ( !empty( $params['post_status'] ) && pkppgInit()->cpts->is_valid_status( $params['post_status'] ) ) {
