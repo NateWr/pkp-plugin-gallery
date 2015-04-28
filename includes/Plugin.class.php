@@ -344,5 +344,60 @@ class pkppgPlugin extends pkppgPostModel {
 
 		<?php
 	}
+
+	/**
+	 * Generate a diff of changes against an updated object
+	 *
+	 * This will generate a series of diff tables which indicate changes between
+	 * `$this` and an updated object which is passed to this method.
+	 *
+	 * @since 0.1
+	 */
+	public function get_diff( $update ) {
+
+		$strings = array(
+			'name',
+			'product',
+			'summary',
+			'description',
+			'homepage',
+			'installation',
+		);
+
+		ob_start();
+
+		foreach( $strings as $string ) :
+			$diff = wp_text_diff( $this->{$string}, $update->{$string} );
+
+			if ( empty( $diff ) ) {
+				continue;
+			}
+		?>
+
+		<div class="param">
+			<h4><?php echo ucfirst( $string ); ?></h4>
+			<?php echo $diff; ?>
+		</div>
+
+		<?php
+		endforeach;
+
+		$current_category = !empty( $this->category ) ? get_term( $this->category, 'pkp_category' ) : '';
+		$update_category = !empty( $update->category ) ? get_term( $update->category, 'pkp_category' ) : '';
+		$diff = wp_text_diff( $current_category->name, $update_category->name );
+
+		if ( !empty( $diff ) ) :
+		?>
+
+		<div class="param">
+			<h4><?php esc_html_e( 'Category' ); ?></h4>
+			<?php echo $diff; ?>
+		</div>
+
+		<?php
+		endif;
+
+		return ob_get_clean();
+	}
 }
 } // endif

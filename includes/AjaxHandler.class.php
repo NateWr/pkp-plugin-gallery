@@ -34,6 +34,10 @@ class pkppgAjaxHandler {
 		add_action( 'wp_ajax_pkppg-publish-release', array( $this, 'ajax_publish_release' ) );
 		add_action( 'wp_ajax_nopriv_pkppg-publish-release', array( $this, 'nopriv' ) );
 
+		// Load an update diff
+		add_action( 'wp_ajax_pkppg-get-update-diff', array( $this, 'ajax_get_update_diff' ) );
+		add_action( 'wp_ajax_nopriv_pkppg-get-update-diff', array( $this, 'nopriv' ) );
+
 		// Merge update
 		add_action( 'wp_ajax_pkppg-merge-update', array( $this, 'ajax_merge_update' ) );
 		add_action( 'wp_ajax_nopriv_pkppg-merge-update', array( $this, 'nopriv' ) );
@@ -255,6 +259,90 @@ class pkppgAjaxHandler {
 				)
 			);
 		}
+	}
+
+	/**
+	 * Get a diff for an update and it's parent
+	 *
+	 * @since 0.1
+	 */
+	public function ajax_get_update_diff() {
+
+		$this->authenticate();
+
+		// Only admins!
+		// @todo better cap check
+		if ( !current_user_can( 'manage_options' ) ) {
+			$this->nopriv();
+		}
+
+		if ( empty( $_GET['ID'] ) ) {
+			wp_send_json_error(
+				array(
+					'error' => 'nopost',
+					'msg'   => __( 'No post ID was received with this request.', 'pkp-plugin-gallery' ),
+				)
+			);
+		}
+
+		$post = get_post( (int) $_GET['ID'] );
+
+		if ( !$post || is_wp_error( $post ) || !pkppgInit()->cpts->is_valid_type( $post->post_type ) ) {
+			wp_send_json_error(
+				array(
+					'error' => 'nopostfound',
+					'msg'   => __( 'This item could not be found.', 'pkp-plugin-gallery' ),
+				)
+			);
+		}
+
+		if ( empty( $post->post_parent ) ) {
+			wp_send_json_error(
+				array(
+					'error' => 'noparentfound',
+					'msg'   => __( 'This update is not attached to any existing plugin.', 'pkp-plugin-gallery' ),
+				)
+			);
+		}
+
+		$update = $post->post_type == pkppgInit()->cpts->plugin_post_type ? new pkppgPlugin() : new pkppgPluginRelease();
+
+		if ( !$update->load_post( $post ) ) {
+			wp_send_json_error(
+				array(
+					'error' => 'nopostfound',
+					'var' => (int) $_GET['ID'],
+					'post' => $post,
+					'also' => 'this',
+					'msg'   => __( 'This item could not be found.', 'pkp-plugin-gallery' ),
+				)
+			);
+		}
+
+		$class = get_class( $update );
+		$parent = new $class();
+
+		if ( !$parent->load_post( $post->post_parent ) ) {
+			wp_send_json_error(
+				array(
+					'error' => 'nopostfound',
+					'var' => $post->post_parent,
+					'post' => $post,
+					'also' => 'this',
+					'msg'   => __( 'No plugin was found for this update.', 'pkp-plugin-gallery' ),
+				)
+			);
+		}
+
+		$diff = $parent->get_diff( $update );
+
+		wp_send_json_success(
+			array(
+				'parent' => $parent,
+				'update' => $update,
+				'diff' => $parent->get_diff( $update ),
+			)
+		);
 	}
 
 	/**

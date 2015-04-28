@@ -453,7 +453,7 @@ class pkppgCustomPostTypes {
 			<a href="#" class="publish button-primary">
 				<?php _e( 'Publish Changes', 'pkp-plugin-gallery' ); ?>
 			</a>
-			<a href="#" class="close">
+			<a href="#" class="close button">
 				<?php _e( 'Close', 'pkp-plugin-gallery' ); ?>
 			</a>
 		</div>

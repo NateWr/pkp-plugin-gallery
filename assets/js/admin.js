@@ -56,7 +56,7 @@ jQuery( document ).ready( function( $ ) {
             });
 
             // Open/close compare changes modal
-            this.cache.compare.click( this.showDiffModal );
+            this.cache.compare.click( this.loadDiff );
             this.cache.diff_modal_close.click( this.hideDiffModal );
             this.cache.diff_modal_publish.click( this.publishChanges );
 			this.cache.diff_modal.click( function(e) { if ( $( e.target ).is( pkppg.edit_post.cache.diff_modal ) ) { pkppg.edit_post.hideDiffModal(); } } );
@@ -68,17 +68,16 @@ jQuery( document ).ready( function( $ ) {
          *
          * @since 0.1
          */
-        showDiffModal: function(e) {
+        showDiffModal: function(id, diff) {
 
-            if ( typeof e !== 'undefined' ) {
-                e.stopPropagation();
-                e.preventDefault();
-            }
-
-            pkppg.edit_post.ID = $( e.target ).data( 'id' );
+            pkppg.edit_post.ID = id;
 
             if ( !pkppg.edit_post.ID ) {
                 return;
+            }
+
+            if ( diff ) {
+                pkppg.edit_post.cache.diff_modal_diff.html( diff );
             }
 
             pkppg.edit_post.cache.body.addClass( 'pkppg-modal-is-visible' );
@@ -101,6 +100,38 @@ jQuery( document ).ready( function( $ ) {
             pkppg.edit_post.cache.diff_modal.removeClass( 'is-visible' );
 
             pkppg.edit_post.cache.diff_modal_diff.empty();
+        },
+
+        /**
+         * Retrieve a diff for this object
+         *
+         * @since 0.1
+         */
+        loadDiff: function(e) {
+
+            if ( typeof e !== 'undefined' ) {
+                e.stopPropagation();
+                e.preventDefault();
+            }
+
+            var params = {};
+
+            params.action = 'pkppg-get-update-diff';
+            params.nonce = pkppg.data.nonce;
+            params.ID = pkppg.edit_post.cache.form.find( '#post_ID' ).val();
+
+            var data = $.param( params );
+
+            $.get( pkppg.data.ajaxurl, data )
+                .done( function(r) {
+
+                    if ( r.success ) {
+                        pkppg.edit_post.showDiffModal( params.ID, r.data.diff );
+
+                    } else {
+                        // @todo handle failure
+                    }
+                });
         },
 
         /**
