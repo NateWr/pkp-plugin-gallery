@@ -72,10 +72,19 @@
 		}
 	}
 
-	.update {
+	.releases > li > .submission > .title, // just the title
+	.updates .update {
 		padding: 0.5em;
-		background: #d54e21;
+		background: @admin-primary;
 		color: #fff;
+	}
+
+	.updates .update {
+		background: @admin-offset;
+	}
+
+	.update,
+	.submission {
 
 		.dashicons {
 			line-height: 26px;
@@ -87,7 +96,7 @@
 			font-weight: 400;
 		}
 
-		.update-notice {
+		.status-notice {
 			font-weight: 700;
 		}
 

@@ -504,6 +504,7 @@ class pkppgCustomPostTypes {
 		<div id="pkp-plugin-diff"></div>
 		<div class="controls">
 			<a href="#" class="publish button-primary">
+				<span class="dashicons dashicons-randomize"></span>
 				<?php _e( 'Publish Changes', 'pkp-plugin-gallery' ); ?>
 			</a>
 			<a href="#" class="close button">

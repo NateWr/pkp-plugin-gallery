@@ -136,7 +136,6 @@ function pkppg_print_releases_editor( $plugin_id = 0 ) {
 
 		?>
 
-
 		</ul>
 		<fieldset class="pkp-release-form-buttons">
 			<a href="#" class="button add" data-plugin="<?php echo $plugin_id; ?>">

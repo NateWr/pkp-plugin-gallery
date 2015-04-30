@@ -263,30 +263,41 @@
 .pkp-releases-form .actions.publishing .pkp-spinner {
   opacity: 1;
 }
-.pkp-releases-form .update {
+.pkp-releases-form .releases > li > .submission > .title,
+.pkp-releases-form .updates .update {
   padding: 0.5em;
-  background: #d54e21;
+  background: #0073aa;
   color: #fff;
 }
-.pkp-releases-form .update .dashicons {
+.pkp-releases-form .updates .update {
+  background: #d54e21;
+}
+.pkp-releases-form .update .dashicons,
+.pkp-releases-form .submission .dashicons {
   line-height: 26px;
 }
 .pkp-releases-form .update .title,
-.pkp-releases-form .update .version {
+.pkp-releases-form .submission .title,
+.pkp-releases-form .update .version,
+.pkp-releases-form .submission .version {
   color: #fff;
   font-weight: 400;
 }
-.pkp-releases-form .update .update-notice {
+.pkp-releases-form .update .status-notice,
+.pkp-releases-form .submission .status-notice {
   font-weight: 700;
 }
-.pkp-releases-form .update a {
+.pkp-releases-form .update a,
+.pkp-releases-form .submission a {
   color: #fff;
 }
-.pkp-releases-form .update .actions {
+.pkp-releases-form .update .actions,
+.pkp-releases-form .submission .actions {
   top: 0.5em;
   right: 0.5em;
 }
-.pkp-releases-form .update .actions .delete {
+.pkp-releases-form .update .actions .delete,
+.pkp-releases-form .submission .actions .delete {
   color: #fff;
 }
 .pkp-release-fields .applications ul,

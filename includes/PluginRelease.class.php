@@ -330,8 +330,13 @@ class pkppgPluginRelease extends pkppgPostModel {
 
 				<?php if ( $this->post_status == 'update' ) : ?>
 				<span class="dashicons dashicons-update"></span>
-				<span class="update-notice">
+				<span class="status-notice">
 					<?php esc_html_e( 'Update: ', 'pkp-plugin-gallery' ); ?>
+				</span>
+				<?php elseif ( $this->post_status == 'submission' ) : ?>
+				<span class="dashicons dashicons-download"></span>
+				<span class="status-notice">
+					<?php esc_html_e( 'Submission: ', 'pkp-plugin-gallery' ); ?>
 				</span>
 				<?php endif; ?>
 
@@ -339,7 +344,6 @@ class pkppgPluginRelease extends pkppgPostModel {
 				<span class="version">
 					<?php echo $this->version; ?>
 				</span>
-
 				&mdash;
 				<span class="date">
 					<?php echo $this->release_date; ?>
@@ -352,7 +356,7 @@ class pkppgPluginRelease extends pkppgPostModel {
 				<?php endif; ?>
 			</div>
 
-			<?php if ( $this->post_status !== 'update' ) : ?>
+			<?php if ( $this->post_status == 'publish' ) : ?>
 			<div class="details">
 				<?php echo $this->description; ?>
 			</div>
