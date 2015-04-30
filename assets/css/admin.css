@@ -212,14 +212,16 @@
   content: "\f335";
   color: #dd3d36;
 }
-.pkp-releases-form .release {
-  position: relative;
+.pkp-releases-form .releases > li {
   margin-bottom: 1em;
   padding-bottom: 1em;
   border-bottom: 1px solid #dddddd;
 }
-.pkp-releases-form .release:last-child {
+.pkp-releases-form .releases > li:last-child {
   border-bottom: none;
+}
+.pkp-releases-form .release {
+  position: relative;
 }
 .pkp-releases-form .title {
   line-height: 2em;
@@ -260,6 +262,32 @@
 .pkp-releases-form .actions.deleting .pkp-spinner,
 .pkp-releases-form .actions.publishing .pkp-spinner {
   opacity: 1;
+}
+.pkp-releases-form .update {
+  padding: 0.5em;
+  background: #d54e21;
+  color: #fff;
+}
+.pkp-releases-form .update .dashicons {
+  line-height: 26px;
+}
+.pkp-releases-form .update .title,
+.pkp-releases-form .update .version {
+  color: #fff;
+  font-weight: 400;
+}
+.pkp-releases-form .update .update-notice {
+  font-weight: 700;
+}
+.pkp-releases-form .update a {
+  color: #fff;
+}
+.pkp-releases-form .update .actions {
+  top: 0.5em;
+  right: 0.5em;
+}
+.pkp-releases-form .update .actions .delete {
+  color: #fff;
 }
 .pkp-release-fields .applications ul,
 .pkp-release-fields .applications li {

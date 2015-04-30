@@ -100,8 +100,7 @@ jQuery( document ).ready( function( $ ) {
 				}
 				if ( release.applications.length ) {
 					fields.find( '.applications input' ).each( function() {
-						var value = parseInt( $(this).val() );
-						if ( $.inArray( value, release.applications ) !== -1 ) {
+						if ( $.inArray( $(this).val(), release.applications ) !== -1 ) {
 							$(this).attr( 'checked', 'checked' );
 						}
 					});

@@ -97,6 +97,26 @@ function pkppg_print_releases_editor( $plugin_id = 0 ) {
 
 	$plugin_id = (int) $plugin_id;
 
+	// Only show submissions in admin area
+	// @todo better user cap
+	$post_statuses = array( 'publish' );
+	if ( is_admin() && current_user_can( 'manage_options' ) ) {
+		$post_statuses[] = 'submission';
+	}
+
+	$args = array(
+		'post_parent'    => $plugin_id,
+		'post_type'      => pkppgInit()->cpts->plugin_release_post_type,
+		'posts_per_page' => 1000,
+		'post_status'    => $post_statuses,
+		'with_updates'   => true,
+		'orderby'        => 'title',
+		'order'			 => 'DESC',
+	);
+
+	$query = new pkppgQuery( $args );
+	$results = $query->get_results();
+
 	?>
 
 	<div class="pkp-releases-form">
@@ -104,43 +124,18 @@ function pkppg_print_releases_editor( $plugin_id = 0 ) {
 
 		<?php
 
-		if ( !empty( $plugin_id ) ) {
-			$query = new WP_Query(
-				array(
-					'post_parent'    => $plugin_id,
-					'post_type'      => pkppgInit()->cpts->plugin_release_post_type,
-					'posts_per_page' => 1000,
-					'post_status'    => pkppgInit()->cpts->valid_post_statuses,
-				)
-			);
+		if ( !empty( $plugin_id ) && !empty( $results ) ) {
+			foreach( $results as $release ) :
+			?>
 
-			if ( !empty( $plugin_id ) && $query->have_posts() ) {
-				while( $query->have_posts() ) {
-					$query->the_post() ;
-					global $post;
+			<li><?php $release->print_control_overview(); ?></li>
 
-					$release = new pkppgPluginRelease();
-					$release->load_post( $post );
-
-					?>
-
-					<li><?php $release->print_control_overview(); ?></li>
-
-					<?php
-				}
-			} else {
-
-				?>
-
-				<p class="description">
-					<?php _e( 'You have not added any releases for this plugin.', 'pkp-plugin-gallery' ); ?>
-				</p>
-
-				<?php
-			}
+			<?php
+			endforeach;
 		}
 
 		?>
+
 
 		</ul>
 		<fieldset class="pkp-release-form-buttons">
@@ -264,17 +259,6 @@ function pkppg_print_release_fields() {
 				<?php _e( 'Compatible Applications', 'pkp-plugin-gallery' ); ?>
 			</h3>
 			<?php pkppg_print_application_select(); ?>
-		</div>
-		<!-- @todo only show this to users with appropriate permissions -->
-		<div class="post_status">
-			<label for="pkp-release-post_status">
-				<?php _e( 'Status', 'pkp-plugin-gallery' ); ?>
-			</label>
-			<select name="post_status" id="pkp-release-post_status">
-				<?php foreach ( pkppgInit()->cpts->valid_post_statuses as $status ) : ?>
-				<option value="<?php echo esc_attr( $status ); ?>"><?php echo esc_attr( $status ); ?></option>
-				<?php endforeach; ?>
-			</select>
 		</div>
 
 	</fieldset>

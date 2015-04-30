@@ -77,6 +77,11 @@ class pkppgPluginRelease extends pkppgPostModel {
 	 * Applications and versions that this release is
 	 * expected to be compatible with.
 	 *
+	 * Note: this array may include term slugs or IDs. Most WP functions which
+	 * store or interact with the database can accept a mixed array, but beware
+	 * when printing. Generally speaking, term slugs are used. But in cases
+	 * where a parent term is assigned, it will usually just add the ID.
+	 *
 	 * @param applications array Assigned terms in pkp_application taxonomy
 	 * @since 0.1
 	 */
@@ -164,11 +169,11 @@ class pkppgPluginRelease extends pkppgPostModel {
 		}
 
 		if ( isset( $params['certification'] ) ) {
-			$this->certification = absint( $params['certification'] );
+			$this->certification = sanitize_text_field( $params['certification'] );
 		}
 
 		if ( isset( $params['applications'] ) ) {
-			$this->applications = array_map( 'absint', $params['applications'] );
+			$this->applications = array_map( 'sanitize_text_field', $params['applications'] );
 			$this->add_parent_applications();
 		}
 
@@ -319,29 +324,66 @@ class pkppgPluginRelease extends pkppgPostModel {
 
 		?>
 
-		<div class="release" data-id="<?php echo (int) $this->ID; ?>">
+		<div class="release <?php echo esc_attr( $this->post_status ); ?>" data-id="<?php echo (int) $this->ID; ?>">
 			<input type="hidden" name="pkp-plugin-releases[]" value="<?php echo (int) $this->ID; ?>">
 			<div class="title">
+
+				<?php if ( $this->post_status == 'update' ) : ?>
+				<span class="dashicons dashicons-update"></span>
+				<span class="update-notice">
+					<?php esc_html_e( 'Update: ', 'pkp-plugin-gallery' ); ?>
+				</span>
+				<?php endif; ?>
+
+				<?php if ( $this->post_status != 'update' ) : ?>
 				<span class="version">
 					<?php echo $this->version; ?>
 				</span>
+
 				&mdash;
 				<span class="date">
 					<?php echo $this->release_date; ?>
 				</span>
+
+				<?php else : ?>
+				<span class="date">
+					<?php echo mysql2date( get_option( 'date_format' ), $this->post_modified ); ?>
+				</span>
+				<?php endif; ?>
 			</div>
+
+			<?php if ( $this->post_status !== 'update' ) : ?>
 			<div class="details">
 				<?php echo $this->description; ?>
 			</div>
+			<?php endif; ?>
+
 			<div class="actions">
 				<span class="pkp-spinner"></span>
 				<a href="#" class="edit">
 					<?php _e( 'Edit', 'pkp-plugin-gallery' ); ?>
 				</a>
+
+				<?php if ( $this->post_status == 'update' ) : ?>
+				<a href="#" class="compare">
+					<?php _e( 'Compare Changes', 'pkp-plugin-gallery' ); ?>
+				</a>
+				<?php endif; ?>
+
 				<a href="#" class="delete">
 					<?php _e( 'Delete', 'pkp-plugin-gallery' ); ?>
 				</a>
 			</div>
+			<?php // @todo better user cap ?>
+			<?php if ( !empty( $this->updates ) && is_admin() && current_user_can( 'manage_options' ) ) : ?>
+			<ul class="updates">
+				<?php foreach( $this->updates as $update ) : ?>
+				<li>
+					<?php echo $update->get_control_overview(); ?>
+				</li>
+				<?php endforeach; ?>
+			</ul>
+			<?php endif; ?>
 		</div>
 
 		<?php
@@ -383,6 +425,7 @@ class pkppgPluginRelease extends pkppgPostModel {
 
 		foreach( $terms as $term ) {
 			if ( $term->parent ) {
+				// It's ok to mix term slugs and term IDs here
 				$this->applications[] = (int) $term->parent;
 			}
 		}

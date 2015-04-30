@@ -40,6 +40,13 @@ abstract class pkppgPostModel {
 	public $post_modified;
 
 	/**
+	 * Updates for this object
+	 *
+	 * @since 0.1
+	 */
+	public $updates = array();
+
+	/**
 	 * Validation errors
 	 *
 	 * @since 0.1
@@ -82,6 +89,41 @@ abstract class pkppgPostModel {
 	abstract function load_wp_post( $post );
 
 	/**
+	 * Load updates for this object
+	 *
+	 * This will pull posts with this object as their `post_parent` and a
+	 * `post_status` of `update`. New objects are created and attached as
+	 * updates.
+	 *
+	 * @since 0.1
+	 */
+	public function load_updates() {
+
+		$args = array(
+			'posts_per_page' => 1000, // large upper range
+			'no_found_rows' => true,
+			'post_type' => $this->post_type,
+			'post_status' => 'update',
+			'post_parent' => $this->ID,
+			'orderby' => 'modified',
+		);
+
+		$query = new WP_Query( $args );
+
+		if ( !$query->have_posts() ) {
+			return;
+		}
+
+		while( $query->have_posts() ) {
+			$query->the_post();
+
+			$obj = $query->post->post_type == pkppgInit()->cpts->plugin_post_type ? new pkppgPlugin() : new pkppgPluginRelease();
+			$obj->load_post( $query->post );
+			$this->updates[] = $obj;
+		}
+	}
+
+	/**
 	 * Get the category this post is assigned to
 	 *
 	 * @since 0.1
@@ -122,7 +164,7 @@ abstract class pkppgPostModel {
 		$applications = wp_get_post_terms( $this->ID, 'pkp_application' );
 		if ( !is_wp_error( $applications ) ) {
 			foreach( $applications as $application) {
-				$this->applications[] = $application->term_id;
+				$this->applications[] = $application->slug;
 			}
 		}
 
@@ -147,7 +189,7 @@ abstract class pkppgPostModel {
 		$certifications = wp_get_post_terms( $this->ID, 'pkp_certification' );
 		if ( !is_wp_error( $certifications ) ) {
 			foreach( $certifications as $certification ) {
-				$this->certification[] = $certification->term_id;
+				$this->certification[] = $certification->slug;
 			}
 		}
 

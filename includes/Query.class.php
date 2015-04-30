@@ -167,10 +167,18 @@ class pkppgQuery {
 		while( $query->have_posts() ) {
 			$query->the_post();
 
-			$plugin = new pkppgPlugin();
-			$plugin->load_post( $query->post );
+			$obj = $query->post->post_type == pkppgInit()->cpts->plugin_post_type ? new pkppgPlugin() : new pkppgPluginRelease();
+			$obj->load_post( $query->post );
 
-			$results[] = $plugin;
+			// Add updates for each object to the results
+			// This is not very performant and requires a new lookup for each
+			// parent, so it should only really be used when retrieving singular
+			// objects or a small number of them.
+			if ( $this->args['with_updates'] ) {
+				$obj->load_updates();
+			}
+
+			$results[] = $obj;
 		}
 
 		// Manually reset the `$post` in case we are in the admin area where

@@ -8,8 +8,7 @@
 // Releases list
 .pkp-releases-form {
 
-	.release {
-		position: relative;
+	.releases > li {
 		margin-bottom: 1em;
 		padding-bottom: 1em;
 		border-bottom: 1px solid @border;
@@ -17,6 +16,10 @@
 		&:last-child {
 			border-bottom: none;
 		}
+	}
+
+	.release {
+		position: relative;
 	}
 
 	.title {
@@ -63,9 +66,42 @@
 		}
 
 		&.loading .pkp-spinner,
-    &.deleting .pkp-spinner,
-    &.publishing .pkp-spinner {
+    	&.deleting .pkp-spinner,
+    	&.publishing .pkp-spinner {
 			opacity: 1;
+		}
+	}
+
+	.update {
+		padding: 0.5em;
+		background: #d54e21;
+		color: #fff;
+
+		.dashicons {
+			line-height: 26px;
+		}
+
+		.title,
+		.version {
+			color: #fff;
+			font-weight: 400;
+		}
+
+		.update-notice {
+			font-weight: 700;
+		}
+
+		a {
+			color: #fff;
+		}
+
+		.actions {
+			top: 0.5em;
+			right: 0.5em;
+
+			.delete {
+				color: #fff;
+			}
 		}
 	}
 }
