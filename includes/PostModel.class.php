@@ -311,6 +311,26 @@ abstract class pkppgPostModel {
 	}
 
 	/**
+	 * Disable post
+	 *
+	 * This only shifts the post status after checking user
+	 * capabilities.
+	 *
+	 * @since 0.1
+	 */
+	public function disable() {
+
+		// @todo better user cap check
+		if ( empty( $this->ID ) || !current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		$this->post_status = 'disable';
+
+		return wp_update_post( array( 'ID' => $this->ID, 'post_status' => $this->post_status ) );
+	}
+
+	/**
 	 * Merge this post with its parent
 	 *
 	 * This simply takes the current post object (with taxonomies and metadata)

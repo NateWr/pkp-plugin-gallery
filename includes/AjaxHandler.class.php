@@ -34,6 +34,10 @@ class pkppgAjaxHandler {
 		add_action( 'wp_ajax_pkppg-publish-release', array( $this, 'ajax_publish_release' ) );
 		add_action( 'wp_ajax_nopriv_pkppg-publish-release', array( $this, 'nopriv' ) );
 
+		// Disable release
+		add_action( 'wp_ajax_pkppg-disable-release', array( $this, 'ajax_disable_release' ) );
+		add_action( 'wp_ajax_nopriv_pkppg-disable-release', array( $this, 'nopriv' ) );
+
 		// Load an update diff
 		add_action( 'wp_ajax_pkppg-get-update-diff', array( $this, 'ajax_get_update_diff' ) );
 		add_action( 'wp_ajax_nopriv_pkppg-get-update-diff', array( $this, 'nopriv' ) );
@@ -239,12 +243,13 @@ class pkppgAjaxHandler {
 			wp_send_json_error(
 				array(
 					'error' => 'noreleasefound',
-					'msg'   => __( 'This release could not be found in order to be deleted.', 'pkp-plugin-gallery' ),
+					'msg'   => __( 'This release could not be found in order to be published.', 'pkp-plugin-gallery' ),
 				)
 			);
 		}
 
 		if ( $release->publish() ) {
+			$release->load_updates();
 			wp_send_json_success(
 				array(
 					'release'  => $release,
@@ -256,6 +261,53 @@ class pkppgAjaxHandler {
 				array(
 					'error' => 'publish_failed',
 					'msg'   => __( 'There was an error while attempting to publish this release.', 'pkp-plugin-gallery' ),
+				)
+			);
+		}
+	}
+
+	/**
+	 * Disable a release
+	 *
+	 * @since 0.1
+	 */
+	public function ajax_disable_release() {
+
+		$this->authenticate();
+
+		if ( empty( $_POST['release'] ) ) {
+			wp_send_json_error(
+				array(
+					'error' => 'norelease',
+					'msg'   => __( 'No release data was received with this request.', 'pkp-plugin-gallery' ),
+				)
+			);
+		}
+
+		$release = new pkppgPluginRelease();
+
+		if ( !$release->load_post( (int) $_POST['release'] ) ) {
+			wp_send_json_error(
+				array(
+					'error' => 'noreleasefound',
+					'msg'   => __( 'This release could not be found in order to be disabled.', 'pkp-plugin-gallery' ),
+				)
+			);
+		}
+
+		if ( $release->disable() ) {
+			$release->load_updates();
+			wp_send_json_success(
+				array(
+					'release'  => $release,
+					'overview' => $release->get_control_overview(),
+				)
+			);
+		} else {
+			wp_send_json_error(
+				array(
+					'error' => 'disable_failed',
+					'msg'   => __( 'There was an error while attempting to disable this release.', 'pkp-plugin-gallery' ),
 				)
 			);
 		}

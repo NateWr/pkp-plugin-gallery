@@ -56,8 +56,10 @@ jQuery( document ).ready( function( $ ) {
 					pkppg.form.loadRelease( release.data( 'id' ) );
 				} else if ( release && target.hasClass( 'delete' ) ) {
 					pkppg.form.deleteRelease( release.data( 'id' ) );
-				} else if ( release && target.hasClass( 'approve' ) ) {
+				} else if ( release && ( target.hasClass( 'approve' ) || target.hasClass( 'enable' ) ) ) {
 					pkppg.form.publishRelease( release.data( 'id' ) );
+				} else if ( release && target.hasClass( 'disable' ) ) {
+					pkppg.form.disableRelease( release.data( 'id' ) );
 				}
 			});
 		},
@@ -262,6 +264,38 @@ jQuery( document ).ready( function( $ ) {
 			var params = {};
 
 			params.action = 'pkppg-publish-release';
+			params.nonce = pkppg.data.nonce;
+			params.release = id;
+
+			var data = $.param( params );
+
+			$.post( pkppg.data.ajaxurl, data )
+				.done( function(r) {
+
+					pkppg.form.resetReleaseStatus( id );
+
+					if ( r.success ) {
+
+						pkppg.form.updateReleaseInList( r.data.release.ID, r.data.overview );
+
+					} else {
+						// @todo handle failure
+					}
+				});
+		},
+
+		/**
+		 *  Set a release status to disable
+		 *
+		 *  @since 0.1
+		 */
+		disableRelease: function(id) {
+
+			pkppg.form.setReleaseStatus( id, 'disabling' );
+
+			var params = {};
+
+			params.action = 'pkppg-disable-release';
 			params.nonce = pkppg.data.nonce;
 			params.release = id;
 

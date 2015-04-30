@@ -102,6 +102,7 @@ function pkppg_print_releases_editor( $plugin_id = 0 ) {
 	$post_statuses = array( 'publish' );
 	if ( is_admin() && current_user_can( 'manage_options' ) ) {
 		$post_statuses[] = 'submission';
+		$post_statuses[] = 'disable';
 	}
 
 	$args = array(

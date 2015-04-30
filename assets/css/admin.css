@@ -260,7 +260,8 @@
 }
 .pkp-releases-form .actions.loading .pkp-spinner,
 .pkp-releases-form .actions.deleting .pkp-spinner,
-.pkp-releases-form .actions.publishing .pkp-spinner {
+.pkp-releases-form .actions.publishing .pkp-spinner,
+.pkp-releases-form .actions.disabling .pkp-spinner {
   opacity: 1;
 }
 .pkp-releases-form .releases > li > .submission > .title,
