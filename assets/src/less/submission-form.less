@@ -75,11 +75,16 @@
 	.releases > li > .submission > .title, // just the title
 	.updates .update {
 		padding: 0.5em;
-		background: @admin-primary;
 		color: #fff;
 	}
 
-	.updates .update {
+	.releases > li > .submission > .title,
+	.releases > li > .submission > .actions {
+		background: @admin-primary;
+	}
+
+	.updates .update,
+	.updates .update .actions {
 		background: @admin-offset;
 	}
 

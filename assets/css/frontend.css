@@ -266,10 +266,14 @@
 .pkp-releases-form .releases > li > .submission > .title,
 .pkp-releases-form .updates .update {
   padding: 0.5em;
-  background: #0073aa;
   color: #fff;
 }
-.pkp-releases-form .updates .update {
+.pkp-releases-form .releases > li > .submission > .title,
+.pkp-releases-form .releases > li > .submission > .actions {
+  background: #0073aa;
+}
+.pkp-releases-form .updates .update,
+.pkp-releases-form .updates .update .actions {
   background: #d54e21;
 }
 .pkp-releases-form .update .dashicons,
