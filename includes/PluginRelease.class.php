@@ -368,9 +368,24 @@ class pkppgPluginRelease extends pkppgPostModel {
 					<?php _e( 'Edit', 'pkp-plugin-gallery' ); ?>
 				</a>
 
-				<?php if ( $this->post_status == 'update' ) : ?>
+				<?php if ( $this->post_status == 'submission' ) : ?>
+				<a href="#" class="approve">
+					<?php _e( 'Approve', 'pkp-plugin-gallery' ); ?>
+				</a>
+
+				<?php elseif ( $this->post_status == 'publish' ) : ?>
+				<a href="#" class="disable">
+					<?php _e( 'Disable', 'pkp-plugin-gallery' ); ?>
+				</a>
+
+				<?php elseif ( $this->post_status == 'update' ) : ?>
 				<a href="#" class="compare">
 					<?php _e( 'Compare Changes', 'pkp-plugin-gallery' ); ?>
+				</a>
+
+				<?php elseif ( $this->post_status == 'disable' ) : ?>
+				<a href="#" class="enable">
+					<?php _e( 'Enable', 'pkp-plugin-gallery' ); ?>
 				</a>
 				<?php endif; ?>
 
