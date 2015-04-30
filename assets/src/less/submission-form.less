@@ -73,15 +73,22 @@
 		}
 	}
 
-	.releases > li > .submission > .title, // just the title
+	.submission > .title,
+	.disable > .title,
 	.updates .update {
 		padding: 0.5em;
 		color: #fff;
 	}
 
-	.releases > li > .submission > .title,
-	.releases > li > .submission > .actions {
+	.submission > .title,
+	.submission > .actions {
 		background: @admin-primary;
+	}
+
+	.disable > .title,
+	.disable > .title > .version {
+		background: #97A5AB;
+		color: @text-light;
 	}
 
 	.updates .update,
@@ -89,8 +96,7 @@
 		background: @admin-offset;
 	}
 
-	.update,
-	.submission {
+	.release:not( .publish ) {
 
 		.dashicons {
 			line-height: 26px;

@@ -333,10 +333,17 @@ class pkppgPluginRelease extends pkppgPostModel {
 				<span class="status-notice">
 					<?php esc_html_e( 'Update: ', 'pkp-plugin-gallery' ); ?>
 				</span>
+
 				<?php elseif ( $this->post_status == 'submission' ) : ?>
 				<span class="dashicons dashicons-download"></span>
 				<span class="status-notice">
 					<?php esc_html_e( 'Submission: ', 'pkp-plugin-gallery' ); ?>
+				</span>
+
+				<?php elseif ( $this->post_status == 'disable' ) : ?>
+				<span class="dashicons dashicons-shield-alt"></span>
+				<span class="status-notice">
+					<?php esc_html_e( 'Disabled: ', 'pkp-plugin-gallery' ); ?>
 				</span>
 				<?php endif; ?>
 

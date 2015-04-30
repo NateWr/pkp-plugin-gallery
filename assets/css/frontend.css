@@ -264,45 +264,44 @@
 .pkp-releases-form .actions.disabling .pkp-spinner {
   opacity: 1;
 }
-.pkp-releases-form .releases > li > .submission > .title,
+.pkp-releases-form .submission > .title,
+.pkp-releases-form .disable > .title,
 .pkp-releases-form .updates .update {
   padding: 0.5em;
   color: #fff;
 }
-.pkp-releases-form .releases > li > .submission > .title,
-.pkp-releases-form .releases > li > .submission > .actions {
+.pkp-releases-form .submission > .title,
+.pkp-releases-form .submission > .actions {
   background: #0073aa;
+}
+.pkp-releases-form .disable > .title,
+.pkp-releases-form .disable > .title > .version {
+  background: #97A5AB;
+  color: rgba(0, 0, 0, 0.54);
 }
 .pkp-releases-form .updates .update,
 .pkp-releases-form .updates .update .actions {
   background: #d54e21;
 }
-.pkp-releases-form .update .dashicons,
-.pkp-releases-form .submission .dashicons {
+.pkp-releases-form .release:not( .publish ) .dashicons {
   line-height: 26px;
 }
-.pkp-releases-form .update .title,
-.pkp-releases-form .submission .title,
-.pkp-releases-form .update .version,
-.pkp-releases-form .submission .version {
+.pkp-releases-form .release:not( .publish ) .title,
+.pkp-releases-form .release:not( .publish ) .version {
   color: #fff;
   font-weight: 400;
 }
-.pkp-releases-form .update .status-notice,
-.pkp-releases-form .submission .status-notice {
+.pkp-releases-form .release:not( .publish ) .status-notice {
   font-weight: 700;
 }
-.pkp-releases-form .update a,
-.pkp-releases-form .submission a {
+.pkp-releases-form .release:not( .publish ) a {
   color: #fff;
 }
-.pkp-releases-form .update .actions,
-.pkp-releases-form .submission .actions {
+.pkp-releases-form .release:not( .publish ) .actions {
   top: 0.5em;
   right: 0.5em;
 }
-.pkp-releases-form .update .actions .delete,
-.pkp-releases-form .submission .actions .delete {
+.pkp-releases-form .release:not( .publish ) .actions .delete {
   color: #fff;
 }
 .pkp-release-fields .applications ul,
