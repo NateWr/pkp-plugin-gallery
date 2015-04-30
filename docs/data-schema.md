@@ -74,8 +74,6 @@ The following data will be stored in the `wp_posts` table alongside each post.
 
 `disable` - Plugins or releases which have been temporarily made unavailable by an admin
 
-An attempt will be made to use the built-in `update` post status to manage user updates. If it doesn't cause any conflicts, it will allow us to take advantage of WordPress's built-in update `diff` generator.
-
 ### Taxonomies
 
 **pkp_plugin**
