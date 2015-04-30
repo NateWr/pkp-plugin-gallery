@@ -56,7 +56,7 @@ jQuery( document ).ready( function( $ ) {
 					pkppg.form.loadRelease( release.data( 'id' ) );
 				} else if ( release && target.hasClass( 'delete' ) ) {
 					pkppg.form.deleteRelease( release.data( 'id' ) );
-				} else if ( release && target.hasClass( 'publish' ) ) {
+				} else if ( release && target.hasClass( 'approve' ) ) {
 					pkppg.form.publishRelease( release.data( 'id' ) );
 				}
 			});
