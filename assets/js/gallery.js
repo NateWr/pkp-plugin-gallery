@@ -151,7 +151,7 @@ jQuery( document ).ready( function( $ ) {
 			pkppg.form.cache.release_fields.find( 'option:selected' ).removeAttr( 'selected' );
 			pkppg.form.cache.release_fields.find( 'input[type="checkbox"]' ).removeAttr( 'checked' );
 
-			// Clear current release from
+			// Clear current release
 			delete pkppg.form.current.release;
 
 			pkppg.form.current.plugin = 0;
