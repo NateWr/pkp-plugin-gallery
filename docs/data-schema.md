@@ -13,8 +13,8 @@ Table of Contents
   * Taxonomies
   * Post Meta
   * User Meta
-3. Revisions
-4. Submission and Approval Process
+3. Submission and Approval Process
+4. Updates
 
 1. Introduction to WordPress data
 ---------------------------------
@@ -70,9 +70,9 @@ The following data will be stored in the `wp_posts` table alongside each post.
 
 `publish` - Approved
 
-`revision` - User-submitted update
+`update` - User-submitted update
 
-An attempt will be made to use the built-in `revision` post status to manage user updates. If it doesn't cause any conflicts, it will allow us to take advantage of WordPress's built-in revision `diff` generator.
+An attempt will be made to use the built-in `update` post status to manage user updates. If it doesn't cause any conflicts, it will allow us to take advantage of WordPress's built-in update `diff` generator.
 
 ### Taxonomies
 
@@ -110,18 +110,16 @@ When a `pkp_application` term is assigned to a `pkp_plugin_release` it will be a
 
 `_institution` - (string) Name of associated institution
 
-3. Revisions
-------------
-
-Internally, WordPress uses the `revision` post status to save draft changes to posts. This post status will be used to flag user-submitted updates if it doesn't conflict too much with WordPress's internals. If not, we'll get draft-to-draft diffs for free, which will help monitor changes from one update to the next.
-
-If we can't use the `revision` post status, we'll modify the schema to use a `modified` post status, and manage the update and approval checking another way.
-
-4. Submission and Approval Process
+3. Submission and Approval Process
 ----------------------------------
 
 To make a new submission, a visitor must register for a user account. Once registered, they can fill out a form, which will create the associated `pkp_plugin` and `pkp_plugin_version` posts, and assign them a `submission` post status.
 
 These submissions will then be approved by PKP staff. Once approved the submission post status will change to `publish`.
 
-The user who submitted the plugin will then be able to view a small dashboard where they can submit changes to previously submitted plugins and new releases. These submissions will be marked with a `revision` post status. PKP staff will then be able to view these revisions and publish (`publish`) new releases or merge updated data.
+The user who submitted the plugin will then be able to view a small dashboard where they can submit changes to previously submitted plugins and new releases. These submissions will be marked with a `update` post status. PKP staff will then be able to view these update and publish (`publish`) new releases or merge updated data.
+
+4. Updates
+------------
+
+When a user submits a modification to a published plugin or release, it will be assigned the `update` post status. Updates refer to the update or plugin they are an update to by their `post_parent` value. Updates are displayed in the admin editing panel, where they can be reviewed, edited, saved for later or committed. When committed, they'll replace their parent post and be deleted.
