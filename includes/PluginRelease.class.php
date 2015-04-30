@@ -459,5 +459,68 @@ class pkppgPluginRelease extends pkppgPostModel {
 		$this->applications = array_unique( $this->applications );
 	}
 
+	/**
+	 * Generate a diff of changes against an updated object
+	 *
+	 * This will generate a series of diff tables which indicate changes between
+	 * `$this` and an updated object which is passed to this method.
+	 *
+	 * @since 0.1
+	 */
+	public function get_diff( $update ) {
+
+		$strings = array(
+			'release',
+			'version',
+			'release_date',
+			'description',
+			'package',
+			'md5',
+		);
+
+		ob_start();
+
+		foreach( $strings as $string ) :
+			$diff = wp_text_diff( $this->{$string}, $update->{$string} );
+
+			if ( empty( $diff ) ) {
+				continue;
+			}
+		?>
+
+		<div class="param">
+			<h4><?php echo ucfirst( $string ); ?></h4>
+			<?php echo $diff; ?>
+		</div>
+
+		<?php
+		endforeach;
+
+		$taxonomies = array(
+			'pkp_application' => __( 'Compatible Applications', 'pkp-plugin-gallery' ),
+			'pkp_certification' => __( 'Certification', 'pkp-plugin-gallery' ),
+		);
+
+		foreach( $taxonomies as $taxonomy => $label ) {
+			$current_terms = wp_get_object_terms( $this->ID, $taxonomy, array( 'fields' => 'names' ) );
+			$update_terms = wp_get_object_terms( $update->ID, $taxonomy, array( 'fields' => 'names' ) );
+
+			$diff = wp_text_diff( join( ', ', $current_terms ), join( ', ', $update_terms ) );
+
+			if ( !empty( $diff ) ) :
+			?>
+
+			<div class="param">
+				<h4><?php echo esc_html( $label ); ?></h4>
+				<?php echo $diff; ?>
+			</div>
+
+			<?php
+			endif;
+		}
+
+		return ob_get_clean();
+	}
+
 }
 } // endif

@@ -52,14 +52,20 @@ jQuery( document ).ready( function( $ ) {
 
 				var release = target.parents( '.release' );
 
-				if ( release && target.hasClass( 'edit' ) ) {
+				if ( !release ) {
+					return;
+				}
+
+				if ( target.hasClass( 'edit' ) ) {
 					pkppg.form.loadRelease( release.data( 'id' ) );
-				} else if ( release && target.hasClass( 'delete' ) ) {
+				} else if ( target.hasClass( 'delete' ) ) {
 					pkppg.form.deleteRelease( release.data( 'id' ) );
-				} else if ( release && ( target.hasClass( 'approve' ) || target.hasClass( 'enable' ) ) ) {
+				} else if ( ( target.hasClass( 'approve' ) || target.hasClass( 'enable' ) ) ) {
 					pkppg.form.publishRelease( release.data( 'id' ) );
-				} else if ( release && target.hasClass( 'disable' ) ) {
+				} else if ( target.hasClass( 'disable' ) ) {
 					pkppg.form.disableRelease( release.data( 'id' ) );
+				} else if ( target.hasClass( 'compare' ) ) {
+					pkppg.form.loadReleaseDiff( release.data( 'id' ) );
 				}
 			});
 		},
@@ -315,6 +321,38 @@ jQuery( document ).ready( function( $ ) {
 					}
 				});
 		},
+
+        /**
+         * Retrieve a diff for this rekease
+         *
+         * @since 0.1
+         */
+        loadReleaseDiff: function( id ) {
+
+			pkppg.form.setReleaseStatus( id, 'loading' );
+
+            var params = {};
+
+            params.action = 'pkppg-get-update-diff';
+            params.nonce = pkppg.data.nonce;
+            params.ID = id;
+
+            var data = $.param( params );
+
+            $.get( pkppg.data.ajaxurl, data )
+                .done( function(r) {
+					console.log( r );
+
+					pkppg.form.resetReleaseStatus( id );
+
+                    if ( r.success ) {
+                        pkppg.edit_post.showDiffModal( params.ID, r.data.diff );
+
+                    } else {
+                        // @todo handle failure
+                    }
+                });
+        },
 
 		/**
 		 * Generate an object hash for a release from the form
