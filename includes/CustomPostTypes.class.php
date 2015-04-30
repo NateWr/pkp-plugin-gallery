@@ -28,7 +28,7 @@ class pkppgCustomPostTypes {
 	 *
 	 * @since 0.1
 	 */
-	public $valid_post_statuses = array( 'submission', 'publish', 'update' );
+	public $valid_post_statuses = array( 'submission', 'publish', 'update', 'disable' );
 
 	/**
 	 * Register hooks
@@ -223,6 +223,16 @@ class pkppgCustomPostTypes {
 			array(
 				'label' => __( 'Update', 'pkp-plugin-gallery' ),
 				'label_count' => _n_noop( 'Update <span class="count">(%s)</span>', 'Edits <span class="count">(%s)</span>' ),
+				'exclude_from_search' => true,
+			)
+		);
+
+		// Disable post status
+		register_post_status(
+			'disable',
+			array(
+				'label' => __( 'Disabled', 'pkp-plugin-gallery' ),
+				'label_count' => _n_noop( 'Disabled <span class="count">(%s)</span>', 'Edits <span class="count">(%s)</span>' ),
 				'exclude_from_search' => true,
 			)
 		);
