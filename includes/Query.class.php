@@ -174,7 +174,7 @@ class pkppgQuery {
 			// This is not very performant and requires a new lookup for each
 			// parent, so it should only really be used when retrieving singular
 			// objects or a small number of them.
-			if ( $this->args['with_updates'] ) {
+			if ( !empty( $this->args['with_updates'] ) ) {
 				$obj->load_updates();
 			}
 
