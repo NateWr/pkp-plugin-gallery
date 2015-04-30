@@ -236,7 +236,8 @@ function pkppg_print_release_fields() {
 				<?php _e( 'Please enter a brief description of changes in this version.' ); ?>
 			</p>
 		</div>
-		<!-- @todo only show this to users with appropriate permissions -->
+		<?php // @todo better cap check ?>
+		<?php if ( is_admin() && current_user_can( 'manage_options' ) ) : ?>
 		<div class="_md5">
 			<label for="pkp-release-md5">
 				<?php _e( 'MD5 Hash', 'pkp-plugin-gallery' ); ?>
@@ -246,13 +247,13 @@ function pkppg_print_release_fields() {
 				<?php _e( 'Please enter the MD5 hash for the download package that has been vetted.' ); ?>
 			</p>
 		</div>
-		<!-- @todo only show this to users with appropriate permissions -->
 		<div class="certification">
 			<label for="pkp-release-certification">
 				<?php _e( 'Certification', 'pkp-plugin-gallery' ); ?>
 			</label>
 			<?php pkppg_print_taxonomy_select( 'pkp_certification' ); ?>
 		</div>
+		<?php endif; ?>
 		<div class="applications">
 			<h3>
 				<?php _e( 'Compatible Applications', 'pkp-plugin-gallery' ); ?>
