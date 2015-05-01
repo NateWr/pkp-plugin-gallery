@@ -75,11 +75,11 @@ jQuery( document ).ready( function( $ ) {
          */
         showDiffModal: function(id, diff) {
 
-            pkppg.edit_post.ID = id;
-
-            if ( !pkppg.edit_post.ID ) {
+            if ( !id ) {
                 return;
             }
+
+            pkppg.edit_post.cache.diff_modal_publish.data( 'id', id );
 
             if ( diff ) {
                 pkppg.edit_post.cache.diff_modal_diff.html( diff );
@@ -100,6 +100,8 @@ jQuery( document ).ready( function( $ ) {
                 e.stopPropagation();
                 e.preventDefault();
             }
+
+            pkppg.edit_post.cache.diff_modal_publish.data( 'id', '' );
 
             pkppg.edit_post.cache.body.removeClass( 'pkppg-modal-is-visible' );
             pkppg.edit_post.cache.diff_modal.removeClass( 'is-visible' );
@@ -175,7 +177,7 @@ jQuery( document ).ready( function( $ ) {
 
 			params.action = 'pkppg-merge-update';
 			params.nonce = pkppg.data.nonce;
-			params.ID = pkppg.edit_post.cache.form.find( '#post_ID' ).val();
+			params.ID = pkppg.edit_post.cache.diff_modal_publish.data( 'id' );
 
 			var data = $.param( params );
 
