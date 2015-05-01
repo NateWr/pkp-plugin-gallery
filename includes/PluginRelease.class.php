@@ -12,13 +12,6 @@ if ( !class_exists( 'pkppgPluginRelease' ) ) {
 class pkppgPluginRelease extends pkppgPostModel {
 
 	/**
-	 * Plugin that this release is attached to
-	 *
-	 * @since 0.1
-	 */
-	public $release;
-
-	/**
 	 * Version
 	 *
 	 * @since 0.1
@@ -56,11 +49,26 @@ class pkppgPluginRelease extends pkppgPostModel {
 	/**
 	 * Plugin this release is attached to
 	 *
-	 * Corresponds to `post_parent` in the database
+	 * Corresponds to `post_parent` in the database.
+	 *
+	 * @todo For better compatibility with other PostModel objects, this should
+	 *  probably just be `post_parent`
 	 *
 	 * @since 0.1
 	 */
 	public $plugin;
+
+	/**
+	 * Release that this release is an update for
+	 *
+	 * Corresponds to `post_parent` in the database.
+	 *
+	 * @todo For better compatibility with other PostModel objects, this should
+	 *  probably just be `post_parent`
+	 *
+	 * @since 0.1
+	 */
+	public $release;
 
 	/**
 	 * Author of the plugin
@@ -112,7 +120,6 @@ class pkppgPluginRelease extends pkppgPostModel {
 	 */
 	public function load_wp_post( $post ) {
 
-		$this->plugin = $post->post_parent;
 		$this->ID = $post->ID;
 		$this->version = $post->post_title;
 		$this->release_date = $this->format_date( $post->post_date );
@@ -125,6 +132,12 @@ class pkppgPluginRelease extends pkppgPostModel {
 		$this->post_status = $post->post_status;
 		$this->post_parent = $post->post_parent;
 		$this->post_modified = $post->post_modified;
+
+		if ( $this->post_status == 'update' ) {
+			$this->release = $post->post_parent;
+		} else {
+			$this->plugin = $post->post_parent;
+		}
 	}
 
 	/**
@@ -136,6 +149,12 @@ class pkppgPluginRelease extends pkppgPostModel {
 
 		if ( !empty( $params['plugin'] ) ) {
 			$this->plugin = (int) $params['plugin'];
+			$this->post_parent = $this->plugin;
+		}
+
+		if ( !empty( $params['release'] ) ) {
+			$this->release = (int) $params['release'];
+			$this->post_parent = $this->plugin;
 		}
 
 		if ( !empty( $params['ID'] ) ) {
@@ -197,6 +216,14 @@ class pkppgPluginRelease extends pkppgPostModel {
 	 */
 	public function validate() {
 
+		if ( empty( $this->plugin ) && empty( $this->release ) ) {
+			$this->add_error(
+				'plugin',
+				$this->plugin,
+				__( 'This release is not attached to a plugin or another release.', 'pkp-plugin-gallery' )
+			);
+		}
+
 		// Plugin
 		if ( !empty( $this->plugin ) ) {
 			$post = get_post( $this->plugin );
@@ -205,6 +232,18 @@ class pkppgPluginRelease extends pkppgPostModel {
 					'plugin',
 					$this->plugin,
 					__( 'The plugin for this release could not be found.', 'pkp-plugin-gallery' )
+				);
+			}
+		}
+
+		// Release
+		if ( !empty( $this->release ) ) {
+			$post = get_post( $this->release );
+			if ( !is_a( $post, 'WP_POST' ) || $post->post_type !== pkppgInit()->cpts->plugin_release_post_type ) {
+				$this->add_error(
+					'release',
+					$this->release,
+					__( 'The release for this update could not be found.', 'pkp-plugin-gallery' )
 				);
 			}
 		}
@@ -274,9 +313,14 @@ class pkppgPluginRelease extends pkppgPostModel {
 			'post_content' => $this->description,
 			'post_date'    => $this->release_date,
 			'post_status'  => $this->post_status,
-			'post_parent'  => $this->plugin,
 			'post_author'  => $this->author,
 		);
+
+		if ( !empty( $this->plugin ) ) {
+			$args['post_parent'] = $this->plugin;
+		} elseif ( !empty( $this->release ) ) {
+			$args['post_parent'] = $this->release;
+		}
 
 		if ( !empty( $this->ID ) ) {
 			if ( $this->post_status == 'update' && $this->is_update_new() ) {
