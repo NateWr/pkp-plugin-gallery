@@ -121,6 +121,7 @@ class pkppgAjaxHandler {
 		$release->parse_params( $_POST['release'] );
 
 		if ( $release->save() ) {
+			$release->load_updates();
 			wp_send_json_success(
 				array(
 					'release' => $release,
