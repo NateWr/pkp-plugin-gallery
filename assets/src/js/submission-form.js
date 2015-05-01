@@ -404,7 +404,7 @@ jQuery( document ).ready( function( $ ) {
 			release_el.find( '.actions' ).addClass( status ).find( 'a' ).attr( 'disabled', true );
 
 			if ( status == 'loading' ) {
-				pkppg.form.cache.releases.find( '.release .edit' ).attr( 'disabled', true );
+				pkppg.form.cache.releases.find( '.release .actions > a:not( .delete )' ).attr( 'disabled', true );
 			}
 		},
 
@@ -415,7 +415,7 @@ jQuery( document ).ready( function( $ ) {
 		 */
 		resetReleaseStatus: function( id ) {
 
-			pkppg.form.cache.releases.find( '.release .actions a' ).attr( 'disabled', false );
+			pkppg.form.cache.releases.find( '.release .actions > a:not( .delete )' ).attr( 'disabled', false );
 
 			var release_el = pkppg.form.getReleaseEl( id );
 			if ( !release_el ) {
