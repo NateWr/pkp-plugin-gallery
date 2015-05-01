@@ -401,7 +401,7 @@ jQuery( document ).ready( function( $ ) {
 				return;
 			}
 
-			release_el.find( '.actions' ).addClass( status ).find( 'a' ).attr( 'disabled', true );
+			release_el.find( '> .actions' ).addClass( status ).find( 'a' ).attr( 'disabled', true );
 
 			if ( status == 'loading' ) {
 				pkppg.form.cache.releases.find( '.release .actions > a:not( .delete )' ).attr( 'disabled', true );
