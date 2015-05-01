@@ -345,7 +345,6 @@ abstract class pkppgPostModel {
 			return;
 		}
 
-
 		$class = get_class( $this );
 
 		$parent = new $class();
