@@ -44,9 +44,6 @@ class pkppgCustomPostTypes {
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
 		add_action( 'save_post', array( $this, 'save_post' ) );
 
-		// Modify plugin publish metabox
-		add_action( 'post_submitbox_misc_actions', array( $this, 'add_updates_to_publish_metabox' ) );
-
 		// Add the compare changes modal to the `pkp_plugin` edit post screen
 		add_action( 'admin_footer', array( $this, 'print_diff_modal' ) );
 	}
@@ -359,8 +356,7 @@ class pkppgCustomPostTypes {
 	}
 
 	/**
-	 * Print the publish metabox override or use default if post type is
-	 * not `update`
+	 * Print the publish metabox override on admin edit post screens
 	 *
 	 * HTML markup is designed to mimic WordPress publish metabox markup
 	 *
@@ -368,128 +364,45 @@ class pkppgCustomPostTypes {
 	 */
 	public function print_submit_metabox( $post ) {
 
-		if ( $post->post_status == 'update' ) {#
+		$delete_text = __( 'Move to Trash', 'pkp-plugin-gallery' );
+		if ( !EMPTY_TRASH_DAYS ) {
+			$delete_text = __( 'Delete Permanently', 'pkp-plugin-gallery' );
+		}
+
+		if ( $post->post_status == 'update' ) {
 			$parent_url = admin_url( 'post.php?post=' . (int) $post->post_parent . '&action=edit' );
-
-			?>
-
-			<div class="submitbox">
-				<div id="minor-publishing">
-					<div id="minor-publishing-actions">
-						<div id="save-action">
-							<input type="submit" name="save" id="save-post" value="<?php echo esc_attr( __( 'Save for Later', 'pkp-plugin-gallery' ) ); ?>" class="button">
-						</div>
-						<div class="clear"></div>
-					</div>
-					<div id="misc-publishing-actions">
-						<div class="misc-pub-section">
-							<p>
-								<?php
-								printf(
-									__( 'This plugin is an <em>update</em> to an <a href="%s">existing plugin</a>.', 'pkp-plugin-gallery' ),
-									esc_url( $parent_url )
-								);
-								?>
-							</p>
-						</div>
-					</div>
-					<div class="clear"></div>
-				</div>
-				<div id="major-publishing-actions">
-					<div id="delete-action">
-
-					<?php if ( current_user_can( 'delete_post', $post->ID ) ) :
-						if ( !EMPTY_TRASH_DAYS ) {
-							$delete_text = __('Delete Permanently');
-						} else {
-							$delete_text = __('Move to Trash');
-						}
-						?>
-
-						<a class="submitdelete deletion" href="<?php echo get_delete_post_link($post->ID); ?>">
-							<?php echo $delete_text; ?>
-						</a>
-
-					<?php endif; ?>
-
-					</div>
-					<div id="publishing-action">
-						<a href="#" id="compare-changes" class="merge button-primary" data-id="<?php echo (int) $post->ID; ?>">
-							<?php esc_html_e( 'Compare Changes', 'pkp-plugin-gallery' ); ?>
-						</a>
-					</div>
-					<div class="clear"></div>
-				</div>
-			</div>
-
-			<?php
 
 		} else {
 
-			// copied from core: /wp-admin/edit-form-advanced.php
-			$publish_callback_args = null;
-			if ( post_type_supports( get_post_type( $post->ID ), 'revisions') && 'auto-draft' != $post->post_status ) {
+			// Get revisions
+			$revisions_count = 0;
+			if ( $post->post_status != 'auto-draft' ) {
 				$revisions = wp_get_post_revisions( $post->ID );
-
-				// We should aim to show the revisions metabox only when there are revisions.
-				if ( count( $revisions ) > 1 ) {
-					reset( $revisions ); // Reset pointer for key()
-					$publish_callback_args = array( 'revisions_count' => count( $revisions ), 'revision_id' => key( $revisions ) );
-					add_meta_box('revisionsdiv', __('Revisions'), 'post_revisions_meta_box', null, 'normal', 'core');
-				}
+				$revisions_count = count( $revisions );
+				$revision_id = key( $revisions );
+				$revisions_to_keep = wp_revisions_to_keep( $post );
 			}
-			post_submit_meta_box( $post, array( 'args' => $publish_callback_args ) );
-		}
-	}
 
-	/**
-	 * Add a list of updates to the publish metabox on the `pkp_plugin` edit
-	 * post screen
-	 *
-	 * @since 0.1
-	 */
-	public function add_updates_to_publish_metabox() {
+			// Get updates
+			$args = array(
+				'posts_per_page' => 1000,
+				'post_status' => 'update',
+				'post_parent' => $post->ID,
+				'orderby' => 'modified',
+			);
 
-		global $post;
+			$query = new pkppgQuery( $args );
+			$updates = $query->get_results();
 
-		if ( $post->post_type !== $this->plugin_post_type ) {
-			return;
 		}
 
-		$args = array(
-			'posts_per_page' => 1000,
-			'post_status' => 'update',
-			'post_parent' => $post->ID,
-			'orderby' => 'modified',
-		);
 
-		$query = new pkppgQuery( $args );
-		$updates = $query->get_results();
+		$edit_url = add_query_arg( 'action', 'edit', admin_url( 'post.php' ) );
 
-		if ( empty( $updates ) ) {
-			return;
+		$template = pkppgInit()->get_template_path( 'metabox-publish.php' );
+		if ( !empty( $template ) ) {
+			include( $template );
 		}
-
-		$url = add_query_arg( 'action', 'edit', admin_url( 'post.php' ) );
-
-		?>
-
-		<div class="misc-pub-section misc-pub-pkp-updates">
-			<span class="dashicons dashicons-update"></span>
-			<?php printf( wp_kses( 'Updates: <strong>%d</strong>', 'pkp-plugin-gallery' ), count( $updates ) ); ?>
-			<div class="pkp-updates">
-				<?php foreach( $updates as $update ) : ?>
-				<div class="pkp-update">
-					<a href="<?php echo esc_url( add_query_arg( 'post', $update->ID, $url ) ); ?>"><?php echo esc_html( $update->name ); ?></a>
-					<span class="date">
-						<?php echo $update->post_modified; ?>
-					</span>
-				</div>
-				<?php endforeach; ?>
-			</div>
-		</div>
-
-		<?php
 	}
 
 	/**

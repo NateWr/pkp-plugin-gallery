@@ -221,6 +221,22 @@ class pkppgInit {
 		<?php
 	}
 
+	/**
+	 * Retrieve the full path to a template file if it exists
+	 *
+	 * @since 0.1
+	 */
+	public function get_template_path( $file ) {
+
+		$path = pkppgInit::$plugin_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $file;
+
+		if ( !file_exists( $path ) ) {
+			return;
+		}
+
+		return $path;
+	}
+
 }
 } // endif;
 

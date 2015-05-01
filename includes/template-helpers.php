@@ -266,4 +266,4 @@ function pkppg_print_release_fields() {
 
 	<?php
 }
-}
+} // endif;
