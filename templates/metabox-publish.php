@@ -90,8 +90,8 @@
             </a>
 
             <?php elseif ( $post->post_status == 'disable' ) : ?>
-            <a href="#" id="enable" class="enable button-primary" data-id="<?php echo (int) $post->ID; ?>">
-                <?php esc_html_e( 'Enable', 'pkp-plugin-gallery' ); ?>
+            <input name="original_publish" type="hidden" id="original_publish" value="<?php esc_attr_e( 'Enable', 'pkp-plugin-gallery' ); ?>" />
+            <?php submit_button( __( 'Enable' ), 'primary button-large', 'publish', false ); ?>
             </a>
 
             <?php else : ?>
