@@ -85,6 +85,14 @@ jQuery( document ).ready( function( $ ) {
 					pkppg.form.loadReleaseDiff( release.data( 'id' ) );
 				}
 			});
+
+			// Initialize the datepicker
+			this.cache.release_fields.find( '#pkp-release-date' ).datepicker({
+				changeYear: true,
+				changeMonth: true,
+				dateFormat: 'yy-mm-dd',
+				maxDate: 0
+			});
 		},
 
 		/**

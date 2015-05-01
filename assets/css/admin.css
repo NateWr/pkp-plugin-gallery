@@ -304,6 +304,9 @@
 .pkp-releases-form .release:not( .publish ) .actions .delete {
   color: #fff;
 }
+.pkp-release-fields #pkp-release-date {
+  cursor: pointer;
+}
 .pkp-release-fields .applications ul,
 .pkp-release-fields .applications li {
   margin: 0;
@@ -369,4 +372,50 @@
 #pkppg-diff .pkpr-success .pkp-success,
 #pkppg-diff .pkpr-error .pkp-error {
   visibility: visible;
+}
+#ui-datepicker-div {
+  width: 25em;
+  max-width: 100%;
+  background: #23282d;
+  text-align: center;
+  border: 1px solid #23282d;
+  border-bottom-width: 4px;
+}
+#ui-datepicker-div > * {
+  padding: 1em;
+  line-height: 28px;
+}
+#ui-datepicker-div > .ui-datepicker-calendar {
+  width: 100%;
+  background: #ffffff;
+}
+#ui-datepicker-div .ui-datepicker-header > a {
+  position: absolute;
+  top: 1em;
+  left: 1em;
+  cursor: pointer;
+}
+#ui-datepicker-div .ui-datepicker-header > .ui-datepicker-next {
+  left: auto;
+  right: 1em;
+}
+#ui-datepicker-div .ui-datepicker-prev,
+#ui-datepicker-div .ui-datepicker-next {
+  color: #fff;
+}
+#ui-datepicker-div .ui-datepicker-header select {
+  cursor: pointer;
+}
+#ui-datepicker-div .ui-datepicker-calendar td a {
+  display: block;
+  text-decoration: none;
+  color: #0073aa;
+}
+#ui-datepicker-div .ui-datepicker-calendar td a:hover,
+#ui-datepicker-div .ui-datepicker-calendar td a:focus {
+  background: #0073aa;
+  color: #fff;
+}
+#ui-datepicker-div .ui-datepicker-unselectable {
+  opacity: 0.3;
 }

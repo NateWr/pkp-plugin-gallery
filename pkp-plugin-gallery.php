@@ -147,6 +147,9 @@ class pkppgInit {
 		// Load minified assets unless WP_DEBUG is on
 		$min = WP_DEBUG ? '' : '.min';
 
+		wp_enqueue_style( 'jquery-ui-datepicker' );
+		wp_enqueue_script( 'jquery-ui-datepicker' );
+
 		wp_enqueue_style( 'pkppg-admin', self::$plugin_url . '/assets/css/admin' . $min . '.css' );
 		wp_enqueue_script( 'pkppg-admin', self::$plugin_url . '/assets/js/admin' . $min . '.js', array( 'jquery' ), '', true );
 		wp_localize_script(

@@ -1,0 +1,58 @@
+//
+// jQuery Datepicker style
+//
+#ui-datepicker-div {
+    width: 25em;
+    max-width: 100%;
+    background: @admin-bg; // matches wp admin
+    text-align: center;
+    border: 1px solid @admin-bg;
+    border-bottom-width: 4px;
+
+    > * {
+        padding: 1em;
+        line-height: 28px;
+    }
+
+    > .ui-datepicker-calendar {
+        width: 100%;
+        background: @lift;
+    }
+
+    .ui-datepicker-header > a {
+        position: absolute;
+        top: 1em;
+        left: 1em;
+        cursor: pointer;
+    }
+
+    .ui-datepicker-header > .ui-datepicker-next {
+        left: auto;
+        right: 1em;
+    }
+
+    .ui-datepicker-prev,
+    .ui-datepicker-next {
+        color: #fff;
+    }
+
+    .ui-datepicker-header select {
+        cursor: pointer;
+    }
+
+    .ui-datepicker-calendar td a {
+        display: block;
+        text-decoration: none;
+        color: @admin-primary;
+
+        &:hover,
+        &:focus {
+            background: @admin-primary;
+            color: #fff;
+        }
+    }
+
+    .ui-datepicker-unselectable {
+        opacity: 0.3;
+    }
+}
