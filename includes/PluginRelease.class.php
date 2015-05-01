@@ -465,7 +465,6 @@ class pkppgPluginRelease extends pkppgPostModel {
 	public function get_diff( $update ) {
 
 		$strings = array(
-			'release',
 			'version',
 			'release_date',
 			'description',
