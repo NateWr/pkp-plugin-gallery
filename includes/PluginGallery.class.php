@@ -71,7 +71,7 @@ class pkppgPluginGallery {
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_gallery_assets' ) );
 
 		// Print editing content
-		} elseif ( $this->view == 'edit' ) {
+		} elseif ( $this->view == 'edit' || $this->view == 'plugin' ) {
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_edit_assets' ) );
 			add_action( 'wp_footer', array( $this, 'print_edit_modal' ) );
 		}
@@ -86,22 +86,27 @@ class pkppgPluginGallery {
 
 		$this->base_url = get_permalink( pkppgInit()->settings->get_setting( 'page' ) );
 		$this->edit_url = add_query_arg( 'view', 'edit', $this->base_url );
+		$this->view_url = add_query_arg( 'view', 'plugin', $this->base_url );
 
-		if ( empty( $_REQUEST['view'] ) || !is_user_logged_in() ) {
+		if ( empty( $_REQUEST['view'] ) ) {
 			return 'gallery';
 		}
 
-		if ( $_REQUEST['view'] == 'edit' ) {
+		if ( !empty( $_REQUEST['id'] ) ) {
+			$this->plugin = absint( $_REQUEST['id'] );
+		}
 
-			if ( !empty( $_REQUEST['id'] ) ) {
-				$this->plugin = absint( $_REQUEST['id'] );
-			}
+		if ( $_REQUEST['view'] == 'edit' ) {
 
 			if ( !is_user_logged_in() ) {
 				return 'login';
 			} else {
 				return 'edit';
 			}
+		}
+
+		if ( $_REQUEST['view'] == 'plugin' ) {
+			return 'plugin';
 		}
 	}
 
@@ -168,6 +173,8 @@ class pkppgPluginGallery {
 			} else {
 				$content = '<p>' . __( 'Your submission has been processed.', 'pkp-plugin-gallery' ) . '</p>';
 			}
+		} elseif ( $this->view == 'plugin' ) {
+			$content = $this->get_plugin_view( $this->plugin );
 
 		} else {
 			$content = $this->get_plugin_list();
@@ -203,6 +210,9 @@ class pkppgPluginGallery {
 					<?php echo $plugin->name; ?>
 				</div>
 				<div class="actions">
+					<a href="<?php echo esc_url( add_query_arg( 'id', $plugin->ID, $this->view_url ) ); ?>">
+						<?php _e( 'View', 'pkp-plugin-gallery' ); ?>
+					</a>
 					<?php // @todo better user cap ?>
 					<?php if ( current_user_can( 'manage_options' ) || $plugin->maintainer == get_current_user_id() ) : ?>
 					<a href="<?php echo esc_url( add_query_arg( 'id', $plugin->ID, $this->edit_url ) ); ?>">
@@ -254,6 +264,17 @@ class pkppgPluginGallery {
 		</div>
 
 		<?php
+	}
+
+	/**
+	 * Generate a view of a plugin
+	 *
+	 * @todo show plugin details -- right now it just shows the releases for testing
+	 * @todo use templates here and everywhere else
+	 * @since 0.1
+	 */
+	public function get_plugin_view( $plugin_id ) {
+		pkppg_print_releases_editor( $plugin_id );
 	}
 
 	/**

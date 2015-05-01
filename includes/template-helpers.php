@@ -95,28 +95,13 @@ function pkppg_print_application_select( $selected = array() ) {
 if ( !function_exists( 'pkppg_print_releases_editor' ) ) {
 function pkppg_print_releases_editor( $plugin_id = 0 ) {
 
-	$plugin_id = (int) $plugin_id;
+	$plugin = new pkppgPlugin();
 
-	// Only show submissions in admin area
-	// @todo better user cap
-	$post_statuses = array( 'publish' );
-	if ( is_admin() && current_user_can( 'manage_options' ) ) {
-		$post_statuses[] = 'submission';
-		$post_statuses[] = 'disable';
+	if ( !$plugin->load_post( (int) $plugin_id ) ) {
+		return;
 	}
 
-	$args = array(
-		'post_parent'    => $plugin_id,
-		'post_type'      => pkppgInit()->cpts->plugin_release_post_type,
-		'posts_per_page' => 1000,
-		'post_status'    => $post_statuses,
-		'with_updates'   => true,
-		'orderby'        => 'title',
-		'order'			 => 'DESC',
-	);
-
-	$query = new pkppgQuery( $args );
-	$results = $query->get_results();
+	$releases = pkp_get_plugin_releases( $plugin->ID );
 
 	?>
 
@@ -125,8 +110,8 @@ function pkppg_print_releases_editor( $plugin_id = 0 ) {
 
 		<?php
 
-		if ( !empty( $plugin_id ) && !empty( $results ) ) {
-			foreach( $results as $release ) :
+		if ( !empty( $releases ) ) {
+			foreach( $releases as $release ) :
 			?>
 
 			<li><?php $release->print_control_overview(); ?></li>
@@ -138,11 +123,14 @@ function pkppg_print_releases_editor( $plugin_id = 0 ) {
 		?>
 
 		</ul>
+
+		<?php if ( ( is_admin() && current_user_can( 'manage_options' ) ) || $plugin->maintainer == get_current_user_id() ) : ?>
 		<fieldset class="pkp-release-form-buttons">
-			<a href="#" class="button add" data-plugin="<?php echo $plugin_id; ?>">
+			<a href="#" class="button add" data-plugin="<?php echo $plugin->ID; ?>">
 				<?php _e( 'Add Release', 'pkppg-plugin-gallery' ); ?>
 			</a>
 		</fieldset>
+		<?php endif; ?>
 	</div>
 
 	<?php
@@ -265,5 +253,41 @@ function pkppg_print_release_fields() {
 	</fieldset>
 
 	<?php
+}
+} // endif;
+
+/**
+ * Get all releases for a plugin
+ *
+ * @since 0.1
+ */
+if ( !function_exists( 'pkp_get_plugin_releases' ) ) {
+function pkp_get_plugin_releases( $plugin_id, $args = array() ) {
+
+	// Only show submissions  and updates in admin area
+	// @todo better user cap
+	$post_statuses = array( 'publish' );
+	$with_updates = false;
+	if ( is_admin() && current_user_can( 'manage_options' ) ) {
+		$post_statuses[] = 'submission';
+		$post_statuses[] = 'disable';
+		$with_updates = true;
+	}
+
+	$defaults = array(
+		'post_parent'    => $plugin_id,
+		'post_type'      => pkppgInit()->cpts->plugin_release_post_type,
+		'posts_per_page' => 1000,
+		'post_status'    => $post_statuses,
+		'with_updates'   => $with_updates,
+		'orderby'        => 'title',
+		'order'			 => 'DESC',
+	);
+
+	$args = array_merge( $defaults, $args );
+
+	$query = new pkppgQuery( $args );
+
+	return $query->get_results();
 }
 } // endif;
