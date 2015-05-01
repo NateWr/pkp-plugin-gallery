@@ -13,4 +13,16 @@ jQuery( document ).ready( function( $ ) {
     pkppg.cache = pkppg.cache || {};
     pkppg.cache.body = pkppg.cache.body || $( 'body' );
 
+    // Utility functions
+    pkppg.utils = pkppg.utils || {};
+
+    /**
+     * Replace <br> tags with a new line
+     *
+     * @since 0.1
+     */
+    pkppg.utils.strip_br = function( str ) {
+        return str.replace(/<br\s*\/?>/mg,'');
+    };
+
 });

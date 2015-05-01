@@ -153,7 +153,7 @@ class pkppgPluginRelease extends pkppgPostModel {
 		}
 
 		if ( isset( $params['description'] ) ) {
-			$this->description = wp_kses_post( $params['description'] );
+			$this->description = wp_kses_post( nl2br( $params['description'] ) );
 		}
 
 		if ( isset( $params['package'] ) ) {

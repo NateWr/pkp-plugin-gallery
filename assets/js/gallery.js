@@ -13,6 +13,18 @@ jQuery( document ).ready( function( $ ) {
     pkppg.cache = pkppg.cache || {};
     pkppg.cache.body = pkppg.cache.body || $( 'body' );
 
+    // Utility functions
+    pkppg.utils = pkppg.utils || {};
+
+    /**
+     * Replace <br> tags with a new line
+     *
+     * @since 0.1
+     */
+    pkppg.utils.strip_br = function( str ) {
+        return str.replace(/<br\s*\/?>/mg,'');
+    };
+
 });
 
 /**
@@ -126,7 +138,7 @@ jQuery( document ).ready( function( $ ) {
 				fields.find( '#pkp-release-version' ).val( release.version );
 				fields.find( '#pkp-release-date' ).val( release.release_date );
 				fields.find( '#pkp-release-package' ).val( release.package );
-				fields.find( '#pkp-release-description' ).val( release.description );
+				fields.find( '#pkp-release-description' ).val( pkppg.utils.strip_br( release.description ) );
 				fields.find( '#pkp-release-md5' ).val( release.md5 );
 				if ( release.certification ) {
 					fields.find( '.certification option[value="' + release.certification + '"]' ).attr( 'selected', 'selected' );
