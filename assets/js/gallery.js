@@ -338,9 +338,9 @@ jQuery( document ).ready( function( $ ) {
 
 			var params = {};
 
-			params.action = 'pkppg-disable-release';
+			params.action = 'pkppg-disable-post';
 			params.nonce = pkppg.data.nonce;
-			params.release = id;
+			params.post = id;
 
 			var data = $.param( params );
 

@@ -28,6 +28,7 @@ jQuery( document ).ready( function( $ ) {
             this.cache.body = pkppg.cache.body || $( 'body' );
             this.cache.form = $( 'form#post' );
             this.cache.save = this.cache.form.find( '#save-post' );
+            this.cache.disable = this.cache.form.find( '#disable-post' );
             this.cache.compare = this.cache.form.find( '#compare-changes' );
             this.cache.diff_modal = $( '#pkppg-diff' );
             this.cache.diff_modal_controls = this.cache.diff_modal.find( '.controls' );
@@ -49,6 +50,9 @@ jQuery( document ).ready( function( $ ) {
             this.cache.diff_modal_publish.click( this.publishChanges );
 			this.cache.diff_modal.click( function(e) { if ( $( e.target ).is( pkppg.edit_post.cache.diff_modal ) ) { pkppg.edit_post.hideDiffModal(); } } );
 			$( document ).keyup( function(e) { if ( e.which == '27' ) { pkppg.edit_post.hideDiffModal(); } } );
+
+            // Disable a plugin
+            this.cache.disable.click( this.disablePlugin );
         },
 
         /**
@@ -179,7 +183,57 @@ jQuery( document ).ready( function( $ ) {
                         pkppg.edit_post.cache.diff_modal_publish.attr( 'disabled', false );
 					}
 				});
+        },
+
+        /**
+         * Disable plugin
+         *
+         * @since 0.1
+         */
+        disablePlugin: function(e) {
+
+            if ( typeof e !== 'undefined' ) {
+                e.stopPropagation();
+                e.preventDefault();
+            }
+
+            if ( pkppg.edit_post.loading ) {
+                return;
+            }
+
+            var id = $( e.target ).data( 'id' );
+            if ( !id ) {
+                return;
+            }
+
+            pkppg.edit_post.loading = true;
+
+            pkppg.edit_post.cache.publish_title.append( '<span class="pkp-spinner"></span>' );
+            pkppg.edit_post.cache.disable.attr( 'disabled', true );
+
+            var params = {};
+
+            params.action = 'pkppg-disable-post';
+            params.nonce = pkppg.data.nonce;
+            params.post = id;
+
+            var data = $.param( params );
+
+            $.post( pkppg.data.ajaxurl, data )
+                .done( function(r) {
+                    pkppg.edit_post.loading = false;
+                    pkppg.edit_post.cache.publish_title.find( '.pkp-spinner' ).remove();
+                    pkppg.edit_post.cache.disable.attr( 'disabled', false );
+
+                    if ( r.success ) {
+                        window.location.replace( r.data.redirect );
+
+                    } else {
+                        // @todo handle failure
+                    }
+                });
         }
+
     };
 
     // Initialize component

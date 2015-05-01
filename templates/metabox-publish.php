@@ -10,11 +10,16 @@
     <div id="minor-publishing">
         <div id="minor-publishing-actions">
 
-            <?php if ( $post->post_status != 'publish' ) : ?>
+            <?php if ( $post->post_status == 'publish' ) : ?>
+            <a href="#" id="disable-post" class="disable button" data-id="<?php echo (int) $post->ID; ?>">
+                <?php esc_html_e( 'Disable', 'pkp-plugin-gallery' ); ?>
+            </a>
+            <?php else : ?>
             <div id="save-action">
                 <input type="submit" name="save" id="save-post" value="<?php echo esc_attr( __( 'Save for Later', 'pkp-plugin-gallery' ) ); ?>" class="button">
             </div>
             <?php endif; ?>
+
 
             <div class="clear"></div>
         </div>

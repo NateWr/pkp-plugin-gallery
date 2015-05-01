@@ -35,8 +35,8 @@ class pkppgAjaxHandler {
 		add_action( 'wp_ajax_nopriv_pkppg-publish-release', array( $this, 'nopriv' ) );
 
 		// Disable release
-		add_action( 'wp_ajax_pkppg-disable-release', array( $this, 'ajax_disable_release' ) );
-		add_action( 'wp_ajax_nopriv_pkppg-disable-release', array( $this, 'nopriv' ) );
+		add_action( 'wp_ajax_pkppg-disable-post', array( $this, 'ajax_disable_post' ) );
+		add_action( 'wp_ajax_nopriv_pkppg-disable-post', array( $this, 'nopriv' ) );
 
 		// Load an update diff
 		add_action( 'wp_ajax_pkppg-get-update-diff', array( $this, 'ajax_get_update_diff' ) );
@@ -268,42 +268,59 @@ class pkppgAjaxHandler {
 	}
 
 	/**
-	 * Disable a release
+	 * Disable a plugin or release post
 	 *
 	 * @since 0.1
 	 */
-	public function ajax_disable_release() {
+	public function ajax_disable_post() {
 
 		$this->authenticate();
 
-		if ( empty( $_POST['release'] ) ) {
+		if ( empty( $_POST['post'] ) ) {
 			wp_send_json_error(
 				array(
-					'error' => 'norelease',
-					'msg'   => __( 'No release data was received with this request.', 'pkp-plugin-gallery' ),
+					'error' => 'nopost',
+					'msg'   => __( 'No release or plugin data was received with this request.', 'pkp-plugin-gallery' ),
 				)
 			);
 		}
 
-		$release = new pkppgPluginRelease();
+		$post = get_post( (int) $_POST['post'] );
 
-		if ( !$release->load_post( (int) $_POST['release'] ) ) {
+		$obj = $post->post_type == pkppgInit()->cpts->plugin_post_type ? new pkppgPlugin() : new pkppgPluginRelease();
+
+		if ( !$obj->load_post( $post ) ) {
 			wp_send_json_error(
 				array(
-					'error' => 'noreleasefound',
-					'msg'   => __( 'This release could not be found in order to be disabled.', 'pkp-plugin-gallery' ),
+					'error' => 'nopostfound',
+					'msg'   => __( 'This plugin or release could not be found in order to be disabled.', 'pkp-plugin-gallery' ),
 				)
 			);
 		}
 
-		if ( $release->disable() ) {
-			$release->load_updates();
-			wp_send_json_success(
-				array(
-					'release'  => $release,
-					'overview' => $release->get_control_overview(),
-				)
-			);
+		if ( $obj->disable() ) {
+			if( $obj->post_type == pkppgInit()->cpts->plugin_release_post_type ) {
+				$obj->load_updates();
+				wp_send_json_success(
+					array(
+						'release'  => $obj,
+						'overview' => $obj->get_control_overview(),
+					)
+				);
+			} else {
+				$url = add_query_arg(
+					array(
+						'post'   => (int) $obj->ID,
+						'action' => 'edit',
+					),
+					admin_url( 'post.php' )
+				);
+				wp_send_json_success(
+					array(
+						'redirect' => esc_url_raw( $url ),
+					)
+				);
+			}
 		} else {
 			wp_send_json_error(
 				array(
