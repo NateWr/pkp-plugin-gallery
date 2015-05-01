@@ -545,7 +545,6 @@ jQuery( document ).ready( function( $ ) {
 
             $.get( pkppg.data.ajaxurl, data )
                 .done( function(r) {
-					console.log( r );
 
 					pkppg.form.resetReleaseStatus( id );
 
