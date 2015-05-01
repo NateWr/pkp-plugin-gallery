@@ -231,6 +231,8 @@ class pkppgCustomPostTypes {
 				'label' => __( 'Disabled', 'pkp-plugin-gallery' ),
 				'label_count' => _n_noop( 'Disabled <span class="count">(%s)</span>', 'Edits <span class="count">(%s)</span>' ),
 				'exclude_from_search' => true,
+				'show_in_admin_all_list' => true,
+				'show_in_admin_status_list' => true,
 			)
 		);
 	}
