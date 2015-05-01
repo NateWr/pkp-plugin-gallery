@@ -348,6 +348,14 @@
   height: 16px;
   width: 16px;
 }
+.postbox select,
+.postbox input[type="text"],
+.postbox textarea {
+  width: 100%;
+}
+.postbox textarea {
+  min-height: 10em;
+}
 #pkppg-diff .pkppg-modal-container {
   max-width: 100em;
 }
