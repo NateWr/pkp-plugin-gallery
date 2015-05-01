@@ -240,8 +240,6 @@ jQuery( document ).ready( function( $ ) {
 			params.nonce = pkppg.data.nonce;
 			params.release = pkppg.form.objectFromForm();
 
-			console.log( params );
-
 			var data = $.param( params );
 
 			$.post( pkppg.data.ajaxurl, data, function( r ) {
