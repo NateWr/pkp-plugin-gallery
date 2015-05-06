@@ -31,6 +31,14 @@ class pkppgCustomPostTypes {
 	public $valid_post_statuses = array( 'submission', 'publish', 'update', 'disable' );
 
 	/**
+	 * IDs of plugins with updates
+	 *
+	 * @param array plugins_with_updates
+	 * @since 0.1
+	 */
+	public $plugins_with_updates;
+
+	/**
 	 * Register hooks
 	 *
 	 * @since 0.1
@@ -40,12 +48,16 @@ class pkppgCustomPostTypes {
 		// Register custom post types
 		add_action( 'init', array( $this, 'load_cpts' ) );
 
-		// Add meta boxes
+		// Add meta boxes to edit post screens
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
 		add_action( 'save_post', array( $this, 'save_post' ) );
 
 		// Add the compare changes modal to the `pkp_plugin` edit post screen
 		add_action( 'admin_footer', array( $this, 'print_diff_modal' ) );
+
+		// Add new views to plugin admin list table
+		add_filter( 'views_edit-pkp_plugin', array( $this, 'add_views' ) );
+		add_filter( 'request', array( $this, 'modify_admin_table_request' ) );
 	}
 
 	/**
@@ -419,7 +431,7 @@ class pkppgCustomPostTypes {
 		}
 
 		$screen = get_current_screen();
-		if ( empty( $screen ) || !is_a( $screen, 'WP_Screen' ) || $screen->post_type !== pkppgInit()->cpts->plugin_post_type || $screen->parent_base !== 'edit' ) {
+		if ( empty( $screen ) || !is_a( $screen, 'WP_Screen' ) || $screen->post_type !== $this->plugin_post_type || $screen->parent_base !== 'edit' ) {
 			return false;
 		}
 
@@ -539,6 +551,111 @@ class pkppgCustomPostTypes {
 		}
 
 		return $ordered;
+	}
+
+	/**
+	 * Get array of IDs for plugins with updates or where attached releases have
+	 * updates
+	 *
+	 * @since 0.1
+	 */
+	public function get_plugins_with_updates() {
+
+		if ( !empty( $this->plugins_with_updates ) ) {
+			return $this->plugins_with_updates;
+		}
+
+		// Get the number of plugins with updates
+		$args = array(
+			'posts_per_page' => 1000, // large upper limit
+			'post_status' => 'update',
+			'post_type' => array( $this->plugin_post_type, $this->plugin_release_post_type ),
+		);
+		$updated = new WP_Query( $args );
+
+		$plugins = $releases = array();
+		foreach( $updated->posts as $post ) {
+			if ( $post->post_type == $this->plugin_post_type ) {
+				$plugins[] = $post->post_parent;
+			} else {
+				$releases[] = $post->post_parent;
+			}
+		}
+
+		// To get a list of just the plugins let's query the release IDs we have
+		// and get their parents, which should be plugins.
+		if ( !empty( $releases ) ) {
+			$releases = array_unique( $releases );
+
+			$args = array(
+				'posts_per_page' => 1000, // large upper limit
+				'post_status' => $this->valid_post_statuses,
+				'post_type' => array( $this->plugin_release_post_type ),
+				'fields' => 'id=>parent',
+				'post__in' => $releases,
+			);
+
+			$updated = new WP_Query( $args );
+
+			foreach( $updated->posts as $post ) {
+				$plugins[] = $post->post_parent;
+			}
+		}
+
+		wp_reset_query();
+
+		$this->plugins_with_updates = array_unique( $plugins );
+
+		return $this->plugins_with_updates;
+	}
+
+	/**
+	 * Add custom views
+	 *
+	 * @since 0.1
+	 */
+	public function add_views( $views ) {
+
+		$plugins = $this->get_plugins_with_updates();
+
+		$current = '';
+		if ( !empty( $_GET['has_update'] ) ) {
+			$current = ' class="current"';
+		}
+
+		$count = '<span class="count">' . sprintf( esc_html__( '(%d)', 'pkp-plugin-gallery' ), count( $plugins ) ) . '</span>';
+
+		$url = admin_url( 'edit.php?post_type=' . $this->plugin_post_type . '&has_update=1' );
+		$views['has_update'] = '<a href="' . esc_url( $url ) . '"' . $current . '>' . sprintf( esc_html__( 'Updated %s', 'pkp-plugin-gallery' ), $count ) . '</a>';
+
+		return $views;
+	}
+
+	/**
+	 *
+	 *
+	 * @since 0.1
+	 */
+	public function modify_admin_table_request( $args ) {
+
+		if ( empty( $_GET['has_update'] ) || !is_admin() || !function_exists( 'get_current_screen' ) ) {
+			return $args;
+		}
+
+		$screen = get_current_screen();
+		if ( empty( $screen ) || !is_a( $screen, 'WP_SCREEN' ) || $screen->id !== 'edit-pkp_plugin' ) {
+			return $args;
+		}
+
+		$plugins = $this->get_plugins_with_updates();
+
+		if ( empty( $plugins ) ) {
+			return $args;
+		}
+
+		$args['post__in'] = $plugins;
+
+		return $args;
 	}
 
 }
