@@ -92,6 +92,8 @@ jQuery( document ).ready( function( $ ) {
 
             pkppg.edit_post.cache.body.removeClass( 'pkppg-modal-is-visible' );
             pkppg.edit_post.cache.diff_modal.removeClass( 'is-visible' );
+            pkppg.edit_post.cache.diff_modal_controls.removeClass( 'pkpr-loading pkpr-success pkpr-error' );
+            pkppg.edit_post.cache.diff_modal_publish.attr( 'disabled', false );
 
             pkppg.edit_post.cache.diff_modal_diff.empty();
         },
