@@ -147,6 +147,11 @@ jQuery( document ).ready( function( $ ) {
          */
         publishChanges: function(e) {
 
+           if ( typeof e !== 'undefined' ) {
+               e.stopPropagation();
+               e.preventDefault();
+           }
+
             if ( pkppg.edit_post.loading ) {
                 return;
             }
@@ -176,7 +181,16 @@ jQuery( document ).ready( function( $ ) {
 
 					if ( r.success ) {
                         pkppg.edit_post.cache.diff_modal_controls.addClass( 'pkpr-success' );
-                        window.location.replace( r.data.redirect );
+
+                        // Load edit post screen for a plugin
+                        if ( r.data.redirect ) {
+                            window.location.replace( r.data.redirect );
+
+                        // Update the release in the list
+                        } else {
+                            pkppg.form.updateReleaseInList( r.data.release.ID, r.data.overview );
+                            pkppg.edit_post.hideDiffModal();
+                        }
 
 					} else {
                         pkppg.edit_post.cache.diff_modal_controls.addClass( 'pkpr-error' );

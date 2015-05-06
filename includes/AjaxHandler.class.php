@@ -465,18 +465,28 @@ class pkppgAjaxHandler {
 		}
 
 		if ( $obj->merge_update() ) {
-			$url = add_query_arg(
-				array(
-					'post'   => (int) $obj->ID,
-					'action' => 'edit',
-				),
-				admin_url( 'post.php' )
-			);
-			wp_send_json_success(
-				array(
-					'redirect' => esc_url_raw( $url ),
-				)
-			);
+			if( $obj->post_type == pkppgInit()->cpts->plugin_release_post_type ) {
+				$obj->load_updates();
+				wp_send_json_success(
+					array(
+						'release'  => $obj,
+						'overview' => $obj->get_control_overview(),
+					)
+				);
+			} else {
+				$url = add_query_arg(
+					array(
+						'post'   => (int) $obj->ID,
+						'action' => 'edit',
+					),
+					admin_url( 'post.php' )
+				);
+				wp_send_json_success(
+					array(
+						'redirect' => esc_url_raw( $url ),
+					)
+				);
+			}
 		} else {
 			wp_send_json_error(
 				array(
