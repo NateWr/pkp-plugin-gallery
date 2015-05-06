@@ -348,6 +348,9 @@
   height: 16px;
   width: 16px;
 }
+#submitdiv #publishing-action .spinner {
+  margin-left: 0;
+}
 .postbox select,
 .postbox input[type="text"],
 .postbox textarea {
