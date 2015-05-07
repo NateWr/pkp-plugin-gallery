@@ -287,7 +287,7 @@ class pkppgPlugin extends pkppgPostModel {
 			update_post_meta( $this->ID, '_homepage', $this->homepage );
 		}
 
-		if ( !empty( $this->md5 ) ) {
+		if ( !empty( $this->installation ) ) {
 			update_post_meta( $this->ID, '_installation', $this->installation );
 		}
 
