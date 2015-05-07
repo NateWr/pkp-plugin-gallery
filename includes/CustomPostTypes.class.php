@@ -666,7 +666,9 @@ class pkppgCustomPostTypes {
 
 		$plugins = $this->get_plugins_with_updates();
 
+		// Make sure no results are found
 		if ( empty( $plugins ) ) {
+			$args['p'] = -1;
 			return $args;
 		}
 
