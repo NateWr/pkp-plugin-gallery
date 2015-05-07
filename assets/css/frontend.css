@@ -216,6 +216,7 @@
   margin-bottom: 1em;
   padding-bottom: 1em;
   border-bottom: 1px solid #dddddd;
+  list-style: none;
 }
 .pkp-releases-form .releases > li:last-child {
   border-bottom: none;
@@ -310,6 +311,8 @@
 .pkp-release-fields .applications ul,
 .pkp-release-fields .applications li {
   margin: 0;
+  padding: 0;
+  list-style: none;
 }
 .pkp-release-fields .applications label {
   line-height: 2em;
