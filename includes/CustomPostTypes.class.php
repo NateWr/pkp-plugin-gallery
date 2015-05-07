@@ -92,6 +92,11 @@ class pkppgCustomPostTypes {
 				),
 				'hierarchical' => true,
 				'meta_box_cb' => false,
+				'rewrite' => array(
+					'slug' => 'plugins/application',
+					'with_front' => false,
+					'hierarchical' => true,
+				),
 			)
 		);
 
@@ -119,6 +124,10 @@ class pkppgCustomPostTypes {
 					'not_found'                  => __( 'No categories found',                   'pkp-plugin-gallery' ),
 				),
 				'meta_box_cb' => array( $this, 'print_category_metabox' ),
+				'rewrite' => array(
+					'slug' => 'plugins/category',
+					'with_front' => false,
+				),
 			)
 		);
 
@@ -183,7 +192,12 @@ class pkppgCustomPostTypes {
 					'author',
 					'excerpt',
 					'revisions',
-				)
+				),
+				'rewrite'      => array(
+					'slug'       => __( 'plugins', 'pkp-plugin-gallery' ),
+					'with_front' => false,
+					'feeds'      => false,
+				),
 			)
 		);
 
