@@ -305,6 +305,8 @@ class pkppgPluginRelease extends pkppgPostModel {
 		if ( !empty( $this->md5 ) ) {
 			update_post_meta( $this->ID, '_md5', $this->md5 );
 		}
+
+		$this->update_parent_terms();
 	}
 
 	/**
@@ -522,6 +524,29 @@ class pkppgPluginRelease extends pkppgPostModel {
 		}
 
 		return ob_get_clean();
+	}
+
+	/**
+	 * Update parent terms to ensure that any terms assigned to this release
+	 * are added/removed from the parent plugin as needed
+	 *
+	 * @since 0.1
+	 */
+	public function update_parent_terms() {
+
+		if ( empty( $this->post_parent ) ) {
+			return;
+		}
+
+		$parent = get_post( $this->post_parent );
+
+		if ( empty( $parent ) || is_wp_error( $parent ) || $parent->post_type !== pkppgInit()->cpts->plugin_post_type ) {
+			return;
+		}
+
+		$plugin = new pkppgPlugin();
+		$plugin->load_post( $parent );
+		$plugin->adopt_child_terms();
 	}
 
 }

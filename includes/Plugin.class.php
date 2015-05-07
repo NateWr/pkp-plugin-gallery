@@ -84,12 +84,20 @@ class pkppgPlugin extends pkppgPostModel {
 	public $applications = array();
 
 	/**
-	 * Releases of this plugin
+	 * IDs of releases attached to this plugin
 	 *
 	 * @param releases array `pkp_plugin_release` post ids
 	 * @since 0.1
 	 */
 	public $releases = array();
+
+	/**
+	 * Full release objects attached to this plugin
+	 *
+	 * @param release array pkppgPluginRelease objects
+	 * @since 0.1
+	 */
+	public $release_objects = array();
 
 	/**
 	 * Originally posted date
@@ -108,7 +116,7 @@ class pkppgPlugin extends pkppgPostModel {
 	}
 
 	/**
-	 * Load release object from a WP_Post object, retrieve metadata
+	 * Load plugin object from a WP_Post object, retrieve metadata
 	 * and load taxonomies
 	 *
 	 * @since 0.1
@@ -129,6 +137,28 @@ class pkppgPlugin extends pkppgPostModel {
 		$this->post_parent = $post->post_parent;
 		$this->post_date = $post->post_status;
 		$this->post_modified = $post->post_modified;
+	}
+
+	/**
+	 * Load any attached releases
+	 *
+	 * @since 0.1
+	 */
+	public function load_release_objects() {
+
+		if ( empty( $this->ID ) ) {
+			return;
+		}
+
+		$args = array(
+			'post_type' => pkppgInit()->cpts->plugin_release_post_type,
+			'posts_per_page' => 1000, // high upper limit
+			'post_parent' => $this->ID,
+		);
+
+		$query = new pkppgQuery( $args );
+
+		$this->release_objects = $query->get_results();
 	}
 
 	/**
@@ -300,6 +330,9 @@ class pkppgPlugin extends pkppgPostModel {
 				wp_update_post( $args );
 			}
 		}
+
+		// Assign release `pkp_application` terms to plugin
+		$this->adopt_child_terms();
 	}
 
 	/**
@@ -407,6 +440,31 @@ class pkppgPlugin extends pkppgPostModel {
 		endif;
 
 		return ob_get_clean();
+	}
+
+	/**
+	 * Get any `pkp_application` taxonomy terms assigned
+	 * to attached releases and assign them to this plugin.
+	 *
+	 * This replaces any taxonomy terms previously associated with the plugin
+	 *
+	 * @todo maybe adopt `pkp_certification` terms too
+	 * @since 0.1
+	 */
+	public function adopt_child_terms() {
+
+		$this->load_release_objects();
+
+		$applications = array();
+		foreach( $this->release_objects as $release ) {
+			if ( !empty( $release->applications ) ) {
+				$applications = array_merge( $applications, $release->applications );
+			}
+		}
+
+		$this->applications = $applications;
+
+		return wp_set_object_terms( $this->ID, $this->applications, 'pkp_application' );
 	}
 }
 } // endif
