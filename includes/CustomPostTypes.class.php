@@ -58,6 +58,9 @@ class pkppgCustomPostTypes {
 		// Add new views to plugin admin list table
 		add_filter( 'views_edit-pkp_plugin', array( $this, 'add_views' ) );
 		add_filter( 'request', array( $this, 'modify_admin_table_request' ) );
+
+		// Remove attached releases when a plugin is deleted
+		add_action( 'delete_post', array( $this, 'delete_attached_releases' ) );
 	}
 
 	/**
@@ -670,6 +673,33 @@ class pkppgCustomPostTypes {
 		$args['post__in'] = $plugins;
 
 		return $args;
+	}
+
+	/**
+	 * Delete attached releases when a plugin is deleted
+	 *
+	 * This is fired whenever a post is deleted. If the post is a plugin, it
+	 * will load the object and run a method that deletes attached releases.
+	 * Ideally, this code should go into our pkppgPlugin model. But when we're
+	 * using the native WordPress delete functions we won't have the object
+	 * automatically set up. So in order to ensure we're hooked in properly, we
+	 * need to instantiate the process here in the pkppgCustomPostTypes
+	 * singleton, fire up our plugin object, and run the object's method.
+	 *
+	 * @since 0.1
+	 */
+	public function delete_attached_releases( $id ) {
+
+		$post = get_post( $id );
+
+		if ( $post->post_type !== $this->plugin_post_type ) {
+			return;
+		}
+
+		$plugin = new pkppgPlugin();
+		$plugin->load_post( $post );
+
+		$plugin->delete_attached_releases();
 	}
 
 }

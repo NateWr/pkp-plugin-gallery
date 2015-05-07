@@ -468,5 +468,42 @@ class pkppgPlugin extends pkppgPostModel {
 
 		return wp_set_object_terms( $this->ID, $this->applications, 'pkp_application' );
 	}
+
+	/**
+	 * Deleted any attached releases
+	 *
+	 * Generally this should only be called when the plugin is deleted. It is
+	 * hooked in automatically to the `delete_post` action.
+	 *
+	 * @since 0.1
+	 */
+	public function delete_attached_releases() {
+
+		// Get all child releases
+		$args = array(
+			'post_type' => pkppgInit()->cpts->plugin_release_post_type,
+			'posts_per_page' => 1000, // large upper limit
+			'post_status' => array_merge( array( 'trash', 'draft' ), pkppgInit()->cpts->valid_post_statuses ),
+			'post_parent' => $this->ID,
+			'fields' => 'ids',
+		);
+		$query = new WP_Query( $args );
+		$releases = $query->posts;
+
+		if ( empty( $releases ) ) {
+			return;
+		}
+
+		// Get all releases that were attached to those releases
+		unset( $args['post_parent'] );
+		$args['post_parent__in'] = $releases;
+		$query = new WP_Query( $args );
+		$releases = array_merge( $releases, $query->posts );
+
+		// Delete them
+		foreach( $releases as $release ) {
+			wp_delete_post( $release );
+		}
+	}
 }
 } // endif
