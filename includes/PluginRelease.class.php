@@ -364,37 +364,45 @@ class pkppgPluginRelease extends pkppgPostModel {
 			</div>
 			<?php endif; ?>
 
+			<?php if ( current_user_can( 'manage_options' ) || pkp_is_author( $this->ID ) ) : ?>
 			<div class="actions">
 				<span class="pkp-spinner"></span>
 				<a href="#" class="edit">
 					<?php _e( 'Edit', 'pkp-plugin-gallery' ); ?>
 				</a>
 
-				<?php if ( $this->post_status == 'submission' ) : ?>
-				<a href="#" class="approve">
-					<?php _e( 'Approve', 'pkp-plugin-gallery' ); ?>
-				</a>
+				<?php // @todo better user_cap ?>
+				<?php if ( current_user_can( 'manage_options' ) ) : ?>
 
-				<?php elseif ( $this->post_status == 'publish' ) : ?>
-				<a href="#" class="disable">
-					<?php _e( 'Disable', 'pkp-plugin-gallery' ); ?>
-				</a>
+					<?php if ( $this->post_status == 'submission' ) : ?>
+					<a href="#" class="approve">
+						<?php _e( 'Approve', 'pkp-plugin-gallery' ); ?>
+					</a>
 
-				<?php elseif ( $this->post_status == 'update' ) : ?>
-				<a href="#" class="compare">
-					<?php _e( 'Compare Changes', 'pkp-plugin-gallery' ); ?>
-				</a>
+					<?php elseif ( $this->post_status == 'publish' ) : ?>
+					<a href="#" class="disable">
+						<?php _e( 'Disable', 'pkp-plugin-gallery' ); ?>
+					</a>
 
-				<?php elseif ( $this->post_status == 'disable' ) : ?>
-				<a href="#" class="enable">
-					<?php _e( 'Enable', 'pkp-plugin-gallery' ); ?>
-				</a>
+					<?php elseif ( $this->post_status == 'update' ) : ?>
+					<a href="#" class="compare">
+						<?php _e( 'Compare Changes', 'pkp-plugin-gallery' ); ?>
+					</a>
+
+					<?php elseif ( $this->post_status == 'disable' ) : ?>
+					<a href="#" class="enable">
+						<?php _e( 'Enable', 'pkp-plugin-gallery' ); ?>
+					</a>
+					<?php endif; ?>
+
+					<a href="#" class="delete">
+						<?php _e( 'Delete', 'pkp-plugin-gallery' ); ?>
+					</a>
 				<?php endif; ?>
 
-				<a href="#" class="delete">
-					<?php _e( 'Delete', 'pkp-plugin-gallery' ); ?>
-				</a>
 			</div>
+			<?php endif; ?>
+
 			<?php // @todo better user cap ?>
 			<?php if ( !empty( $this->updates ) && is_admin() && current_user_can( 'manage_options' ) ) : ?>
 			<ul class="updates">

@@ -70,12 +70,33 @@ class pkppgAjaxHandler {
 	 * @uses self::nopriv()
 	 * @since 0.1
 	 */
-	public function authenticate( ) {
+	public function authenticate( $post_id = 0, $admin_only = false ) {
 
 		// @todo we need a user cap check here for submissions. It's loose now for
 		// testing but eventually the only non-admin users to pass should be editing
 		// their own objet
 		if ( !check_ajax_referer( 'pkppg', 'nonce', false ) ) {
+			$this->nopriv();
+		}
+
+		// @todo better user_cap for creating plugins and releases
+		if ( empty( $post_id ) && !current_user_can( 'edit_posts' ) ) {
+			$this->nopriv();
+		}
+
+
+		// Edit own posts
+		if ( !empty( $post_id ) && !current_user_can( 'manage_options' ) ) {
+			$post = get_post( $post_id );
+			$user_id = get_current_user_id();
+			if ( $post->post_author != $user_id ) {
+				$this->nopriv();
+			}
+		}
+
+		// Anything not specified should require high-level permissions
+		// @todo better user_cap
+		if ( $admin_only && !current_user_can( 'manage_options' ) ) {
 			$this->nopriv();
 		}
 	}
@@ -146,8 +167,6 @@ class pkppgAjaxHandler {
 	 */
 	public function ajax_get_release() {
 
-		$this->authenticate();
-
 		if ( empty( $_GET['release'] ) ) {
 			wp_send_json_error(
 				array(
@@ -156,6 +175,8 @@ class pkppgAjaxHandler {
 				)
 			);
 		}
+
+		$this->authenticate( (int) $_GET['release'] );
 
 		$release = new pkppgPluginRelease();
 
@@ -182,8 +203,6 @@ class pkppgAjaxHandler {
 	 */
 	public function ajax_delete_release() {
 
-		$this->authenticate();
-
 		if ( empty( $_POST['release'] ) ) {
 			wp_send_json_error(
 				array(
@@ -192,6 +211,8 @@ class pkppgAjaxHandler {
 				)
 			);
 		}
+
+		$this->authenticate( (int) $_POST['release'], true );
 
 		$release = new pkppgPluginRelease();
 
@@ -227,8 +248,6 @@ class pkppgAjaxHandler {
 	 */
 	public function ajax_publish_release() {
 
-		$this->authenticate();
-
 		if ( empty( $_POST['release'] ) ) {
 			wp_send_json_error(
 				array(
@@ -237,6 +256,8 @@ class pkppgAjaxHandler {
 				)
 			);
 		}
+
+		$this->authenticate( (int) $_POST['release'], true );
 
 		$release = new pkppgPluginRelease();
 
@@ -274,8 +295,6 @@ class pkppgAjaxHandler {
 	 */
 	public function ajax_disable_post() {
 
-		$this->authenticate();
-
 		if ( empty( $_POST['post'] ) ) {
 			wp_send_json_error(
 				array(
@@ -284,6 +303,8 @@ class pkppgAjaxHandler {
 				)
 			);
 		}
+
+		$this->authenticate( (int) $_POST['post'], true );
 
 		$post = get_post( (int) $_POST['post'] );
 
@@ -338,14 +359,6 @@ class pkppgAjaxHandler {
 	 */
 	public function ajax_get_update_diff() {
 
-		$this->authenticate();
-
-		// Only admins!
-		// @todo better cap check
-		if ( !current_user_can( 'manage_options' ) ) {
-			$this->nopriv();
-		}
-
 		if ( empty( $_GET['ID'] ) ) {
 			wp_send_json_error(
 				array(
@@ -354,6 +367,8 @@ class pkppgAjaxHandler {
 				)
 			);
 		}
+
+		$this->authenticate( (int) $_GET['ID'], true );
 
 		$post = get_post( (int) $_GET['ID'] );
 
@@ -422,14 +437,6 @@ class pkppgAjaxHandler {
 	 */
 	public function ajax_merge_update() {
 
-		$this->authenticate();
-
-		// Only admins!
-		// @todo better cap check
-		if ( !current_user_can( 'manage_options' ) ) {
-			$this->nopriv();
-		}
-
 		if ( empty( $_POST['ID'] ) ) {
 			wp_send_json_error(
 				array(
@@ -438,6 +445,8 @@ class pkppgAjaxHandler {
 				)
 			);
 		}
+
+		$this->authenticate( (int) $_POST['ID'], true );
 
 		$post = get_post( (int) $_POST['ID'] );
 

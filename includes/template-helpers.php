@@ -291,3 +291,23 @@ function pkp_get_plugin_releases( $plugin_id, $args = array() ) {
 	return $query->get_results();
 }
 } // endif;
+
+/**
+ * Check if user is author of post
+ *
+ * @since 0.1
+ */
+if ( !function_exists( 'pkp_is_author' ) ) {
+function pkp_is_author( $post, $author = 0 ) {
+
+	if ( !is_a( $post, 'WP_POST' ) ) {
+		$post = get_post( $post );
+	}
+
+	if ( empty( $author ) ) {
+		$author = get_current_user_id();
+	}
+
+	return $post->post_author == $author;
+}
+} // endif
