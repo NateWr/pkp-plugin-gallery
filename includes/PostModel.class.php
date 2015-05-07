@@ -305,9 +305,13 @@ abstract class pkppgPostModel {
 			return;
 		}
 
+		// Update the model
 		$this->post_status = 'publish';
 
-		return wp_update_post( array( 'ID' => $this->ID, 'post_status' => $this->post_status ) );
+		wp_publish_post( $this->ID );
+
+		// wp_publish_post always returns null
+		return true;
 	}
 
 	/**

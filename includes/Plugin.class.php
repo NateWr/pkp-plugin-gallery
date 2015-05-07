@@ -456,9 +456,11 @@ class pkppgPlugin extends pkppgPostModel {
 		$this->load_release_objects();
 
 		$applications = array();
-		foreach( $this->release_objects as $release ) {
-			if ( !empty( $release->applications ) ) {
-				$applications = array_merge( $applications, $release->applications );
+		if ( !empty( $this->release_objects ) ) {
+			foreach( $this->release_objects as $release ) {
+				if ( !empty( $release->applications ) ) {
+					$applications = array_merge( $applications, $release->applications );
+				}
 			}
 		}
 

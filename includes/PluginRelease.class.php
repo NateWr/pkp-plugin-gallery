@@ -94,6 +94,10 @@ class pkppgPluginRelease extends pkppgPostModel {
 	 */
 	public function __construct() {
 		$this->post_type = pkppgInit()->cpts->plugin_release_post_type;
+
+		// Update related data when a release is deleted or updated
+		add_action( 'delete_post', array( $this, 'fire_on_delete' ) );
+		add_action( 'wp_insert_post', array( $this, 'fire_on_update' ), 10, 3 );
 	}
 
 	/**
@@ -304,6 +308,37 @@ class pkppgPluginRelease extends pkppgPostModel {
 
 		if ( !empty( $this->md5 ) ) {
 			update_post_meta( $this->ID, '_md5', $this->md5 );
+		}
+
+		// Call this directly because we have changed the terms since firing
+		// `wp_insert_post`
+		$this->update_parent_terms();
+	}
+
+	/**
+	 * Fire maintenance functions when post deleted
+	 *
+	 * @since 0.1
+	 */
+	public function fire_on_delete( $id ) {
+
+		if ( empty( $this->ID ) || $id !== $this->ID ) {
+			return;
+		}
+
+		$this->update_parent_terms();
+	}
+
+	/**
+	 * Fire maintenance functions when a post is inserted or updated
+	 *
+	 * This is
+	 * @since 0.1
+	 */
+	public function fire_on_update( $id, $post, $is_update = false ) {
+
+		if ( empty( $this->ID ) || $id !== $this->ID ) {
+			return;
 		}
 
 		$this->update_parent_terms();
