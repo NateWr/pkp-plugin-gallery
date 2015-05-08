@@ -127,7 +127,7 @@ function pkppg_print_releases_editor( $plugin_id = 0 ) {
 		<?php if ( ( is_admin() && current_user_can( 'manage_options' ) ) || $plugin->maintainer == get_current_user_id() ) : ?>
 		<fieldset class="pkp-release-form-buttons">
 			<a href="#" class="button add" data-plugin="<?php echo $plugin->ID; ?>">
-				<?php _e( 'Add Release', 'pkppg-plugin-gallery' ); ?>
+				<?php esc_html_e( 'Add Release', 'pkppg-plugin-gallery' ); ?>
 			</a>
 		</fieldset>
 		<?php endif; ?>
@@ -156,10 +156,10 @@ function pkppg_get_release_form() {
 
 		<fieldset class="pkp-release-form-buttons">
 			<a href="#" class="button button-primary save">
-				<?php _e( 'Save Release', 'pkppg-plugin-gallery' ); ?>
+				<?php esc_html_e( 'Save Release', 'pkppg-plugin-gallery' ); ?>
 			</a>
 			<a href="#" class="button cancel">
-				<?php _e( 'Cancel', 'pkppg-plugin-gallery' ); ?>
+				<?php esc_html_e( 'Cancel', 'pkppg-plugin-gallery' ); ?>
 			</a>
 
 			<span class="status">
@@ -194,58 +194,58 @@ function pkppg_print_release_fields() {
 		<input type="hidden" name="ID" id="pkp-release-id" value="">
 		<div class="version">
 			<label for="pkp-release-version">
-				<?php _e( 'Version', 'pkp-plugin-gallery' ); ?>
+				<?php esc_html_e( 'Version', 'pkp-plugin-gallery' ); ?>
 			</label>
 			<input type="text" name="version" id="pkp-release-version">
 		</div>
 		<div class="date">
 			<label for="pkp-release-date">
-				<?php _e( 'Release Date', 'pkp-plugin-gallery' ); ?>
+				<?php esc_html_e( 'Release Date', 'pkp-plugin-gallery' ); ?>
 			</label>
 			<input type="text" name="date" id="pkp-release-date">
 			<p class="description">
-				<?php _e( 'Please enter the date this version was released.' ); ?>
+				<?php esc_html_e( 'Please enter the date this version was released.' ); ?>
 			</p>
 		</div>
 		<div class="_package">
 			<label for="pkp-release-package">
-				<?php _e( 'Download URL', 'pkp-plugin-gallery' ); ?>
+				<?php esc_html_e( 'Download URL', 'pkp-plugin-gallery' ); ?>
 			</label>
 			<input type="url" name="package" id="pkp-release-package" placeholder="http://">
 			<p class="description">
-				<?php _e( 'Please enter the URL to the download package.' ); ?>
+				<?php esc_html_e( 'Please enter the URL to the download package.' ); ?>
 			</p>
 		</div>
 		<div class="description">
 			<label for="pkp-release-description">
-				<?php _e( 'Description', 'pkp-plugin-gallery' ); ?>
+				<?php esc_html_e( 'Description', 'pkp-plugin-gallery' ); ?>
 			</label>
 			<textarea name="description" id="pkp-release-description"></textarea>
 			<p class="description">
-				<?php _e( 'Please enter a brief description of changes in this version.' ); ?>
+				<?php esc_html_e( 'Please enter a brief description of changes in this version.' ); ?>
 			</p>
 		</div>
 		<?php // @todo better cap check ?>
 		<?php if ( is_admin() && current_user_can( 'manage_options' ) ) : ?>
 		<div class="_md5">
 			<label for="pkp-release-md5">
-				<?php _e( 'MD5 Hash', 'pkp-plugin-gallery' ); ?>
+				<?php esc_html_e( 'MD5 Hash', 'pkp-plugin-gallery' ); ?>
 			</label>
 			<input type="text" name="md5" id="pkp-release-md5">
 			<p class="description">
-				<?php _e( 'Please enter the MD5 hash for the download package that has been vetted.' ); ?>
+				<?php esc_html_e( 'Please enter the MD5 hash for the download package that has been vetted.' ); ?>
 			</p>
 		</div>
 		<div class="certification">
 			<label for="pkp-release-certification">
-				<?php _e( 'Certification', 'pkp-plugin-gallery' ); ?>
+				<?php esc_html_e( 'Certification', 'pkp-plugin-gallery' ); ?>
 			</label>
 			<?php pkppg_print_taxonomy_select( 'pkp_certification' ); ?>
 		</div>
 		<?php endif; ?>
 		<div class="applications">
 			<h3>
-				<?php _e( 'Compatible Applications', 'pkp-plugin-gallery' ); ?>
+				<?php esc_html_e( 'Compatible Applications', 'pkp-plugin-gallery' ); ?>
 			</h3>
 			<?php pkppg_print_application_select(); ?>
 		</div>

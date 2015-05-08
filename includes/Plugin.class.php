@@ -345,40 +345,40 @@ class pkppgPlugin extends pkppgPostModel {
 		?>
 
 			<fieldset class="plugin">
-				<legend><?php _e( 'Plugin Details', 'pkp-plugin-gallery' ); ?></legend>
+				<legend><?php esc_html_e( 'Plugin Details', 'pkp-plugin-gallery' ); ?></legend>
 				<div class="name">
 					<label for="pkp-plugin-name">
-						<?php _e( 'Name', 'pkp-plugin-gallery' ); ?>
+						<?php esc_html_e( 'Name', 'pkp-plugin-gallery' ); ?>
 					</label>
 					<input type="text" name="pkp-plugin-name" value="<?php echo esc_attr( $this->name ); ?>">
 				</div>
 				<div class="category">
 					<label for="pkp-plugin-category">
-						<?php _e( 'Category', 'pkp-plugin-gallery' ); ?>
+						<?php esc_html_e( 'Category', 'pkp-plugin-gallery' ); ?>
 					</label>
 					<?php pkppg_print_taxonomy_select( 'pkp_category', $this->category ); ?>
 				</div>
 				<div class="summary">
 					<label for="pkp-plugin-summary">
-						<?php _e( 'Summary', 'pkp-plugin-gallery' ); ?>
+						<?php esc_html_e( 'Summary', 'pkp-plugin-gallery' ); ?>
 					</label>
 					<textarea name="pkp-plugin-summary"><?php echo $this->summary; ?></textarea>
 				</div>
 				<div class="description">
 					<label for="pkp-plugin-description">
-						<?php _e( 'Description', 'pkp-plugin-gallery' ); ?>
+						<?php esc_html_e( 'Description', 'pkp-plugin-gallery' ); ?>
 					</label>
 					<textarea name="pkp-plugin-description"><?php echo $this->description; ?></textarea>
 				</div>
 				<div class="homepage">
 					<label for="pkp-plugin-homepage">
-						<?php _e( 'Project URL', 'pkp-plugin-gallery' ); ?>
+						<?php esc_html_e( 'Project URL', 'pkp-plugin-gallery' ); ?>
 					</label>
 					<input type="url" name="pkp-plugin-homepage" value="<?php echo esc_attr( $this->homepage ); ?>">
 				</div>
 				<div class="installation">
 					<label for="pkp-plugin-installation">
-						<?php _e( 'Installation Instructions', 'pkp-plugin-gallery' ); ?>
+						<?php esc_html_e( 'Installation Instructions', 'pkp-plugin-gallery' ); ?>
 					</label>
 					<textarea name="pkp-plugin-installation"><?php echo $this->installation; ?></textarea>
 				</div>

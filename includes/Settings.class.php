@@ -149,7 +149,7 @@ class pkppgSettings {
 		?>
 
 			<p class="description">
-				<?php _e( 'You have no pages eligible for the Plugin Gallery Page. You need at least one published page.', 'pkp-plugin-gallery' ); ?>
+				<?php esc_html_e( 'You have no pages eligible for the Plugin Gallery Page. You need at least one published page.', 'pkp-plugin-gallery' ); ?>
 			</p>
 
 		<?php else : ?>

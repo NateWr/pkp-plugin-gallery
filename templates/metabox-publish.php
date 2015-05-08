@@ -44,7 +44,7 @@
                     <?php printf( __( 'Revisions: %s' ), '<b>' . number_format_i18n( $revisions_count ) . '</b>' ); ?>
                     <a class="hide-if-no-js" href="<?php echo esc_url( get_edit_post_link( $revision_id ) ); ?>">
                         <span aria-hidden="true"><?php _ex( 'Browse', 'revisions', 'pkp-plugin-gallery' ); ?></span>
-                        <span class="screen-reader-text"><?php _e( 'Browse revisions', 'pkp-plugin-gallery' ); ?></span>
+                        <span class="screen-reader-text"><?php esc_html_e( 'Browse revisions', 'pkp-plugin-gallery' ); ?></span>
                     </a>
                 </div>
                 <?php endif; ?>

@@ -200,7 +200,7 @@ class pkppgPluginGallery {
 		?>
 
 		<a href="<?php echo esc_url( $this->edit_url ); ?>">
-			<?php _e( 'Submit Plugin', 'pkp-plugin-gallery' ); ?>
+			<?php esc_html_e( 'Submit Plugin', 'pkp-plugin-gallery' ); ?>
 		</a>
 		<ul class="plugins">
 
@@ -211,12 +211,12 @@ class pkppgPluginGallery {
 				</div>
 				<div class="actions">
 					<a href="<?php echo esc_url( add_query_arg( 'id', $plugin->ID, $this->view_url ) ); ?>">
-						<?php _e( 'View', 'pkp-plugin-gallery' ); ?>
+						<?php esc_html_e( 'View', 'pkp-plugin-gallery' ); ?>
 					</a>
 					<?php // @todo better user cap ?>
 					<?php if ( current_user_can( 'manage_options' ) || $plugin->maintainer == get_current_user_id() ) : ?>
 					<a href="<?php echo esc_url( add_query_arg( 'id', $plugin->ID, $this->edit_url ) ); ?>">
-						<?php _e( 'Edit', 'pkp-plugin-gallery' ); ?>
+						<?php esc_html_e( 'Edit', 'pkp-plugin-gallery' ); ?>
 					</a>
 					<?php endif; ?>
 				</div>
@@ -256,7 +256,7 @@ class pkppgPluginGallery {
 
 				<fieldset class="buttons">
 					<button type="submit" class="save">
-						<?php _e( 'Save', 'pkppg-plugin-gallery' ); ?>
+						<?php esc_html_e( 'Save', 'pkppg-plugin-gallery' ); ?>
 					</button>
 				</fieldset>
 			</form>

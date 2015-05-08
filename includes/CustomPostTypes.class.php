@@ -339,7 +339,7 @@ class pkppgCustomPostTypes {
 		<input type="text" name="_homepage" value="<?php echo esc_attr( $homepage ); ?>" placeholder="http://">
 
 		<p class="description">
-			<?php _e( 'Enter the URL where we can find more information about this plugin.' ); ?>
+			<?php esc_html_e( 'Enter the URL where we can find more information about this plugin.' ); ?>
 		</p>
 
 		<?php
@@ -359,7 +359,7 @@ class pkppgCustomPostTypes {
 		<textarea name="_installation"><?php echo $installation; ?></textarea>
 
 		<p class="description">
-			<?php _e( 'Enter a brief description of any installation instructions or requirements.' ); ?>
+			<?php esc_html_e( 'Enter a brief description of any installation instructions or requirements.' ); ?>
 		</p>
 
 		<?php
@@ -458,10 +458,10 @@ class pkppgCustomPostTypes {
 		<div id="pkp-plugin-diff"></div>
 		<div class="controls">
 			<a href="#" class="publish button-primary">
-				<?php _e( 'Publish Changes', 'pkp-plugin-gallery' ); ?>
+				<?php esc_html_e( 'Publish Changes', 'pkp-plugin-gallery' ); ?>
 			</a>
 			<a href="#" class="close button">
-				<?php _e( 'Close', 'pkp-plugin-gallery' ); ?>
+				<?php esc_html_e( 'Close', 'pkp-plugin-gallery' ); ?>
 			</a>
 			<span class="pkp-spinner"></span>
 			<span class="pkp-success"></span>

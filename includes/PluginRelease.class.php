@@ -405,7 +405,7 @@ class pkppgPluginRelease extends pkppgPostModel {
 			<div class="actions">
 				<span class="pkp-spinner"></span>
 				<a href="#" class="edit">
-					<?php _e( 'Edit', 'pkp-plugin-gallery' ); ?>
+					<?php esc_html_e( 'Edit', 'pkp-plugin-gallery' ); ?>
 				</a>
 
 				<?php // @todo better user_cap ?>
@@ -413,27 +413,27 @@ class pkppgPluginRelease extends pkppgPostModel {
 
 					<?php if ( $this->post_status == 'submission' ) : ?>
 					<a href="#" class="approve">
-						<?php _e( 'Approve', 'pkp-plugin-gallery' ); ?>
+						<?php esc_html_e( 'Approve', 'pkp-plugin-gallery' ); ?>
 					</a>
 
 					<?php elseif ( $this->post_status == 'publish' ) : ?>
 					<a href="#" class="disable">
-						<?php _e( 'Disable', 'pkp-plugin-gallery' ); ?>
+						<?php esc_html_e( 'Disable', 'pkp-plugin-gallery' ); ?>
 					</a>
 
 					<?php elseif ( $this->post_status == 'update' ) : ?>
 					<a href="#" class="compare">
-						<?php _e( 'Compare Changes', 'pkp-plugin-gallery' ); ?>
+						<?php esc_html_e( 'Compare Changes', 'pkp-plugin-gallery' ); ?>
 					</a>
 
 					<?php elseif ( $this->post_status == 'disable' ) : ?>
 					<a href="#" class="enable">
-						<?php _e( 'Enable', 'pkp-plugin-gallery' ); ?>
+						<?php esc_html_e( 'Enable', 'pkp-plugin-gallery' ); ?>
 					</a>
 					<?php endif; ?>
 
 					<a href="#" class="delete">
-						<?php _e( 'Delete', 'pkp-plugin-gallery' ); ?>
+						<?php esc_html_e( 'Delete', 'pkp-plugin-gallery' ); ?>
 					</a>
 				<?php endif; ?>
 
