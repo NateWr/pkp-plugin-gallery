@@ -472,8 +472,7 @@ class pkppgPlugin extends pkppgPostModel {
 	/**
 	 * Deleted any attached releases
 	 *
-	 * Generally this should only be called when the plugin is deleted. It is
-	 * hooked in automatically to the `delete_post` action.
+	 * Generally this should only be called when the plugin is deleted.
 	 *
 	 * @since 0.1
 	 */
@@ -503,6 +502,36 @@ class pkppgPlugin extends pkppgPostModel {
 		// Delete them
 		foreach( $releases as $release ) {
 			wp_delete_post( $release );
+		}
+	}
+
+	/**
+	 * Deleted any attached updates
+	 *
+	 * Generally this should only be called when the plugin is deleted.
+	 *
+	 * @since 0.1
+	 */
+	public function delete_attached_updates() {
+
+		// Get all child plugins
+		$args = array(
+			'post_type' => pkppgInit()->cpts->plugin_post_type,
+			'posts_per_page' => 1000, // large upper limit
+			'post_status' => array_merge( array( 'trash', 'draft' ), pkppgInit()->cpts->valid_post_statuses ),
+			'post_parent' => $this->ID,
+			'fields' => 'ids',
+		);
+		$query = new WP_Query( $args );
+		$plugins = $query->posts;
+
+		if ( empty( $plugins ) ) {
+			return;
+		}
+
+		// Delete them
+		foreach( $plugins as $plugin ) {
+			wp_delete_post( $plugin );
 		}
 	}
 }

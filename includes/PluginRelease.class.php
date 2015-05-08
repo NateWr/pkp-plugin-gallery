@@ -327,6 +327,9 @@ class pkppgPluginRelease extends pkppgPostModel {
 		}
 
 		$this->update_parent_terms();
+
+		// Delete the transient where update counts are stored
+		pkppgInit()->cpts->delete_update_transient();
 	}
 
 	/**

@@ -31,14 +31,6 @@ class pkppgCustomPostTypes {
 	public $valid_post_statuses = array( 'submission', 'publish', 'update', 'disable' );
 
 	/**
-	 * IDs of plugins with updates
-	 *
-	 * @param array plugins_with_updates
-	 * @since 0.1
-	 */
-	public $plugins_with_updates;
-
-	/**
 	 * Register hooks
 	 *
 	 * @since 0.1
@@ -60,7 +52,16 @@ class pkppgCustomPostTypes {
 		add_filter( 'request', array( $this, 'modify_admin_table_request' ) );
 
 		// Remove attached releases when a plugin is deleted
-		add_action( 'delete_post', array( $this, 'delete_attached_releases' ) );
+		add_action( 'delete_post', array( $this, 'fire_on_delete' ) );
+
+		// Add notification bubble to plugin
+		add_filter( 'add_menu_classes', array( $this, 'add_update_notification' ) );
+
+		// Bust update count transient whenever a plugin or release is saved
+		add_action( 'pkppg_insert_' . $this->plugin_post_type, array( $this, 'delete_update_transient' ) );
+		add_action( 'pkppg_update_' . $this->plugin_post_type, array( $this, 'delete_update_transient' ) );
+		add_action( 'pkppg_insert_' . $this->plugin_release_post_type, array( $this, 'delete_update_transient' ) );
+		add_action( 'pkppg_update_' . $this->plugin_release_post_type, array( $this, 'delete_update_transient' ) );
 	}
 
 	/**
@@ -491,6 +492,9 @@ class pkppgCustomPostTypes {
 			return $post_id;
 		}
 
+		// Bust update count transient
+		$this->delete_update_transient();
+
 		// Define sanitization callbacks for each meta field
 		$meta = array(
 			'_homepage' => 'sanitize_text_field',
@@ -578,10 +582,6 @@ class pkppgCustomPostTypes {
 	 */
 	public function get_plugins_with_updates() {
 
-		if ( !empty( $this->plugins_with_updates ) ) {
-			return $this->plugins_with_updates;
-		}
-
 		// Get the number of plugins with updates
 		$args = array(
 			'posts_per_page' => 1000, // large upper limit
@@ -621,9 +621,30 @@ class pkppgCustomPostTypes {
 
 		wp_reset_query();
 
-		$this->plugins_with_updates = array_unique( $plugins );
+		return array_unique( $plugins );
+	}
 
-		return $this->plugins_with_updates;
+	/**
+	 * Get count of plugins with updates
+	 *
+	 * This is cached as a transient and refreshed only once per hour
+	 *
+	 * @since 0.1
+	 */
+	public function get_plugin_update_count() {
+
+		$count = get_transient( 'pkppg_plugin_updates' );
+		if ( $count !== false ) {
+			return $count;
+		}
+
+		$count = count( $this->get_plugins_with_updates() );
+
+
+		set_transient( 'pkppg_plugin_updates', $count, 4 * HOUR_IN_SECONDS );
+
+		return $count;
+
 	}
 
 	/**
@@ -633,14 +654,14 @@ class pkppgCustomPostTypes {
 	 */
 	public function add_views( $views ) {
 
-		$plugins = $this->get_plugins_with_updates();
+		$plugin_count = $this->get_plugin_update_count();
 
 		$current = '';
 		if ( !empty( $_GET['has_update'] ) ) {
 			$current = ' class="current"';
 		}
 
-		$count = '<span class="count">' . sprintf( esc_html__( '(%d)', 'pkp-plugin-gallery' ), count( $plugins ) ) . '</span>';
+		$count = '<span class="count">' . sprintf( esc_html__( '(%d)', 'pkp-plugin-gallery' ), $plugin_count ) . '</span>';
 
 		$url = admin_url( 'edit.php?post_type=' . $this->plugin_post_type . '&has_update=1' );
 		$views['has_update'] = '<a href="' . esc_url( $url ) . '"' . $current . '>' . sprintf( esc_html__( 'Updated %s', 'pkp-plugin-gallery' ), $count ) . '</a>';
@@ -678,19 +699,19 @@ class pkppgCustomPostTypes {
 	}
 
 	/**
-	 * Delete attached releases when a plugin is deleted
+	 * Fire when a plugin is deleted
 	 *
 	 * This is fired whenever a post is deleted. If the post is a plugin, it
-	 * will load the object and run a method that deletes attached releases.
+	 * will load the object and run a method that processes maintenance routines.
 	 * Ideally, this code should go into our pkppgPlugin model. But when we're
-	 * using the native WordPress delete functions we won't have the object
+	 * using the native WordPress delete UI we won't have the object
 	 * automatically set up. So in order to ensure we're hooked in properly, we
 	 * need to instantiate the process here in the pkppgCustomPostTypes
 	 * singleton, fire up our plugin object, and run the object's method.
 	 *
 	 * @since 0.1
 	 */
-	public function delete_attached_releases( $id ) {
+	public function fire_on_delete( $id ) {
 
 		$post = get_post( $id );
 
@@ -702,6 +723,42 @@ class pkppgCustomPostTypes {
 		$plugin->load_post( $post );
 
 		$plugin->delete_attached_releases();
+		$plugin->delete_attached_updates();
+
+		// Delete the transient where update counts are stored
+		$this->delete_update_transient();
+	}
+
+	/**
+	 * Add a notification bubble to the admin menu when there are updates
+	 * pending for plugins
+	 *
+	 * @since 0.1
+	 */
+	public function add_update_notification( $menu ) {
+
+		$updates = $this->get_plugin_update_count();
+
+		if ( !$updates ) {
+			return $menu;
+		}
+
+		foreach( $menu as $i => $item ) {
+			if ( $item[2] == 'edit.php?post_type=' . $this->plugin_post_type ) {
+				$menu[$i][0] .= ' <span class="awaiting-mod"><span>' . $updates . '</span></span>';
+			}
+		}
+
+		return $menu;
+	}
+
+	/**
+	 * Delete update count transient
+	 *
+	 * @since 0.1
+	 */
+	public function delete_update_transient() {
+		delete_transient( 'pkppg_plugin_updates' );
 	}
 
 }
