@@ -286,7 +286,7 @@ class pkppgCustomPostTypes {
 		// Add a homepage metabox
 		add_meta_box(
 			'pkppg_homepage',
-			'Plugin Homepage',
+			__( 'Project URL', 'pkp-plugin-gallery' ),
 			array( $this, 'print_homepage_metabox' ),
 			$this->plugin_post_type,
 			'side',
