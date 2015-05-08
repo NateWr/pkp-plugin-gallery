@@ -336,7 +336,7 @@ class pkppgCustomPostTypes {
 
 		<?php wp_nonce_field( 'pkppg_edit_plugin', 'pkppg_edit_plugin' ); ?>
 
-		<input type="text" name="_homepage" value="<?php echo esc_attr( $homepage ); ?>" placeholder="http://">
+		<input type="text" name="_homepage" value="<?php echo esc_attr( $homepage ); ?>" placeholder="http://github.com/you/your_plugin/">
 
 		<p class="description">
 			<?php esc_html_e( 'Enter the URL where we can find more information about this plugin.' ); ?>

@@ -374,7 +374,7 @@ class pkppgPlugin extends pkppgPostModel {
 					<label for="pkp-plugin-homepage">
 						<?php esc_html_e( 'Project URL', 'pkp-plugin-gallery' ); ?>
 					</label>
-					<input type="url" name="pkp-plugin-homepage" value="<?php echo esc_attr( $this->homepage ); ?>">
+					<input type="url" name="pkp-plugin-homepage" value="<?php echo esc_attr( $this->homepage ); ?>" placeholder="http://github.com/you/your_plugin/">
 				</div>
 				<div class="installation">
 					<label for="pkp-plugin-installation">

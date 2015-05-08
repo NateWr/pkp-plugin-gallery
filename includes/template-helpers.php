@@ -209,9 +209,9 @@ function pkppg_print_release_fields() {
 		</div>
 		<div class="_package">
 			<label for="pkp-release-package">
-				<?php esc_html_e( 'Download URL', 'pkp-plugin-gallery' ); ?>
+				<?php esc_html_e( 'Download Package', 'pkp-plugin-gallery' ); ?>
 			</label>
-			<input type="url" name="package" id="pkp-release-package" placeholder="http://">
+			<input type="url" name="package" id="pkp-release-package" placeholder="http://github.com/you/your_plugin/archive/your_plugin.zip">
 			<p class="description">
 				<?php esc_html_e( 'Please enter the URL to the download package.' ); ?>
 			</p>
