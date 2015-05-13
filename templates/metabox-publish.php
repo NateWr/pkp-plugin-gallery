@@ -2,7 +2,16 @@
 /**
  * Builds the publish metabox which appears on the admin interface to edit
  * `pkp_plugin` posts. Markup is designed to blend with existing WP admin
- * design.
+ * design. The template expects to be able to find the following variables.
+ *
+ * @var $post WP_Post post object
+ * @var $updates array pkppgPlugin objects of updates for this post
+ * @var $parent_url string URL to the edit post page in the WordPress admin for
+ *      the parent post if this post is an update
+ * @var $revisions_count int Number of revisions for this post
+ * @var $revision_id int ID of the last revision
+ * @var $revisions_to_keep int WordPress setting for how many revisions will be
+ *      kept for this post type
  */
 ?>
 

@@ -401,6 +401,7 @@ class pkppgCustomPostTypes {
 			$delete_text = __( 'Delete Permanently', 'pkp-plugin-gallery' );
 		}
 
+		$parent_url = '';
 		if ( $post->post_status == 'update' ) {
 			$parent_url = admin_url( 'post.php?post=' . (int) $post->post_parent . '&action=edit' );
 

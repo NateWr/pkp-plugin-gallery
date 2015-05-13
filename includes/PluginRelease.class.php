@@ -57,10 +57,7 @@ class pkppgPluginRelease extends pkppgPostModel {
 	/**
 	 * Author of the plugin
 	 *
-	 * @todo update docs when we decide what this value should contain.
-	 *	just a user id? or a user object or a has of the user details?
-	 *	need to be able to validate newly submitted details, and may
-	 *	not have a full user record.
+	 * @var int
 	 * @since 0.1
 	 */
 	public $author;
@@ -266,7 +263,6 @@ class pkppgPluginRelease extends pkppgPostModel {
 	 */
 	public function insert_post_data() {
 
-		// @todo add author support
 		$args = array(
 			'post_type'    => pkppgInit()->cpts->plugin_release_post_type,
 			'post_title'   => $this->version,
@@ -348,129 +344,6 @@ class pkppgPluginRelease extends pkppgPostModel {
 	}
 
 	/**
-	 * Get HTML for an overview of this release for the plugin submission
-	 * and editing controls
-	 *
-	 * @since 0.1
-	 */
-	public function get_control_overview() {
-
-		ob_start();
-
-		?>
-
-		<div class="release <?php echo esc_attr( $this->post_status ); ?>" data-id="<?php echo (int) $this->ID; ?>">
-			<input type="hidden" name="pkp-plugin-releases[]" value="<?php echo (int) $this->ID; ?>">
-			<div class="title">
-
-				<?php if ( $this->post_status == 'update' ) : ?>
-				<span class="dashicons dashicons-update"></span>
-				<span class="status-notice">
-					<?php esc_html_e( 'Update: ', 'pkp-plugin-gallery' ); ?>
-				</span>
-
-				<?php elseif ( $this->post_status == 'submission' ) : ?>
-				<span class="dashicons dashicons-download"></span>
-				<span class="status-notice">
-					<?php esc_html_e( 'Submission: ', 'pkp-plugin-gallery' ); ?>
-				</span>
-
-				<?php elseif ( $this->post_status == 'disable' ) : ?>
-				<span class="dashicons dashicons-shield-alt"></span>
-				<span class="status-notice">
-					<?php esc_html_e( 'Disabled: ', 'pkp-plugin-gallery' ); ?>
-				</span>
-				<?php endif; ?>
-
-				<?php if ( $this->post_status != 'update' ) : ?>
-				<span class="version">
-					<?php echo $this->version; ?>
-				</span>
-				&mdash;
-				<span class="date">
-					<?php echo $this->release_date; ?>
-				</span>
-
-				<?php else : ?>
-				<span class="date">
-					<?php echo mysql2date( get_option( 'date_format' ), $this->post_modified ); ?>
-				</span>
-				<?php endif; ?>
-			</div>
-
-			<?php if ( $this->post_status == 'publish' ) : ?>
-			<div class="details">
-				<?php echo $this->description; ?>
-			</div>
-			<?php endif; ?>
-
-			<?php if ( current_user_can( 'manage_options' ) || pkp_is_author( $this->ID ) ) : ?>
-			<div class="actions">
-				<span class="pkp-spinner"></span>
-				<a href="#" class="edit">
-					<?php esc_html_e( 'Edit', 'pkp-plugin-gallery' ); ?>
-				</a>
-
-				<?php // @todo better user_cap ?>
-				<?php if ( current_user_can( 'manage_options' ) ) : ?>
-
-					<?php if ( $this->post_status == 'submission' ) : ?>
-					<a href="#" class="approve">
-						<?php esc_html_e( 'Approve', 'pkp-plugin-gallery' ); ?>
-					</a>
-
-					<?php elseif ( $this->post_status == 'publish' ) : ?>
-					<a href="#" class="disable">
-						<?php esc_html_e( 'Disable', 'pkp-plugin-gallery' ); ?>
-					</a>
-
-					<?php elseif ( $this->post_status == 'update' ) : ?>
-					<a href="#" class="compare">
-						<?php esc_html_e( 'Compare Changes', 'pkp-plugin-gallery' ); ?>
-					</a>
-
-					<?php elseif ( $this->post_status == 'disable' ) : ?>
-					<a href="#" class="enable">
-						<?php esc_html_e( 'Enable', 'pkp-plugin-gallery' ); ?>
-					</a>
-					<?php endif; ?>
-
-					<a href="#" class="delete">
-						<?php esc_html_e( 'Delete', 'pkp-plugin-gallery' ); ?>
-					</a>
-				<?php endif; ?>
-
-			</div>
-			<?php endif; ?>
-
-			<?php // @todo better user cap ?>
-			<?php if ( !empty( $this->updates ) && is_admin() && current_user_can( 'manage_options' ) ) : ?>
-			<ul class="updates">
-				<?php foreach( $this->updates as $update ) : ?>
-				<li>
-					<?php echo $update->get_control_overview(); ?>
-				</li>
-				<?php endforeach; ?>
-			</ul>
-			<?php endif; ?>
-		</div>
-
-		<?php
-
-		return ob_get_clean();
-	}
-
-	/**
-	 * Print an overview of this release for the plugin submission
-	 * and editing controls
-	 *
-	 * @since 0.1
-	 */
-	public function print_control_overview() {
-		echo $this->get_control_overview();
-	}
-
-	/**
 	 * Add missing parent `pkp_application` term ids to the array
 	 * of assigned term ids
 	 *
@@ -500,6 +373,114 @@ class pkppgPluginRelease extends pkppgPostModel {
 		}
 
 		$this->applications = array_unique( $this->applications );
+	}
+
+	/**
+	 * Update parent terms to ensure that any terms assigned to this release
+	 * are added/removed from the parent plugin as needed
+	 *
+	 * @since 0.1
+	 */
+	public function update_parent_terms() {
+
+		if ( empty( $this->post_parent ) ) {
+			return;
+		}
+
+		$parent = get_post( $this->post_parent );
+
+		if ( empty( $parent ) || is_wp_error( $parent ) || $parent->post_type !== pkppgInit()->cpts->plugin_post_type ) {
+			return;
+		}
+
+		$plugin = new pkppgPlugin();
+		$plugin->load_post( $parent );
+		$plugin->adopt_child_terms();
+	}
+
+	/**
+	 * Get HTML for an overview of this release for the release
+	 * and editing controls
+	 *
+	 * @since 0.1
+	 */
+	public function get_control_overview() {
+
+		$release = $this;
+		$template = pkppgInit()->get_template_path( 'release-control.php' );
+		if ( !empty( $template ) ) {
+			ob_start();
+			include( $template );
+			return ob_get_clean();
+		}
+
+		return '';
+	}
+
+	/**
+	 * Print an overview of this release for the release
+	 * and editing controls
+	 *
+	 * @since 0.1
+	 */
+	public function print_control_overview() {
+		echo $this->get_control_overview();
+	}
+
+	/**
+	 * Get HTML for a view of this release. Intended for user-facing views.
+	 *
+	 * @since 0.1
+	 */
+	public function get_view() {
+
+		$release = $this;
+		$template = pkppgInit()->get_template_path( 'release-view.php' );
+		if ( !empty( $template ) ) {
+			ob_start();
+			include( $template );
+			return ob_get_clean();
+		}
+
+		return '';
+	}
+
+	/**
+	 * Print a view of this release. Intended for user-facing views.
+	 *
+	 * @since 0.1
+	 */
+	public function print_view() {
+		echo $this->get_view();
+	}
+
+	/**
+	 * Get HTML for an editing form for this release. Does not require any data
+	 * so can be called from an empty release object
+	 *
+	 * @since 0.1
+	 */
+	public function get_form() {
+
+		$release = $this;
+		$template = pkppgInit()->get_template_path( 'release-form.php' );
+		if ( !empty( $template ) ) {
+			ob_start();
+			include( $template );
+			return ob_get_clean();
+		}
+
+		return '';
+	}
+
+	/**
+	 * Print an editing form for this release. Does not require any data so
+	 * can be called from an empty release object
+	 *
+	 * @since 0.1
+	 */
+	public function print_form() {
+		echo $this->get_view();
 	}
 
 	/**
@@ -562,29 +543,6 @@ class pkppgPluginRelease extends pkppgPostModel {
 		}
 
 		return ob_get_clean();
-	}
-
-	/**
-	 * Update parent terms to ensure that any terms assigned to this release
-	 * are added/removed from the parent plugin as needed
-	 *
-	 * @since 0.1
-	 */
-	public function update_parent_terms() {
-
-		if ( empty( $this->post_parent ) ) {
-			return;
-		}
-
-		$parent = get_post( $this->post_parent );
-
-		if ( empty( $parent ) || is_wp_error( $parent ) || $parent->post_type !== pkppgInit()->cpts->plugin_post_type ) {
-			return;
-		}
-
-		$plugin = new pkppgPlugin();
-		$plugin->load_post( $parent );
-		$plugin->adopt_child_terms();
 	}
 
 }

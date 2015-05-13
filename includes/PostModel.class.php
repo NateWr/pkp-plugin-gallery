@@ -397,6 +397,49 @@ abstract class pkppgPostModel {
 		return false;
 	}
 
+	/**
+	 * Return the name of the requested taxonomy terms assigned to this object
+	 *
+	 * If the object has an array of terms, it will return the names separated
+	 * by `$sep`
+	 *
+	 * @since 0.1
+	 */
+	public function get_term_name( $taxonomy, $sep = ', ', $field = 'slug' ) {
+
+		$slugs = '';
+		if ( $taxonomy == 'pkp_application' ) {
+			$slugs = $this->applications;
+		} elseif ( $taxonomy == 'pkp_certification' ) {
+			$slugs = $this->certification;
+		} elseif ( $taxonomy = 'pkp_category' ) {
+			$slugs = $this->category;
+		}
+
+		if ( empty( $slugs ) ) {
+			return '';
+		}
+
+		if ( is_array( $slugs ) ) {
+			$name = array();
+			foreach( $slugs as $slug ) {
+				$term = get_term_by( $field, $slug, $taxonomy );
+				$name[] = $term->name;
+			}
+
+			return join( $sep, $name );
+		}
+
+
+		$term = get_term_by( $field, $slugs, $taxonomy );
+
+		if ( is_wp_error( $term ) ) {
+			return '';
+		}
+
+		return $term->name;
+	}
+
 
 	/**
 	 * Add an error to the validation errors array

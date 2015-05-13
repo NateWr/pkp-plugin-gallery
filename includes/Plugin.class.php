@@ -151,14 +151,30 @@ class pkppgPlugin extends pkppgPostModel {
 		}
 
 		$args = array(
-			'post_type' => pkppgInit()->cpts->plugin_release_post_type,
+			'post_type'      => pkppgInit()->cpts->plugin_release_post_type,
 			'posts_per_page' => 1000, // high upper limit
-			'post_parent' => $this->ID,
+			'post_parent'    => $this->ID,
+			'post_status'    => array( 'publish' ),
+			'orderby'        => 'title',
+			'order'	         => 'DESC',
 		);
+
+		// Maintainers should always see submissions and updates
+		if ( get_current_user_id() == $this->maintainer ) {
+			array_push( $args['post_status'], 'submission' );
+			$args['with_updates'] = true;
+		}
+
+		// Show disabled releases and updates in admin to admins
+		if ( is_admin() && current_user_can( 'manage_options' ) ) {
+			array_push( $args['post_status'], 'disable' );
+		}
 
 		$query = new pkppgQuery( $args );
 
 		$this->release_objects = $query->get_results();
+
+		return $this->release_objects;
 	}
 
 	/**
@@ -280,7 +296,6 @@ class pkppgPlugin extends pkppgPostModel {
 	 */
 	public function insert_post_data() {
 
-		// @todo add author support
 		$args = array(
 			'post_type'    => pkppgInit()->cpts->plugin_post_type,
 			'post_title'   => $this->name,
@@ -311,8 +326,6 @@ class pkppgPlugin extends pkppgPostModel {
 			wp_set_object_terms( $this->ID, $this->category, 'pkp_category' );
 		}
 
-		// @todo ensure all application terms assigned to child releases are added
-
 		if ( !empty( $this->homepage ) ) {
 			update_post_meta( $this->ID, '_homepage', $this->homepage );
 		}
@@ -333,113 +346,6 @@ class pkppgPlugin extends pkppgPostModel {
 
 		// Assign release `pkp_application` terms to plugin
 		$this->adopt_child_terms();
-	}
-
-	/**
-	 * Add/Edit form fields for plugins
-	 *
-	 * @since 0.1
-	 */
-	public function print_form_fields() {
-
-		?>
-
-			<fieldset class="plugin">
-				<legend><?php esc_html_e( 'Plugin Details', 'pkp-plugin-gallery' ); ?></legend>
-				<div class="name">
-					<label for="pkp-plugin-name">
-						<?php esc_html_e( 'Name', 'pkp-plugin-gallery' ); ?>
-					</label>
-					<input type="text" name="pkp-plugin-name" value="<?php echo esc_attr( $this->name ); ?>">
-				</div>
-				<div class="category">
-					<label for="pkp-plugin-category">
-						<?php esc_html_e( 'Category', 'pkp-plugin-gallery' ); ?>
-					</label>
-					<?php pkppg_print_taxonomy_select( 'pkp_category', $this->category ); ?>
-				</div>
-				<div class="summary">
-					<label for="pkp-plugin-summary">
-						<?php esc_html_e( 'Summary', 'pkp-plugin-gallery' ); ?>
-					</label>
-					<textarea name="pkp-plugin-summary"><?php echo $this->summary; ?></textarea>
-				</div>
-				<div class="description">
-					<label for="pkp-plugin-description">
-						<?php esc_html_e( 'Description', 'pkp-plugin-gallery' ); ?>
-					</label>
-					<textarea name="pkp-plugin-description"><?php echo $this->description; ?></textarea>
-				</div>
-				<div class="homepage">
-					<label for="pkp-plugin-homepage">
-						<?php esc_html_e( 'Project URL', 'pkp-plugin-gallery' ); ?>
-					</label>
-					<input type="url" name="pkp-plugin-homepage" value="<?php echo esc_attr( $this->homepage ); ?>" placeholder="http://github.com/you/your_plugin/">
-				</div>
-				<div class="installation">
-					<label for="pkp-plugin-installation">
-						<?php esc_html_e( 'Installation Instructions', 'pkp-plugin-gallery' ); ?>
-					</label>
-					<textarea name="pkp-plugin-installation"><?php echo $this->installation; ?></textarea>
-				</div>
-			</fieldset>
-
-		<?php
-	}
-
-	/**
-	 * Generate a diff of changes against an updated object
-	 *
-	 * This will generate a series of diff tables which indicate changes between
-	 * `$this` and an updated object which is passed to this method.
-	 *
-	 * @since 0.1
-	 */
-	public function get_diff( $update ) {
-
-		$strings = array(
-			'name',
-			'product',
-			'summary',
-			'description',
-			'homepage',
-			'installation',
-		);
-
-		ob_start();
-
-		foreach( $strings as $string ) :
-			$diff = wp_text_diff( $this->{$string}, $update->{$string} );
-
-			if ( empty( $diff ) ) {
-				continue;
-			}
-		?>
-
-		<div class="param">
-			<h4><?php echo ucfirst( $string ); ?></h4>
-			<?php echo $diff; ?>
-		</div>
-
-		<?php
-		endforeach;
-
-		$current_category = !empty( $this->category ) ? get_term( $this->category, 'pkp_category' ) : '';
-		$update_category = !empty( $update->category ) ? get_term( $update->category, 'pkp_category' ) : '';
-		$diff = wp_text_diff( $current_category->name, $update_category->name );
-
-		if ( !empty( $diff ) ) :
-		?>
-
-		<div class="param">
-			<h4><?php esc_html_e( 'Category' ); ?></h4>
-			<?php echo $diff; ?>
-		</div>
-
-		<?php
-		endif;
-
-		return ob_get_clean();
 	}
 
 	/**
@@ -533,6 +439,145 @@ class pkppgPlugin extends pkppgPostModel {
 		foreach( $plugins as $plugin ) {
 			wp_delete_post( $plugin );
 		}
+	}
+
+	/**
+	 * Get HTML for a view of this plugin. Intended for user-facing views.
+	 *
+	 * If release_objects should be displayed, you should have already called
+	 * $this->load_release_objects() before loading this view.
+	 *
+	 * @since 0.1
+	 */
+	public function get_view() {
+
+		$plugin = $this;
+		$template = pkppgInit()->get_template_path( 'plugin-view.php' );
+		if ( !empty( $template ) ) {
+			ob_start();
+			include( $template );
+			return ob_get_clean();
+		}
+
+		return '';
+	}
+
+	/**
+	 * Print a view of this plugin. Intended for user-facing views.
+	 *
+	 * @since 0.1
+	 */
+	public function print_view() {
+		echo $this->get_view();
+	}
+
+	/**
+	 * Get HTML for a summary view of this plugin. Intended for user-facing views.
+	 *
+	 * @since 0.1
+	 */
+	public function get_summary_view() {
+
+		$plugin = $this;
+		$template = pkppgInit()->get_template_path( 'plugin-summary.php' );
+		if ( !empty( $template ) ) {
+			ob_start();
+			include( $template );
+			return ob_get_clean();
+		}
+
+		return '';
+	}
+
+	/**
+	 * Print a summary view of this plugin. Intended for user-facing views.
+	 *
+	 * @since 0.1
+	 */
+	public function print_summary_view() {
+		echo $this->get_summary_view();
+	}
+
+	/**
+	 * Get HTML for an editing form for this plugin
+	 *
+	 * @since 0.1
+	 */
+	public function get_form() {
+
+		$plugin = $this;
+		$template = pkppgInit()->get_template_path( 'plugin-control.php' );
+		if ( !empty( $template ) ) {
+			ob_start();
+			include( $template );
+			return ob_get_clean();
+		}
+
+		return '';
+	}
+
+	/**
+	 * Print an editing form for this plugin.
+	 *
+	 * @since 0.1
+	 */
+	public function print_form() {
+		echo $this->get_form();
+	}
+
+	/**
+	 * Generate a diff of changes against an updated object
+	 *
+	 * This will generate a series of diff tables which indicate changes between
+	 * `$this` and an updated object which is passed to this method.
+	 *
+	 * @since 0.1
+	 */
+	public function get_diff( $update ) {
+
+		$strings = array(
+			'name',
+			'product',
+			'summary',
+			'description',
+			'homepage',
+			'installation',
+		);
+
+		ob_start();
+
+		foreach( $strings as $string ) :
+			$diff = wp_text_diff( $this->{$string}, $update->{$string} );
+
+			if ( empty( $diff ) ) {
+				continue;
+			}
+		?>
+
+		<div class="param">
+			<h4><?php echo ucfirst( $string ); ?></h4>
+			<?php echo $diff; ?>
+		</div>
+
+		<?php
+		endforeach;
+
+		$current_category = !empty( $this->category ) ? get_term( $this->category, 'pkp_category' ) : '';
+		$update_category = !empty( $update->category ) ? get_term( $update->category, 'pkp_category' ) : '';
+		$diff = wp_text_diff( $current_category->name, $update_category->name );
+
+		if ( !empty( $diff ) ) :
+		?>
+
+		<div class="param">
+			<h4><?php esc_html_e( 'Category' ); ?></h4>
+			<?php echo $diff; ?>
+		</div>
+
+		<?php
+		endif;
+
+		return ob_get_clean();
 	}
 }
 } // endif
