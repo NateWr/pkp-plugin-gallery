@@ -84,14 +84,9 @@ class pkppgAjaxHandler {
 			$this->nopriv();
 		}
 
-
 		// Edit own posts
-		if ( !empty( $post_id ) && !current_user_can( 'manage_options' ) ) {
-			$post = get_post( $post_id );
-			$user_id = get_current_user_id();
-			if ( $post->post_author != $user_id ) {
-				$this->nopriv();
-			}
+		if ( !empty( $post_id ) && !current_user_can( 'manage_options' ) && !pkp_is_author( $post_id ) ) {
+			$this->nopriv();
 		}
 
 		// Anything not specified should require high-level permissions
