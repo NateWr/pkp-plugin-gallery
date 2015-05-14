@@ -265,6 +265,9 @@ class pkppgCustomPostTypes {
 				'show_in_admin_status_list' => true,
 			)
 		);
+
+		// Register the /edit ednpoints
+		add_rewrite_endpoint( 'edit', EP_PERMALINK );
 	}
 
 	/**

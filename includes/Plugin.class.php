@@ -506,7 +506,7 @@ class pkppgPlugin extends pkppgPostModel {
 	public function get_form() {
 
 		$plugin = $this;
-		$template = pkppgInit()->get_template_path( 'plugin-control.php' );
+		$template = pkppgInit()->get_template_path( 'plugin-form.php' );
 		if ( !empty( $template ) ) {
 			ob_start();
 			include( $template );
