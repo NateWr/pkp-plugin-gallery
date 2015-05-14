@@ -674,7 +674,7 @@ class pkppgCustomPostTypes {
 	}
 
 	/**
-	 *
+	 * Modify query in admin list table when viewing plugins by Updated filter
 	 *
 	 * @since 0.1
 	 */
