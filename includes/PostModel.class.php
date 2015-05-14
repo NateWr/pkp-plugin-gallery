@@ -454,5 +454,29 @@ abstract class pkppgPostModel {
 		);
 	}
 
+	/**
+	 * Print an HTML block with any errors attached to the requested field
+	 *
+	 * @since 0.1
+	 */
+	public function print_errors( $field ) {
+
+		if ( empty( $field ) ) {
+			return;
+		}
+
+		foreach( $this->validation_errors as $error ) {
+			if ( $error['field'] == $field ) {
+				?>
+
+				<div class="error error-<?php echo esc_attr( $error['field'] ); ?>">
+					<?php echo esc_html( $error['message'] ); ?>
+				</div>
+
+				<?php
+			}
+		}
+	}
+
 }
 } // endif

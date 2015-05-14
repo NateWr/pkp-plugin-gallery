@@ -442,6 +442,84 @@ class pkppgPlugin extends pkppgPostModel {
 	}
 
 	/**
+	 * Process a submission or edit form from the front-end
+	 *
+	 * This may be a new submission or an edit of an existing plugin.
+	 *
+	 * @since 0.1
+	 */
+	public function process_form() {
+
+		// No form submitted
+		if ( !isset( $_POST['pkp-plugin-nonce']) ) {
+			return false;
+		}
+
+		// Logged out or trying to break the rules
+		if ( !wp_verify_nonce( $_POST['pkp-plugin-nonce'], 'pkp-plugin-submission' ) ) {
+			$this->add_error(
+				'auth',
+				'nonce_failed_verification',
+				// @todo add login link
+				__( 'You were logged out. Please login and try again.', 'pkp-plugin-gallery' )
+			);
+			return false;
+		}
+
+		// Only authors or admins can submit new plugin
+		if ( !current_user_can( 'edit_posts' ) ) {
+			$this->add_error(
+				'auth',
+				'not_allowed_to_submit',
+				__( 'You do not have permission to add or update plugins.', 'pkp-plugin-gallery' )
+			);
+			return false;
+		}
+
+		$this->retrieve_post_data();
+
+		if ( !empty( $this->ID ) ) {
+
+			// Only authors can edit their own plugins from the frontend
+			if ( !pkp_is_author( $this->ID ) ) {
+				$this->add_error(
+					'auth',
+					'is_not_author',
+					// @todo add a contact us link
+					__( 'Only plugin maintainers are allowed to submit updates to a plugin. If you think this information is out of date, please contact us.', 'pkp-plugin-gallery' )
+				);
+				return false;
+			}
+		}
+
+		if ( $this->save() ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Retrieve data from front-end submission/edit form and populate the
+	 * object with that data
+	 *
+	 * @since 0.1
+	 */
+	public function retrieve_post_data() {
+
+		$params = array();
+		foreach( $_POST as $key => $value ) {
+			if ( strpos( $key, 'pkp-plugin' ) === 0 ) {
+				$params[ substr( $key, 11 ) ] = $value;
+			} elseif ( $key === 'tax_input' ) {
+				$params['category'] = $value['pkp_category'];
+			}
+		}
+
+		$this->parse_params( $params );
+	}
+
+	/**
 	 * Get HTML for a view of this plugin. Intended for user-facing views.
 	 *
 	 * If release_objects should be displayed, you should have already called

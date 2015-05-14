@@ -134,7 +134,6 @@ function pkppg_print_releases_editor( $plugin_id = 0 ) {
 	</div>
 
 	<?php
-
 }
 } // endif;
 

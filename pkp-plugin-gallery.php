@@ -235,49 +235,6 @@ class pkppgInit {
 		return $path;
 	}
 
-	/**
-	 * Process a submission
-	 *
-	 * This may be a new submission or an edit of an existing
-	 * plugin.
-	 *
-	 * @todo This is just dumped here temporarily while the front-end template
-	 *       refactor is being completed. Eventually this should get called
-	 *       from the templates in some way, so that it is only attached to the
-	 *       front-end plugin gallery.
-	 * @since 0.1
-	 */
-	public function process_submission() {
-
-		if ( !isset( $_POST['pkp-plugin-nonce'] ) || !wp_verify_nonce( $_POST['pkp-plugin-nonce'], 'pkp-plugin-submission' ) ) {
-			return;
-		}
-
-		$plugin = new pkppgPlugin();
-
-		$params = array();
-		foreach( $_POST as $key => $value ) {
-			if ( strpos( $key, 'pkp-plugin' ) === 0 ) {
-				$params[ substr( $key, 11 ) ] = $value;
-			} elseif ( $key === 'tax_input' ) {
-				$params['category'] = $value['pkp_category'];
-			}
-		}
-
-		if ( !empty( $_GET['id'] ) ) {
-			$params['ID'] = (int) $_GET['id'];
-		}
-
-		$plugin->parse_params( $params );
-
-		if ( $plugin->save() ) {
-			return true;
-		}
-
-		$this->plugin = $plugin;
-		return false;
-	}
-
 }
 } // endif;
 
