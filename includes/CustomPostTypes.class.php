@@ -439,16 +439,9 @@ class pkppgCustomPostTypes {
 			}
 
 			// Get updates
-			$args = array(
-				'posts_per_page' => 1000,
-				'post_status' => 'update',
-				'post_parent' => $post->ID,
-				'orderby' => 'modified',
-			);
-
-			$query = new pkppgQuery( $args );
-			$updates = $query->get_results();
-
+			$plugin = new pkppgPlugin();
+			$plugin->load_post( $post );
+			$updates = $plugin->load_updates();
 		}
 
 

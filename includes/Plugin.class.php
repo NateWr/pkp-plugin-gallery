@@ -94,10 +94,18 @@ class pkppgPlugin extends pkppgPostModel {
 	/**
 	 * Full release objects attached to this plugin
 	 *
-	 * @param release array pkppgPluginRelease objects
+	 * @param release_objects array pkppgPluginRelease objects
 	 * @since 0.1
 	 */
 	public $release_objects = array();
+
+	/**
+	 * Plugin objects for updates to this plugin
+	 *
+	 * @param updates array pkppgPlugin objects
+	 * @since 0.1
+	 */
+	public $updates = array();
 
 	/**
 	 * Originally posted date
@@ -175,6 +183,28 @@ class pkppgPlugin extends pkppgPostModel {
 		$this->release_objects = $query->get_results();
 
 		return $this->release_objects;
+	}
+
+	/**
+	 * Load any attached updates
+	 *
+	 * @since 0.1
+	 */
+	public function load_updates() {
+
+		// Get updates
+		$args = array(
+			'posts_per_page' => 1000,
+			'post_status' => 'update',
+			'post_parent' => $this->ID,
+			'orderby' => 'modified',
+		);
+
+		$query = new pkppgQuery( $args );
+
+		$this->updates = $query->get_results();
+
+		return $this->updates;
 	}
 
 	/**
