@@ -46,9 +46,13 @@
 <div class="pkp-releases-form">
     <h2><?php esc_html_e( 'Releases', 'pkp-bowtie-child' ); ?></h2>
 
+    <ul class="releases">
     <?php foreach( $plugin->release_objects as $release ) : ?>
+        <li>
         <?php echo $release->print_view(); ?>
+        </li>
     <?php endforeach; ?>
+    </ul>
 </div>
 
 <?php else : ?>
