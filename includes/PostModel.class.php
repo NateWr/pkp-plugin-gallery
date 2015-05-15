@@ -355,7 +355,7 @@ abstract class pkppgPostModel {
 		$parent->load_post( $this->post_parent );
 
 		// Sanity check...
-		if ( $parent->post_status !== 'publish' ) {
+		if ( $parent->post_status == 'update' ) {
 			return;
 		}
 
