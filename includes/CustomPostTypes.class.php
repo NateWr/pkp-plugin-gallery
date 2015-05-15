@@ -838,8 +838,8 @@ class pkppgCustomPostTypes {
 
 	/**
 	 * Modify the query request vars when a single view of a `pkp_plugin` is
-	 * requested. If the current user is the maintainer, then add submission
-	 * and disabled to allowed post statuses.
+	 * requested. If the current user is the maintainer, then allow any post
+	 * status to be viewed.
 	 *
 	 * @since 0.1
 	 */
