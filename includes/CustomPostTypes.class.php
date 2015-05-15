@@ -283,6 +283,7 @@ class pkppgCustomPostTypes {
 		// Register the plugin author endpoint
 		add_rewrite_tag( '%pkp_maintainer%', '([^&]+)' );
 		add_rewrite_rule( $this->plugin_archive_slug . '/maintainer/([^/]+)/?$', 'index.php?post_type=' . $this->plugin_post_type . '&author_name=$matches[1]', 'top' );
+		add_filter( 'request', array( $this, 'modify_maintainer_archive_request' ) );
 
 		// Redirect templates
 		add_action( 'template_redirect', array( $this, 'template_redirects' ) );
@@ -810,6 +811,33 @@ class pkppgCustomPostTypes {
 		}
 
 		return $template;
+	}
+
+	/**
+	 * Modify the query request vars when a maintainer archive is requested to
+	 * show all but updated plugins IF the current user is the
+	 * same as the requested maintainer archive
+	 *
+	 * @since 0.1
+	 */
+	public function modify_maintainer_archive_request( $request ) {
+
+		if ( isset( $request['author_name'] ) && isset( $request['post_type'] ) && $request['post_type'] == pkppgInit()->cpts->plugin_post_type ) {
+			$user = wp_get_current_user();
+
+			// Retrieve all but updates
+			$post_statuses = pkppgInit()->cpts->valid_post_statuses;
+			if ( ( $key = array_search( 'update', $post_statuses ) ) !== false ) {
+				unset( $post_statuses[ $key ] );
+			}
+
+			if ( $user->user_login == $request['author_name'] ) {
+				$request['post_status'] = $post_statuses;
+			}
+		}
+
+		return $request;
+
 	}
 
 }
