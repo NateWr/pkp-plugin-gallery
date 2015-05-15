@@ -156,3 +156,47 @@ function pkp_is_author( $post, $author = 0 ) {
 	return $post->post_author == $author;
 }
 } // endif
+
+/**
+ * Check if user owns any plugins
+ *
+ * @since 0.1
+ */
+if ( !function_exists( 'pkp_user_owns_plugins' ) ) {
+function pkp_user_owns_plugins( $author = 0 ) {
+
+	if ( empty( $author ) ) {
+		$author = get_current_user_id();
+	}
+
+	$args = array(
+		'post_type' => pkppgInit()->cpts->plugin_post_type,
+		'post_status' => pkppgInit()->cpts->valid_post_statuses,
+		'post_author' => (int) $author,
+		'posts_per_page' => 1,
+		'no_found_rows' => true,
+	);
+
+	$result = new WP_QUery( $args );
+
+	$owns_plugins = $result->have_posts();
+
+	wp_reset_query();
+
+	return $owns_plugins;
+}
+} // endif;
+
+/**
+ * Retrieve a URL to a user's personal plugins page
+ *
+ * @since 0.1
+ */
+if ( !function_exists( 'pkp_get_user_plugins_url' ) ) {
+function pkp_get_user_plugins_url() {
+
+	$user = wp_get_current_user();
+
+	return trailingslashit( home_url() ) . pkppgInit()->cpts->plugin_archive_slug . DIRECTORY_SEPARATOR . 'maintainer' . DIRECTORY_SEPARATOR . $user->user_login;
+}
+} // endif

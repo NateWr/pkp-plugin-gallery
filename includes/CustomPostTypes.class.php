@@ -31,6 +31,13 @@ class pkppgCustomPostTypes {
 	public $valid_post_statuses = array( 'submission', 'publish', 'update', 'disable' );
 
 	/**
+	 * Plugin archive slug (used in URLs)
+	 *
+	 * @since 0.1
+	 */
+	public $plugin_archive_slug = 'plugins';
+
+	/**
 	 * Register hooks
 	 *
 	 * @since 0.1
@@ -198,7 +205,7 @@ class pkppgCustomPostTypes {
 					'revisions',
 				),
 				'rewrite'      => array(
-					'slug'       => __( 'plugins', 'pkp-plugin-gallery' ),
+					'slug'       => $this->plugin_archive_slug,
 					'with_front' => false,
 					'feeds'      => false,
 				),
@@ -271,7 +278,14 @@ class pkppgCustomPostTypes {
 
 		// Register the /submit endpoint
 		add_rewrite_tag( '%pkp_submit%', '([^&]+)' );
-		add_rewrite_rule( 'plugins/submit', 'index.php?post_type=' . $this->plugin_post_type . '&pkp_submit=1', 'top' );
+		add_rewrite_rule( $this->plugin_archive_slug . '/submit', 'index.php?post_type=' . $this->plugin_post_type . '&pkp_submit=1', 'top' );
+
+		// Register the plugin author endpoint
+		add_rewrite_tag( '%pkp_maintainer%', '([^&]+)' );
+		add_rewrite_rule( $this->plugin_archive_slug . '/maintainer/([^/]+)/?$', 'index.php?post_type=' . $this->plugin_post_type . '&author_name=$matches[1]', 'top' );
+
+		// Redirect templates
+		add_action( 'template_redirect', array( $this, 'template_redirects' ) );
 	}
 
 	/**
@@ -767,6 +781,35 @@ class pkppgCustomPostTypes {
 	 */
 	public function delete_update_transient() {
 		delete_transient( 'pkppg_plugin_updates' );
+	}
+
+	/**
+	 * Template redirects for custom URL formats
+	 *
+	 * @since 0.1
+	 */
+	public function template_redirects() {
+
+		// Maintainer archive template
+		if ( get_query_var( 'post_type' ) == $this->plugin_post_type && get_query_var( 'author_name' ) ) {
+			add_filter( 'template_include', array( $this, 'include_maintainer_archive_template' ) );
+		}
+	}
+
+	/**
+	 * Include the maintainer archive template
+	 *
+	 * @since 0.1
+	 */
+	public function include_maintainer_archive_template( $template ) {
+
+		$new_template = locate_template( array( 'author-'. $this->plugin_post_type . '.php' ) );
+
+		if ( !empty( $new_template ) ) {
+			return $new_template;
+		}
+
+		return $template;
 	}
 
 }
