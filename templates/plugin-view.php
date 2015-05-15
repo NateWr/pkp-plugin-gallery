@@ -43,7 +43,7 @@
 </div>
 
 <?php if ( !empty( $plugin->release_objects ) ) : ?>
-<div class="releases">
+<div class="pkp-releases-form">
     <h2><?php esc_html_e( 'Releases', 'pkp-bowtie-child' ); ?></h2>
 
     <?php foreach( $plugin->release_objects as $release ) : ?>

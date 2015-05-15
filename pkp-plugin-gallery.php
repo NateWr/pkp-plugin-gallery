@@ -84,7 +84,9 @@ class pkppgInit {
 
 		// Load admin assets
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
-		add_action( 'admin_footer', array( $this, 'print_modals' ) );
+
+		// Load frontend assets
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_assets' ) );
 
 	}
 
@@ -148,16 +150,10 @@ class pkppgInit {
 
 		wp_enqueue_style( 'pkppg-admin', self::$plugin_url . '/assets/css/admin' . $min . '.css' );
 		wp_enqueue_script( 'pkppg-admin', self::$plugin_url . '/assets/js/admin' . $min . '.js', array( 'jquery' ), '', true );
-		wp_localize_script(
-			'pkppg-admin',
-			'pkppg_data',
-			apply_filters(
-				'pkppg_admin_script_data',
-				array(
-					'nonce'        => wp_create_nonce( 'pkppg' )
-				)
-			)
-		);
+		$this->send_js_data( 'pkppg-admin' );
+
+		// Print any required modals
+		add_action( 'admin_footer', array( $this, 'print_modals' ) );
 	}
 
 	/**
@@ -181,15 +177,60 @@ class pkppgInit {
 	}
 
 	/**
+	 * Load assets (JavaScript and CSS) to be used on the frontend
+	 *
+	 * @since 0.1
+	 */
+	public function enqueue_frontend_assets() {
+
+		if ( !is_single() ) {
+			return;
+		}
+
+		global $post;
+
+		if ( get_post_type() != $this->cpts->plugin_post_type || !pkp_is_author( get_the_ID() ) ) {
+			return;
+		}
+
+		// Load minified assets unless WP_DEBUG is on
+		$min = WP_DEBUG ? '' : '.min';
+
+		wp_enqueue_style( 'jquery-ui-datepicker' );
+		wp_enqueue_script( 'jquery-ui-datepicker' );
+		wp_enqueue_style( 'pkppg-gallery', self::$plugin_url . '/assets/css/frontend' . $min . '.css' );
+		wp_enqueue_script( 'pkppg-gallery', self::$plugin_url . '/assets/js/gallery' . $min . '.js', array( 'jquery' ), '', true );
+		$this->send_js_data( 'pkppg-gallery' );
+
+		// Print the releases modal in the footer
+		add_action( 'wp_footer', array( $this, 'print_modals' ) );
+	}
+
+	/**
+	 * Make data available to JavaScript assets
+	 *
+	 * @since 0.1
+	 */
+	public function send_js_data( $script ) {
+		wp_localize_script(
+			$script,
+			'pkppg_data',
+			apply_filters(
+				'pkppg_script_data',
+				array(
+					'nonce'        => wp_create_nonce( 'pkppg' ),
+					'ajaxurl'      => admin_url( 'admin-ajax.php' ),
+				)
+			)
+		);
+	}
+
+	/**
 	 * Print modal content that should be delivered to the page
 	 *
 	 * @since 0.1
 	 */
 	public function print_modals() {
-
-		if ( !$this->is_owned_page() ) {
-			return;
-		}
 
 		$release = new pkppgPluginRelease();
 
