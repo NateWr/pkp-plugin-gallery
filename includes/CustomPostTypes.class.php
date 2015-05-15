@@ -285,6 +285,9 @@ class pkppgCustomPostTypes {
 		add_rewrite_rule( $this->plugin_archive_slug . '/maintainer/([^/]+)/?$', 'index.php?post_type=' . $this->plugin_post_type . '&author_name=$matches[1]', 'top' );
 		add_filter( 'request', array( $this, 'modify_maintainer_archive_request' ) );
 
+		// Allow maintainers to view their own submissions
+		add_filter( 'request', array( $this, 'modify_plugin_singular_request' ) );
+
 		// Redirect templates
 		add_action( 'template_redirect', array( $this, 'template_redirects' ) );
 	}
@@ -826,6 +829,30 @@ class pkppgCustomPostTypes {
 
 			if ( $user->user_login == $request['author_name'] ) {
 				$request['post_status'] = $post_statuses;
+			}
+		}
+
+		return $request;
+
+	}
+
+	/**
+	 * Modify the query request vars when a single view of a `pkp_plugin` is
+	 * requested. If the current user is the maintainer, then add submission
+	 * and disabled to allowed post statuses.
+	 *
+	 * @since 0.1
+	 */
+	public function modify_plugin_singular_request( $request ) {
+
+		if ( is_user_logged_in() && isset( $request['pkp_plugin'] ) && isset( $request['post_type'] ) && $request['post_type'] == pkppgInit()->cpts->plugin_post_type ) {
+
+			$args = array_merge( array( 'post_status' => $this->valid_post_statuses ), $request );
+
+			$query = new WP_Query( $args );
+
+			if ( $query->have_posts() && $query->posts[0]->post_author == get_current_user_id() ) {
+				$request = $args;
 			}
 		}
 
