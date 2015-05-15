@@ -43,7 +43,7 @@
         <?php endif; ?>
     </div>
 
-    <?php if ( pkp_is_author( $plugin->ID ) ) : $plugin->load_updates(); ?>
+    <?php if ( pkp_is_author( $plugin->ID ) && get_query_var( 'author_name' ) ) : $plugin->load_updates(); ?>
         <?php if ( !empty( $plugin->updates ) ) : ?>
             <ul class="updates">
                 <?php foreach( $plugin->updates as $update ) : ?>
