@@ -713,6 +713,7 @@ class pkppgCustomPostTypes {
 		}
 
 		$args['post__in'] = $plugins;
+		$args['post_status'] = $this->get_top_post_statuses();
 
 		return $args;
 	}
@@ -822,10 +823,7 @@ class pkppgCustomPostTypes {
 			$user = wp_get_current_user();
 
 			// Retrieve all but updates
-			$post_statuses = pkppgInit()->cpts->valid_post_statuses;
-			if ( ( $key = array_search( 'update', $post_statuses ) ) !== false ) {
-				unset( $post_statuses[ $key ] );
-			}
+			$post_statuses = $this->get_top_post_statuses();
 
 			if ( $user->user_login == $request['author_name'] ) {
 				$request['post_status'] = $post_statuses;
@@ -858,6 +856,23 @@ class pkppgCustomPostTypes {
 
 		return $request;
 
+	}
+
+	/**
+	 * Get an array of all top-level post statuses. This is basically just
+	 * everything except `update`, which should always be attached to another
+	 * plugin.
+	 *
+	 * @since 0.1
+	 */
+	public function get_top_post_statuses() {
+
+		$post_statuses = $this->valid_post_statuses;
+		if ( ( $key = array_search( 'update', $post_statuses ) ) !== false ) {
+			unset( $post_statuses[ $key ] );
+		}
+
+		return $post_statuses;
 	}
 
 }
