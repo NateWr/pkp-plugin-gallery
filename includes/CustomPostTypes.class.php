@@ -266,8 +266,12 @@ class pkppgCustomPostTypes {
 			)
 		);
 
-		// Register the /edit ednpoints
+		// Register the /edit ednpoint
 		add_rewrite_endpoint( 'edit', EP_PERMALINK );
+
+		// Register the /submit endpoint
+		add_rewrite_tag( '%pkp_submit%', '([^&]+)' );
+		add_rewrite_rule( 'plugins/submit', 'index.php?post_type=' . $this->plugin_post_type . '&pkp_submit=1', 'top' );
 	}
 
 	/**
