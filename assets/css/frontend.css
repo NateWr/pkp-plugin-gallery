@@ -272,7 +272,7 @@
   border-radius: 3px;
   color: #d54e21;
 }
-.plugin .edit {
+.plugin .summary .edit {
   margin-left: 0.5em;
 }
 .plugin.view .category {
@@ -285,7 +285,7 @@
   margin: 2em 0 1em;
 }
 .plugin.view .actions {
-  margin: 0;
+  margin: 1em 0;
   padding: 0;
   list-style: none;
 }

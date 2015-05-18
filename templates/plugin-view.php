@@ -35,7 +35,7 @@
         <?php if ( pkp_is_author( $plugin->ID ) ) : ?>
         <li>
             <a href="<?php echo esc_url( get_permalink( $plugin->ID ) . 'edit' ); ?>" class="edit">
-                <?php esc_html_e( 'Edit', 'pkp-plugin-gallery' ); ?>
+                <?php esc_html_e( 'Submit Edit', 'pkp-plugin-gallery' ); ?>
             </a>
         </li>
         <?php endif; ?>
