@@ -296,6 +296,38 @@
 .plugin.view .actions li:not( :last-child ) {
   margin-bottom: 1em;
 }
+.pkp-releases-form {
+  margin-bottom: 4em;
+}
+.releases li {
+  margin-left: 0;
+}
+.releases .actions {
+  list-style: none;
+  margin: 0;
+  font-size: 13px;
+}
+.releases .actions li {
+  display: inline-block;
+  margin: 0 0.2em;
+  padding: 0;
+}
+.releases .terms {
+  list-style: none;
+}
+.releases .terms .label {
+  font-weight: bold;
+}
+.releases .terms .value a {
+  background: #e5e5e5;
+  line-height: 18px;
+  font-size: 12px;
+  display: inline-block;
+  padding: 0 0.5em;
+  margin: 0 0.5em;
+  border-radius: 3px;
+  color: #d54e21;
+}
 .pkp-releases-form .releases > li {
   margin-bottom: 1em;
   padding-bottom: 1em;
