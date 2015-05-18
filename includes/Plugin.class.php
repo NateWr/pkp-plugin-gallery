@@ -175,7 +175,7 @@ class pkppgPlugin extends pkppgPostModel {
 
 		// Show disabled releases and updates in admin to admins
 		if ( is_admin() && current_user_can( 'manage_options' ) ) {
-			array_push( $args['post_status'], 'disable' );
+			array_push( $args['post_status'], 'disable', 'submission' );
 		}
 
 		$query = new pkppgQuery( $args );

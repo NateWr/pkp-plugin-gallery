@@ -146,6 +146,7 @@ if ( !function_exists( 'pkp_is_author' ) ) {
 function pkp_is_author( $post, $author = 0 ) {
 
 	if ( !is_a( $post, 'WP_POST' ) ) {
+		// @todo use WP_Query to take advantage of object caching
 		$post = get_post( $post );
 	}
 

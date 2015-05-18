@@ -42,21 +42,22 @@
     </ul>
 </div>
 
-<?php if ( !empty( $plugin->release_objects ) ) : ?>
 <div class="pkp-releases-form">
     <h2><?php esc_html_e( 'Releases', 'pkp-bowtie-child' ); ?></h2>
 
     <ul class="releases">
-    <?php foreach( $plugin->release_objects as $release ) : ?>
+    <?php if ( !empty( $plugin->release_objects ) ) : foreach( $plugin->release_objects as $release ) : ?>
         <li>
         <?php echo $release->print_view(); ?>
         </li>
-    <?php endforeach; ?>
+    <?php endforeach; endif; ?>
     </ul>
-</div>
 
-<?php else : ?>
-<div class="notice">
-    <p><?php esc_html_e( 'This plugin has not been released yet.', 'pkp-bowtie-child' ); ?></p>
+    <?php if ( current_user_can( 'manage_options' ) || pkp_is_author( $plugin->ID ) ) : ?>
+    <fieldset class="pkp-release-form-buttons">
+        <a href="#" class="button add" data-plugin="<?php echo $plugin->ID; ?>">
+            <?php esc_html_e( 'Add Release', 'pkppg-plugin-gallery' ); ?>
+        </a>
+    </fieldset>
+    <?php endif; ?>
 </div>
-<?php endif; ?>
