@@ -134,22 +134,31 @@
 .pkppg-modal-is-visible {
   overflow: hidden;
 }
+.pkp-submit fieldset,
 .pkppg-modal fieldset,
+.pkp-submit fieldset > div,
 .pkppg-modal fieldset > div {
   margin-bottom: 1em;
 }
+.pkp-submit fieldset:last-child,
 .pkppg-modal fieldset:last-child {
   margin-bottom: 0;
 }
+.pkp-submit label,
 .pkppg-modal label {
   display: block;
 }
+.pkp-submit input[type="text"],
 .pkppg-modal input[type="text"],
+.pkp-submit input[type="url"],
 .pkppg-modal input[type="url"],
+.pkp-submit select,
 .pkppg-modal select,
+.pkp-submit textarea,
 .pkppg-modal textarea {
   width: 100%;
 }
+.pkp-submit textarea,
 .pkppg-modal textarea {
   height: 8em;
 }
