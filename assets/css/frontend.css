@@ -255,15 +255,15 @@
   padding: 0 0.5em;
   font-size: 13px;
 }
-.plugins .plugin:not( :last-child ) {
+.plugin:not( :last-child ) {
   margin-bottom: 2em;
 }
-.plugins .title {
+.plugin .title {
   font-size: 18px;
   font-weight: bold;
   line-height: 1.5em;
 }
-.plugins .category {
+.plugin .category {
   background: #e5e5e5;
   line-height: 18px;
   font-size: 12px;
@@ -272,8 +272,29 @@
   border-radius: 3px;
   color: #d54e21;
 }
-.plugins .edit {
+.plugin .edit {
   margin-left: 0.5em;
+}
+.plugin.view .category {
+  margin: 1em 0;
+}
+.plugin.view .details p {
+  padding: 0;
+}
+.plugin.view h3 {
+  margin: 2em 0 1em;
+}
+.plugin.view .actions {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.plugin.view .actions li {
+  margin: 0;
+  padding: 0;
+}
+.plugin.view .actions li:not( :last-child ) {
+  margin-bottom: 1em;
 }
 .pkp-releases-form .releases > li {
   margin-bottom: 1em;

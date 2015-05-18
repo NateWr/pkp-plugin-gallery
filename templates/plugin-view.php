@@ -9,7 +9,7 @@
  */
 ?>
 
-<div class"plugin">
+<div class="plugin view">
     <h1><?php echo $plugin->name; ?></h1>
     <div class="category">
         <?php echo $plugin->get_term_name( 'pkp_category', ', ', 'id' ); ?>
@@ -19,7 +19,7 @@
         <?php echo esc_html( $plugin->description ); ?>
 
         <?php if ( !empty( $plugin->installation ) ) : ?>
-        <h3><?php esc_html_e( 'Installation Instructions', 'pkp-bowtie-child' ); ?><?h3>
+        <h3><?php esc_html_e( 'Installation Instructions', 'pkp-plugin-gallery' ); ?></h3>
         <p><?php echo $plugin->installation; ?></p>
         <?php endif; ?>
     </div>
@@ -28,7 +28,7 @@
         <?php if ( !empty( $plugin->homepage ) ) : ?>
         <li class="homepage">
             <a href="<?php esc_url( $plugin->homepage ); ?>">
-                <?php esc_html_e( 'Website', 'pkp-bowtie-child' ); ?>
+                <?php esc_html_e( 'Project Website', 'pkp-plugin-gallery' ); ?>
             </a>
         </li>
         <?php endif; ?>
@@ -43,7 +43,7 @@
 </div>
 
 <div class="pkp-releases-form">
-    <h2><?php esc_html_e( 'Releases', 'pkp-bowtie-child' ); ?></h2>
+    <h2><?php esc_html_e( 'Releases', 'pkp-plugin-gallery' ); ?></h2>
 
     <ul class="releases">
     <?php if ( !empty( $plugin->release_objects ) ) : foreach( $plugin->release_objects as $release ) : ?>

@@ -35,14 +35,14 @@ $term_title = single_term_title( '', false );
     <?php if ( pkp_user_owns_plugins() ) : ?>
     <li>
         <a href="<?php echo esc_url( pkp_get_user_plugins_url() ); ?>">
-            <?php esc_html_e( 'My Plugins', 'pkp-bowtie-child' ); ?>
+            <?php esc_html_e( 'My Plugins', 'pkp-plugin-gallery' ); ?>
         </a>
     </li>
     <?php endif; ?>
 
     <li>
         <a href="<?php echo esc_url( trailingslashit( home_url( $wp->request ) ) . 'submit' ); ?>">
-            <?php esc_html_e( 'Submit Plugin', 'pkp-bowtie-child' ); ?>
+            <?php esc_html_e( 'Submit Plugin', 'pkp-plugin-gallery' ); ?>
         </a>
     </li>
 </ul>
