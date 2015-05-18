@@ -16,7 +16,7 @@ $applications = get_terms( 'pkp_application', array( 'parent' => 0 ) );
             </a>
         </li>
         <?php foreach( $applications as $application ) : ?>
-        <li class="<?php esc_attr( $application->slug ); ?>">
+        <li class="<?php echo esc_attr( $application->slug ); ?>">
             <a href="<?php echo get_term_link( $application, 'pkp_application' ); ?>">
                 <?php echo esc_html( $application->name ); ?>
             </a>
