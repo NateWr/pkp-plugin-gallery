@@ -27,7 +27,7 @@
     <ul class="actions">
         <?php if ( !empty( $plugin->homepage ) ) : ?>
         <li class="homepage">
-            <a href="<?php esc_url( $plugin->homepage ); ?>">
+            <a href="<?php echo esc_url( $plugin->homepage ); ?>">
                 <?php esc_html_e( 'Project Website', 'pkp-plugin-gallery' ); ?>
             </a>
         </li>
