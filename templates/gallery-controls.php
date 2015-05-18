@@ -7,7 +7,7 @@
 $applications = get_terms( 'pkp_application', array( 'parent' => 0 ) );
 ?>
 
-<div id="pkppg-controls" class="pkppg-controls pkppg-clearfix">
+<div id="pkppg-controls" class="pkppg-controls clearfix">
     <ul class="filters">
         <li class="all">
             <?php esc_html_e( 'All', 'pkp-plugin-gallery' ); ?>
