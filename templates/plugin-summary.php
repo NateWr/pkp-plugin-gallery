@@ -9,6 +9,7 @@
 ?>
 
 <div class="plugin <?php echo esc_attr( $plugin->post_status ); ?>">
+
     <div class="title">
 
         <?php if ( $plugin->post_status == 'update' ) : ?>
@@ -30,34 +31,40 @@
         </span>
         <?php endif; ?>
 
-        <?php echo $plugin->name; ?>
-    </div>
-    <div class="actions">
         <a href="<?php echo get_the_permalink( $plugin->ID ); ?>">
-            <?php esc_html_e( 'View', 'pkp-plugin-gallery' ); ?>
+            <?php echo $plugin->name; ?>
         </a>
+    </div>
+
+    <div class="summary">
+
+        <span class="category"><?php echo $plugin->get_term_name( 'pkp_category', ', ', 'id' ); ?></span>
+
+        <?php echo $plugin->summary; ?>
+
         <?php if ( pkp_is_author( $plugin->ID ) && $plugin->post_status !== 'update' ) : ?>
         <a href="<?php echo esc_url( get_the_permalink( $plugin->ID ) . 'edit' ); ?>">
             <?php esc_html_e( 'Edit', 'pkp-plugin-gallery' ); ?>
         </a>
         <?php endif; ?>
-    </div>
-    <div class="summary">
-        <span class="category"><?php echo $plugin->get_term_name( 'pkp_category', ', ', 'id' ); ?></span>
-        <?php echo $plugin->summary; ?>
+
     </div>
 
 
     <?php if ( pkp_is_author( $plugin->ID ) && get_query_var( 'author_name' ) ) : $plugin->load_updates(); ?>
+
         <?php if ( !empty( $plugin->updates ) ) : ?>
             <ul class="updates">
+
                 <?php foreach( $plugin->updates as $update ) : ?>
                 <li>
                     <?php $update->print_summary_view(); ?>
                 </li>
                 <?php endforeach; ?>
+                
             </ul>
         <?php endif; ?>
+
     <?php endif; ?>
 
 </div>

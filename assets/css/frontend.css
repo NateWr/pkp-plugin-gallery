@@ -255,6 +255,23 @@
   padding: 0 0.5em;
   font-size: 13px;
 }
+.plugins .plugin:not( :last-child ) {
+  margin-bottom: 2em;
+}
+.plugins .title {
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 1.5em;
+}
+.plugins .category {
+  background: #e5e5e5;
+  line-height: 18px;
+  font-size: 12px;
+  display: inline-block;
+  padding: 0 0.5em;
+  border-radius: 3px;
+  color: #d54e21;
+}
 .pkp-releases-form .releases > li {
   margin-bottom: 1em;
   padding-bottom: 1em;

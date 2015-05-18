@@ -52,3 +52,27 @@
         font-size: @tpl-font-sml;
     }
 }
+
+.plugins {
+
+    .plugin:not( :last-child ) {
+        margin-bottom: 2em;
+    }
+
+    .title {
+        font-size: @tpl-font-lead;
+        font-weight: @tpl-bold;
+        line-height: 1.5em;
+    }
+
+    .category {
+        background: @tpl-shade;
+        line-height: 18px;
+        font-size: 12px;
+        display: inline-block;
+        padding: 0 0.5em;
+        border-radius: @tpl-border-radius;
+        color: @tpl-offset;
+    }
+
+}
