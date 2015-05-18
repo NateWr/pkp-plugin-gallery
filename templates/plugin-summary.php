@@ -43,7 +43,7 @@
         <?php echo $plugin->summary; ?>
 
         <?php if ( pkp_is_author( $plugin->ID ) && $plugin->post_status !== 'update' ) : ?>
-        <a href="<?php echo esc_url( get_the_permalink( $plugin->ID ) . 'edit' ); ?>">
+        <a class="edit" href="<?php echo esc_url( get_the_permalink( $plugin->ID ) . 'edit' ); ?>">
             <?php esc_html_e( 'Edit', 'pkp-plugin-gallery' ); ?>
         </a>
         <?php endif; ?>
@@ -61,7 +61,7 @@
                     <?php $update->print_summary_view(); ?>
                 </li>
                 <?php endforeach; ?>
-                
+
             </ul>
         <?php endif; ?>
 
