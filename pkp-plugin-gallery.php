@@ -276,6 +276,33 @@ class pkppgInit {
 		return $path;
 	}
 
+	/**
+	 * Get a template
+	 *
+	 * @since 0.1
+	 */
+	public function get_template( $file ) {
+
+		$template = $this->get_template_path( $file );
+
+		if ( !$template ) {
+			return;
+		}
+
+		ob_start();
+		include( $template );
+		return ob_get_clean();
+	}
+
+	/**
+	 * Load a template
+	 *
+	 * @since 0.1
+	 */
+	public function load_template( $file ) {
+		echo $this->get_template( $file );
+	}
+
 }
 } // endif;
 
