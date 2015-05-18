@@ -77,7 +77,7 @@
     </ul>
 
     <?php // @todo better user cap ?>
-    <?php if ( !empty( $release->updates ) && is_admin() && current_user_can( 'manage_options' ) ) : ?>
+    <?php if ( !empty( $release->updates ) && ( ( is_admin() && current_user_can( 'manage_options' ) ) || pkp_is_author( $release->ID ) ) ) : ?>
     <ul class="updates">
         <?php foreach( $release->updates as $update ) : ?>
         <li>
