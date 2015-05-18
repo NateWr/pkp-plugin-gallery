@@ -6,17 +6,18 @@
  */
 global $wp;
 $applications = get_terms( 'pkp_application', array( 'parent' => 0 ) );
+$term_title = single_term_title( '', false );
 ?>
 
 <div id="pkppg-controls" class="pkppg-controls clearfix">
     <ul class="filters">
-        <li class="all">
+        <li class="all<?php echo is_tax() ? '' : ' current'; ?>">
             <a href="<?php trailingslashit( home_url( pkppgInit()->cpts->plugin_archive_slug ) ); ?>">
                 <?php esc_html_e( 'All', 'pkp-plugin-gallery' ); ?>
             </a>
         </li>
-        <?php foreach( $applications as $application ) : ?>
-        <li class="<?php echo esc_attr( $application->slug ); ?>">
+        <?php foreach( $applications as $application ) : $current = $term_title == $application->name ? ' current' : ''; ?>
+        <li class="<?php echo esc_attr( $application->slug . $current ); ?>">
             <a href="<?php echo get_term_link( $application, 'pkp_application' ); ?>">
                 <?php echo esc_html( $application->name ); ?>
             </a>

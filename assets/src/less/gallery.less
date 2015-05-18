@@ -6,20 +6,49 @@
     background: @tpl-shade;
     padding: 1em;
     border-radius: @tpl-border-radius;
+    font-size: @tpl-font-sml;
 
     .filters {
         float: left;
         margin: 0;
         list-style: none;
+        line-height: 1.5em;
+        padding: 0.5em 0;
+        border: 1px solid transparent;
 
         li {
             display: inline-block;
             margin: 0;
             padding: 0 0.5em;
         }
+
+        .current a {
+            font-weight: @tpl-bold;
+            color: @tpl-dark;
+        }
     }
 
     .search {
         float: right;
+
+        input {
+            line-height: 1.5em;
+            padding: 0.5em;
+            border: @border;
+        }
+    }
+}
+
+.pkppg-user-controls {
+    text-align: right;
+    list-style: none;
+    margin: 0;
+    padding: 1em 0;
+
+    li {
+        display: inline-block;
+        margin: 0;
+        padding: 0 0.5em;
+        font-size: @tpl-font-sml;
     }
 }
