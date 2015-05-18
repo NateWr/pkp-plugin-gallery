@@ -42,6 +42,11 @@
         </a>
         <?php endif; ?>
     </div>
+    <div class="summary">
+        <span class="category"><?php echo $plugin->get_term_name( 'pkp_category', ', ', 'id' ); ?></span>
+        <?php echo $plugin->summary; ?>
+    </div>
+
 
     <?php if ( pkp_is_author( $plugin->ID ) && get_query_var( 'author_name' ) ) : $plugin->load_updates(); ?>
         <?php if ( !empty( $plugin->updates ) ) : ?>
