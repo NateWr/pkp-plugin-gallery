@@ -183,22 +183,19 @@ class pkppgInit {
 	 */
 	public function enqueue_frontend_assets() {
 
-		if ( !is_single() ) {
-			return;
-		}
-
-		global $post;
-
-		if ( get_post_type() != $this->cpts->plugin_post_type || !pkp_is_author( get_the_ID() ) ) {
-			return;
-		}
-
 		// Load minified assets unless WP_DEBUG is on
 		$min = WP_DEBUG ? '' : '.min';
 
+		wp_enqueue_style( 'pkppg-gallery', self::$plugin_url . '/assets/css/frontend' . $min . '.css' );
+
+		// Only load javascript and modals on pages which require it
+		global $post;
+		if ( !is_single() || get_post_type() != $this->cpts->plugin_post_type || !pkp_is_author( get_the_ID() ) ) {
+			return;
+		}
+
 		wp_enqueue_style( 'jquery-ui-datepicker' );
 		wp_enqueue_script( 'jquery-ui-datepicker' );
-		wp_enqueue_style( 'pkppg-gallery', self::$plugin_url . '/assets/css/frontend' . $min . '.css' );
 		wp_enqueue_script( 'pkppg-gallery', self::$plugin_url . '/assets/js/gallery' . $min . '.js', array( 'jquery' ), '', true );
 		$this->send_js_data( 'pkppg-gallery' );
 

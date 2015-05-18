@@ -203,6 +203,24 @@
   content: "\f335";
   color: #dd3d36;
 }
+.pkppg-controls {
+  background: #e5e5e5;
+  padding: 1em;
+  border-radius: 3px;
+}
+.pkppg-controls .filters {
+  float: left;
+  margin: 0;
+  list-style: none;
+}
+.pkppg-controls .filters li {
+  display: inline-block;
+  margin: 0;
+  padding: 0 0.5em;
+}
+.pkppg-controls .search {
+  float: right;
+}
 .pkp-releases-form .releases > li {
   margin-bottom: 1em;
   padding-bottom: 1em;
