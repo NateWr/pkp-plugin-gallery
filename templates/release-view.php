@@ -20,16 +20,14 @@
         <span class="date">
             <?php echo $release->release_date; ?>
         </span>
-    </div>
 
-    <?php if ( $release->post_status == 'submission' ) : ?>
-    <div class="notice">
-        <span class="dashicons dashicons-download"></span>
-        <span class="status-notice">
+        <?php if ( $release->post_status == 'submission' ) : ?>
+        <span class="notice">
+            <span class="dashicons dashicons-download"></span>
             <?php esc_html_e( 'This submission has not yet been approved. ', 'pkp-plugin-gallery' ); ?>
         </span>
+        <?php endif; ?>
     </div>
-    <?php endif; ?>
 
     <?php if ( $release->post_status == 'publish' ) : ?>
     <div class="details">
@@ -38,11 +36,15 @@
     <?php endif; ?>
 
     <ul class="actions">
+
+        <?php if ( $release->post_status == 'publish' ) : ?>
         <li>
             <a href="<?php echo esc_url( $release->package ); ?>" class="download">
                 <?php esc_html_e( 'Download', 'pkp-plugin-gallery' ); ?>
             </a>
         </li>
+        <?php endif; ?>
+
         <?php if ( pkp_is_author( $release->ID ) ) : ?>
         <li>
             <span class="pkp-spinner"></span>
@@ -53,6 +55,7 @@
         <?php endif; ?>
     </ul>
 
+    <?php if ( $release->post_status == 'publish' ) : ?>
     <ul class="terms">
         <?php if ( !empty( $release->certification ) ) : ?>
         <li class="pkp_certification">
@@ -75,6 +78,7 @@
         </li>
         <?php endif; ?>
     </ul>
+    <?php endif; ?>
 
     <?php // @todo better user cap ?>
     <?php if ( !empty( $release->updates ) && ( ( is_admin() && current_user_can( 'manage_options' ) ) || pkp_is_author( $release->ID ) ) ) : ?>

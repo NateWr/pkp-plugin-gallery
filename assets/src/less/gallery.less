@@ -124,6 +124,15 @@
         margin-left: 0;
     }
 
+    .notice {
+        margin-left: 1em;
+        font-style: italic;
+
+        .dashicons {
+            vertical-align: text-bottom;
+        }
+    }
+
     .actions {
         list-style: none;
         margin: 0;
@@ -156,5 +165,38 @@
                 color: @tpl-offset;
             }
         }
+    }
+}
+
+.pkppg-release-form {
+
+    input[type="text"],
+    input[type="url"],
+    textarea,
+    select {
+        line-height: 2em;
+        border: @tpl-border;
+        border-radius: @tpl-border-radius;
+        background: @tpl-shade;
+        padding: 0 0.5em;
+    }
+
+    textarea {
+        line-height: 1.5em;
+        font-family: @tpl-font;
+    }
+
+    .description {
+        font-style: italic;
+        color: @tpl-text-light;
+    }
+
+    .button {
+        &:extend( .tpl-button );
+    }
+
+    .button-primary {
+        &:extend( .tpl-button-primary );
+        margin-right: 0.5em;
     }
 }

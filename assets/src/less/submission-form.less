@@ -113,13 +113,18 @@
 			font-weight: 700;
 		}
 
-		a {
-			color: #fff;
-		}
-
 		.actions {
 			top: 0.5em;
 			right: 0.5em;
+
+			a {
+				color: #fff;
+
+				&:hover,
+				&:focus {
+					text-decoration: underline;
+				}
+			}
 
 			.delete {
 				color: #fff;
