@@ -4,6 +4,7 @@
  * the plugin gallery, as well as the user controls to submit a plugin or view
  * their own plugins.
  */
+global $wp;
 $applications = get_terms( 'pkp_application', array( 'parent' => 0 ) );
 ?>
 
