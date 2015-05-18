@@ -11,7 +11,7 @@
 
 <div class="plugin view">
     <h1><?php echo $plugin->name; ?></h1>
-    <div class="category">
+    <div class="category-badge">
         <?php echo $plugin->get_term_name( 'pkp_category', ', ', 'id' ); ?>
     </div>
 

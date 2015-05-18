@@ -38,7 +38,7 @@
 
     <div class="summary">
 
-        <span class="category"><?php echo $plugin->get_term_name( 'pkp_category', ', ', 'id' ); ?></span>
+        <span class="category-badge"><?php echo $plugin->get_term_name( 'pkp_category', ', ', 'id' ); ?></span>
 
         <?php echo $plugin->summary; ?>
 
