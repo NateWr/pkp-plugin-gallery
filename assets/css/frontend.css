@@ -213,6 +213,9 @@
   color: #dd3d36;
 }
 .tpl-button,
+.pkp-submit button.save,
+.pkppg-release-form button.save,
+.pkp-submit .button,
 .pkppg-release-form .button {
   background: #e5e5e5;
   border: 1px solid #e5e5e5;
@@ -223,6 +226,9 @@
   line-height: 2em;
 }
 .tpl-button-primary,
+.pkp-submit button.save,
+.pkppg-release-form button.save,
+.pkp-submit .button-primary,
 .pkppg-release-form .button-primary {
   background: #333;
   border: 1px solid #222;
@@ -351,9 +357,13 @@
   border-radius: 3px;
   color: #d54e21;
 }
+.pkp-submit input[type="text"],
 .pkppg-release-form input[type="text"],
+.pkp-submit input[type="url"],
 .pkppg-release-form input[type="url"],
+.pkp-submit textarea,
 .pkppg-release-form textarea,
+.pkp-submit select,
 .pkppg-release-form select {
   line-height: 2em;
   border: 1px solid #cccccc;
@@ -361,16 +371,39 @@
   background: #e5e5e5;
   padding: 0 0.5em;
 }
+.pkp-submit select,
+.pkppg-release-form select {
+  height: 2em;
+}
+.pkp-submit textarea,
 .pkppg-release-form textarea {
   line-height: 1.5em;
   font-family: 'Lato', arial, sans-serif;
 }
+.pkp-submit .description,
 .pkppg-release-form .description {
   font-style: italic;
   color: #777777;
 }
+.pkp-submit button.save,
+.pkppg-release-form button.save,
+.pkp-submit .button-primary,
 .pkppg-release-form .button-primary {
   margin-right: 0.5em;
+}
+.pkp-submit {
+  margin-bottom: 4em;
+}
+.pkp-submit legend {
+  margin: 1em;
+  font-size: 18px;
+  font-weight: bold;
+}
+.pkp-submit .description {
+  min-height: 10em;
+}
+.pkp-submit button.save {
+  cursor: pointer;
 }
 .pkp-releases-form .releases > li {
   margin-bottom: 1em;

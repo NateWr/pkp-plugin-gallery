@@ -168,6 +168,7 @@
     }
 }
 
+.pkp-submit,
 .pkppg-release-form {
 
     input[type="text"],
@@ -181,6 +182,10 @@
         padding: 0 0.5em;
     }
 
+    select {
+        height: 2em;
+    }
+
     textarea {
         line-height: 1.5em;
         font-family: @tpl-font;
@@ -191,12 +196,32 @@
         color: @tpl-text-light;
     }
 
+    button.save,
     .button {
         &:extend( .tpl-button );
     }
 
+    button.save,
     .button-primary {
         &:extend( .tpl-button-primary );
         margin-right: 0.5em;
+    }
+}
+
+.pkp-submit {
+    margin-bottom: 4em;
+
+    legend {
+        margin: 1em;
+        font-size: @tpl-font-lead;
+        font-weight: @tpl-bold;
+    }
+
+    .description {
+        min-height: 10em;
+    }
+
+    button.save {
+        cursor: pointer;
     }
 }
