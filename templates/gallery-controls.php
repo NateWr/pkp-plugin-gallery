@@ -11,7 +11,9 @@ $applications = get_terms( 'pkp_application', array( 'parent' => 0 ) );
 <div id="pkppg-controls" class="pkppg-controls clearfix">
     <ul class="filters">
         <li class="all">
-            <?php esc_html_e( 'All', 'pkp-plugin-gallery' ); ?>
+            <a href="<?php trailingslashit( home_url( pkppgInit()->cpts->plugin_archive_slug ) ); ?>">
+                <?php esc_html_e( 'All', 'pkp-plugin-gallery' ); ?>
+            </a>
         </li>
         <?php foreach( $applications as $application ) : ?>
         <li class="<?php esc_attr( $application->slug ); ?>">
